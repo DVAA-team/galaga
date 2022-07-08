@@ -1,0 +1,20 @@
+@import "../abstracts/_variables.css";
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $glob-text-font-stack;
+}
+
+a {
+  text-decoration: none;
+}

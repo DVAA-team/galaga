@@ -1,0 +1,38 @@
+.clearfix::after {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+.scroll-none::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline {
+  display: inline;
+}
+
+.d-none {
+  display: none;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
