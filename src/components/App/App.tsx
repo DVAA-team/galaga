@@ -1,18 +1,27 @@
-import { Component } from 'react';
-
 import '../../assets/styles/main.css';
 import './App.css';
 
-class App extends Component {
-  public test = 'Hello world';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
-  render() {
-    return (
-      <div className="parent">
-        <div className="child">Привет</div>
-        <h1 className="text-3xl font-bold underline">{this.test}</h1>
-      </div>
-    );
-  }
-}
+import { Home } from '../../pages/Home';
+import { SignIn } from '../../pages/SignIn';
+import { SignUp } from '../../pages/SignUp';
+import { Profile } from '../../pages/Profile';
+import { Dashboard } from '../../pages/Dashboard';
+import { Leaderboard } from '../../pages/Leaderboard';
+import { NotFound } from '../../pages/NotFound';
+
+const App = () => (
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/sign-up" element={<SignUp />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </BrowserRouter>
+);
 export default App;
