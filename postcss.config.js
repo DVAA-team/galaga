@@ -5,6 +5,6 @@ module.exports = {
     tailwindcss: {},
     autoprefixer: {},
     cssnano: {},
-    'postcss-simple-vars': {}
-  }
-}
+    'postcss-simple-vars': {},
+  },
+};
