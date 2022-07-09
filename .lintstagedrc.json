@@ -1,0 +1,5 @@
+{
+  "*": "prettier --check",
+  "*.ts?(x)": "eslint",
+  "*.css": "stylelint"
+}
