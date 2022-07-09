@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "ES2017"],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "target": "ES5",
+    "jsx": "react-jsx",
+    "importHelpers": true,
+    "noUnusedLocals": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "declaration": false,
+    "sourceMap": false,
+    "baseUrl": ".",
+    "outDir": "./dist",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "typeRoots": ["typings/**/*.d.ts", "node_modules/@types"],
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true
+  },
+  "include": ["src/**/*.{tsx?}", "typings/**/*.d.ts", "node_modules/@types"],
+  "exclude": ["**/*.js"]
+}
