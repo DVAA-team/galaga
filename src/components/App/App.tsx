@@ -1,15 +1,16 @@
 import '../../assets/styles/main.css';
 import './App.css';
 
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { Home } from '../../pages/Home';
-import { SignIn } from '../../pages/SignIn';
-import { SignUp } from '../../pages/SignUp';
-import { Profile } from '../../pages/Profile';
 import { Dashboard } from '../../pages/Dashboard';
+import { Game } from '../../pages/Game';
+import { Home } from '../../pages/Home';
 import { Leaderboard } from '../../pages/Leaderboard';
 import { NotFound } from '../../pages/NotFound';
+import { Profile } from '../../pages/Profile';
+import { SignIn } from '../../pages/SignIn';
+import { SignUp } from '../../pages/SignUp';
 
 const App = () => (
   <BrowserRouter>
@@ -20,6 +21,7 @@ const App = () => (
       <Route path="/profile" element={<Profile />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="/game" element={<Game />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>
