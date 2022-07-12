@@ -1,0 +1,75 @@
+import { InputHTMLAttributes, FC, ForwardedRef, forwardRef } from 'react';
+import { FieldError } from 'react-hook-form';
+
+type OwnProps = {
+  type?: string;
+  value?: string;
+  id?: string;
+  name: string;
+  cls?: string;
+  placeholder?: string;
+  withLabel?: boolean;
+  labelText?: string;
+  required?: boolean;
+  error?: FieldError;
+  ref?: ForwardedRef<HTMLInputElement>;
+} & InputHTMLAttributes<HTMLInputElement>;
+
+type Props = FC<OwnProps>;
+
+const Input: Props = forwardRef((props, ref) => {
+  const {
+    cls = '',
+    type = 'text',
+    placeholder = '',
+    id,
+    name,
+    withLabel,
+    labelText = placeholder,
+    required,
+    error,
+    ...other
+  } = props;
+
+  const inputDefault = () => (
+    <input
+      className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${cls}`}
+      id={id}
+      name={name}
+      type={type}
+      required={required}
+      placeholder={placeholder}
+      {...other}
+      ref={ref}
+    />
+  );
+
+  const inputWithLabel = () => (
+    <label className="form__label">
+      <span className="block mb-1">{labelText}</span>
+      <input
+        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${cls}`}
+        id={id}
+        name={name}
+        type={type}
+        required={required}
+        placeholder={placeholder}
+        {...other}
+        ref={ref}
+      />
+    </label>
+  );
+
+  return (
+    <div className="form__field mb-6 relative">
+      {withLabel ? inputWithLabel() : inputDefault()}
+      {error && (
+        <div className="form__error absolute top-full text-red-500 text-xs">
+          {error.message}
+        </div>
+      )}
+    </div>
+  );
+});
+
+export default Input;
