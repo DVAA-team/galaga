@@ -19,8 +19,21 @@ body {
 
 body {
   font-family: $glob-text-font-stack;
+  color: $glob-color-white;
+  background: #000 url("../images/stars_pattern.png") 50% 0 / 500px auto repeat;
+  animation: scroll-background 20s linear infinite;
 }
 
 a {
   text-decoration: none;
+}
+
+@keyframes scroll-background {
+  0% {
+    background-position: 50% 0;
+  }
+
+  100% {
+    background-position: 50% 750px;
+  }
 }
