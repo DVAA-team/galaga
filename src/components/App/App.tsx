@@ -4,7 +4,7 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { Dashboard } from '../../pages/Dashboard';
-import { Game } from '../../pages/Game';
+import { GamePage } from '../../pages/Game';
 import { Home } from '../../pages/Home';
 import { Leaderboard } from '../../pages/Leaderboard';
 import { NotFound } from '../../pages/NotFound';
@@ -21,7 +21,7 @@ const App = () => (
       <Route path="/profile" element={<Profile />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
-      <Route path="/game" element={<Game />} />
+      <Route path="/game" element={<GamePage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>

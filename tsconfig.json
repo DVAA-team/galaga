@@ -25,6 +25,11 @@
     "noUnusedParameters": true,
     "strictNullChecks": true
   },
-  "include": ["src/**/*.{tsx?}", "typings/**/*.d.ts", "node_modules/@types"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "typings/**/*.d.ts",
+    "node_modules/@types"
+  ],
   "exclude": ["**/*.js"]
 }
