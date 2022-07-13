@@ -62,7 +62,7 @@ export class Vector {
       return new Vector(this.x - a, this.y - b);
     }
     if (a instanceof Vector) {
-      return new Vector(this.x + a.x, this.y + b.y);
+      return new Vector(this.x + a.x, this.y + a.y);
     }
     throw new Error('Unknowns arguments');
   }
