@@ -244,18 +244,17 @@ export class GameEngine {
    *
    * @param param0 - Событие клавиатуры
    */
-  private _keyDownHandler({ key }: KeyboardEvent) {
-    switch (key) {
+  private _keyDownHandler({ code }: KeyboardEvent) {
+    switch (code) {
       case 'ArrowLeft':
-      case 'a':
+      case 'KeyA':
         this.playerAction.left = true;
         break;
       case 'ArrowRight':
-      case 'd':
+      case 'KeyD':
         this.playerAction.right = true;
         break;
-      case 'w':
-      case ' ':
+      case 'Space':
         this.playerAction.fire = true;
         break;
       default:
@@ -268,18 +267,17 @@ export class GameEngine {
    *
    * @param param0 - Событие клавиатуры
    */
-  private _keyUpHandler({ key }: KeyboardEvent) {
-    switch (key) {
+  private _keyUpHandler({ code }: KeyboardEvent) {
+    switch (code) {
       case 'ArrowLeft':
-      case 'a':
+      case 'KeyA':
         this.playerAction.left = false;
         break;
       case 'ArrowRight':
-      case 'd':
+      case 'KeyD':
         this.playerAction.right = false;
         break;
-      case 'w':
-      case ' ':
+      case 'Space':
         this.playerAction.fire = false;
         break;
       default:
