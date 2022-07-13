@@ -5,14 +5,20 @@ import { GameEngine, GAME_HEIGHT, GAME_WIDTH, Player, Swarm } from './Engine';
 
 let gameEngine: GameEngine;
 
+const enum Status {
+  start = 'start',
+  gameOver = 'game-over',
+  run = 'run',
+}
+
 const GamePage = () => {
-  const [gameMode, setGameMode] = useState('start');
+  const [gameStatus, setGameStatus] = useState(Status.start);
 
   const [score, setScore] = useState(0);
 
   const gameStart = () => {
     setScore(0);
-    setGameMode('run');
+    setGameStatus(Status.run);
     gameEngine.start();
   };
 
@@ -29,7 +35,7 @@ const GamePage = () => {
           debug: true,
           onScoreUpdate: setScore,
           onGameOver(newScore) {
-            setGameMode('game-over');
+            setGameStatus(Status.gameOver);
             setScore(newScore);
           },
         });
@@ -38,6 +44,24 @@ const GamePage = () => {
       }
     },
     []
+  );
+
+  const renderGameStartOverlay = () => (
+    <>
+      <p>Управляйте клавишами "a" и "d" или стрелками, стрельба "space"</p>
+      <Button text="Начать игру" cls="z-10" onClick={gameStart} />
+    </>
+  );
+
+  const renderGameOverOverlay = () => (
+    <>
+      <h1 className="py-2 text-lg font-bold">Игра окончена</h1>
+      <h1 className="py-2 text-lg font-semibold">
+        Вы набрали: <span className="text-red-500 font-extrabold">{score}</span>
+      </h1>
+
+      <Button text="Играть ещё раз" cls="z-10" onClick={gameStart} />
+    </>
   );
 
   return (
@@ -56,23 +80,8 @@ const GamePage = () => {
         width={GAME_WIDTH}
         height={GAME_HEIGHT}
       />
-      {gameMode === 'start' && (
-        <>
-          <p>Управляйте клавишами "a" и "d" или стрелками, стрельба "space"</p>
-          <Button text="Начать игру" cls="z-10" onClick={gameStart} />
-        </>
-      )}
-      {gameMode === 'game-over' && (
-        <>
-          <h1 className="py-2 text-lg font-bold">Игра окончена</h1>
-          <h1 className="py-2 text-lg font-semibold">
-            Вы набрали:{' '}
-            <span className="text-red-500 font-extrabold">{score}</span>
-          </h1>
-
-          <Button text="Играть ещё раз" cls="z-10" onClick={gameStart} />
-        </>
-      )}
+      {gameStatus === Status.start && renderGameStartOverlay()}
+      {gameStatus === Status.gameOver && renderGameOverOverlay()}
     </div>
   );
 };
