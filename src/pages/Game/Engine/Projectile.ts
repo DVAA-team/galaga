@@ -1,3 +1,9 @@
+import {
+  ENEMY_BULLET_HEIGHT,
+  ENEMY_BULLET_WIDTH,
+  PLAYER_BULLET_HEIGHT,
+  PLAYER_BULLET_WIDTH,
+} from './const';
 import { GameObject, GameObjectOptions } from './GameObject';
 import { Vector } from './Vector';
 
@@ -51,20 +57,16 @@ export const createPlayerProjectile = (
   position: Vector,
   velocity: number,
   debug?: boolean
-) => {
-  const height = 3;
-  const width = 3;
-
-  return new Projectile({
+) =>
+  new Projectile({
     type: ProjectileType.player,
     ctx,
-    height,
-    position: position.subtract(width / 2, height),
+    position: position.subtract(PLAYER_BULLET_WIDTH / 2, PLAYER_BULLET_HEIGHT),
     velocity: new Vector(0, -velocity),
-    width,
+    height: PLAYER_BULLET_HEIGHT,
+    width: PLAYER_BULLET_WIDTH,
     debug,
   });
-};
 
 /**
  * Создает пулю врага
@@ -80,17 +82,13 @@ export const createEnemyProjectile = (
   position: Vector,
   velocity: number,
   debug?: boolean
-) => {
-  const height = 6;
-  const width = 3;
-
-  return new Projectile({
+) =>
+  new Projectile({
     type: ProjectileType.enemy,
     ctx,
-    height,
-    position: position.subtract(width / 2, height),
+    position: position.subtract(ENEMY_BULLET_WIDTH / 2, ENEMY_BULLET_HEIGHT),
     velocity: new Vector(0, velocity),
-    width,
+    height: ENEMY_BULLET_HEIGHT,
+    width: ENEMY_BULLET_WIDTH,
     debug,
   });
-};
