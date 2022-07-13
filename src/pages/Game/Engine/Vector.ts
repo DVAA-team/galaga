@@ -27,12 +27,12 @@ export class Vector {
    */
   public subtract(x: number, y: number): Vector;
 
-  public subtract(...args: unknown[]): Vector {
-    if (typeof args[0] === 'number' && typeof args[1] === 'number') {
-      return new Vector(this.x - args[0], this.y - args[1]);
+  public subtract(...[a, b]: unknown[]): Vector {
+    if (typeof a === 'number' && typeof b === 'number') {
+      return new Vector(this.x - a, this.y - b);
     }
-    if (args[0] instanceof Vector) {
-      return new Vector(this.x - args[0].x, this.y - args[0].y);
+    if (a instanceof Vector) {
+      return new Vector(this.x - a.x, this.y - a.y);
     }
     throw new Error('Unknowns arguments');
   }
@@ -57,12 +57,12 @@ export class Vector {
    */
   public add(x: number, y: number): Vector;
 
-  public add(...args: unknown[]): Vector {
-    if (typeof args[0] === 'number' && typeof args[1] === 'number') {
-      return new Vector(this.x - args[0], this.y - args[1]);
+  public add(...[a, b]: unknown[]): Vector {
+    if (typeof a === 'number' && typeof b === 'number') {
+      return new Vector(this.x - a, this.y - b);
     }
-    if (args[0] instanceof Vector) {
-      return new Vector(this.x + args[0].x, this.y + args[0].y);
+    if (a instanceof Vector) {
+      return new Vector(this.x + a.x, this.y + b.y);
     }
     throw new Error('Unknowns arguments');
   }
