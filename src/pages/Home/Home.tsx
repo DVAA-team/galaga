@@ -32,6 +32,11 @@ const Home = () => (
             Leaderboard
           </Link>
         </li>
+        <li>
+          <Link className="font-bold underline" to="/game">
+            Game
+          </Link>
+        </li>
       </ul>
     </nav>
   </div>
