@@ -65,11 +65,13 @@
   },
   "dependencies": {
     "@hookform/resolvers": "2.9.5",
+    "axios": "0.27.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "7.33.1",
     "react-router": "6.3.0",
     "react-router-dom": "6.3.0",
+    "react-toastify": "9.0.5",
     "yup": "0.32.11"
   }
 }

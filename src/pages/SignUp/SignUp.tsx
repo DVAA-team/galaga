@@ -1,23 +1,18 @@
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { schema } from '../../utils/validate';
-
-type FormValues = {
-  login: string;
-  password: string;
-  password_repeat: string;
-  email: string;
-  first_name: string;
-  second_name: string;
-  phone: string;
-};
+import { schemaSignUp } from '../../utils/validate';
+import { TSignUp } from '../../api/types';
+import { userApi } from '../../api/userApi';
+import { notifyError } from '../../utils/notify';
 
 const SignUp = () => {
-  const defaultValues: FormValues = {
+  const navigate = useNavigate();
+
+  const defaultValues: TSignUp = {
     login: '',
     password: '',
     password_repeat: '',
@@ -30,23 +25,36 @@ const SignUp = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<FormValues>({
+    formState: { errors },
+  } = useForm<TSignUp>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schemaSignUp),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data: unknown) => {
-    if (isValid) {
-      // eslint-disable-next-line no-alert
-      alert(JSON.stringify(data));
-    }
+  const onSubmit: SubmitHandler<TSignUp> = (d: TSignUp) => {
+    userApi
+      .signUp(d)
+      .then(() => {
+        navigate('/profile', { replace: true });
+      })
+      .catch(({ response }) => {
+        const reason = response?.data?.reason;
+
+        if (reason) {
+          notifyError(reason);
+        }
+      });
   };
 
   return (
     <div className="container mx-auto flex flex-row justify-center items-center flex-wrap h-full">
       <Form title="Регистрация" handlerSubmit={handleSubmit(onSubmit)}>
+        <Input
+          placeholder="Email"
+          {...register('email', { required: true })}
+          error={errors.email}
+        />
         <Input
           placeholder="Логин"
           {...register('login', { required: true })}
