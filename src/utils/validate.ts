@@ -15,7 +15,20 @@ const errorText = {
   password: 'Пароли не совпадают',
 };
 
-export const schema = object({
+export const schemaSignIn = object({
+  login: string()
+    .required(errorText.required)
+    .min(3, `${errorText.min} 3`)
+    .max(20, `${errorText.max} 20`)
+    .matches(regLogin, errorText.format),
+  password: string()
+    .required(errorText.required)
+    .min(6, `${errorText.min} 6`)
+    .max(40, `${errorText.max} 40`)
+    .matches(regPassword, errorText.format),
+});
+
+export const schemaSignUp = object({
   login: string()
     .required(errorText.required)
     .min(3, `${errorText.min} 3`)

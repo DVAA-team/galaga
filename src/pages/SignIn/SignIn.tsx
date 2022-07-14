@@ -1,18 +1,18 @@
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { schema } from '../../utils/validate';
-
-type FormValues = {
-  login: string;
-  password: string;
-};
+import { schemaSignIn } from '../../utils/validate';
+import { userApi } from '../../api/userApi';
+import { TSignIn } from '../../api/types';
+import { notifyError } from '../../utils/notify';
 
 const SignIn = () => {
-  const defaultValues: FormValues = {
+  const navigate = useNavigate();
+
+  const defaultValues: TSignIn = {
     login: '',
     password: '',
   };
@@ -20,18 +20,26 @@ const SignIn = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
-  } = useForm<FormValues>({
+    formState: { errors },
+  } = useForm<TSignIn>({
     mode: 'onChange',
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schemaSignIn),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data: unknown) => {
-    if (isValid) {
-      // eslint-disable-next-line no-alert
-      alert(JSON.stringify(data));
-    }
+  const onSubmit: SubmitHandler<TSignIn> = (d: TSignIn) => {
+    userApi
+      .signIn(d)
+      .then(() => {
+        navigate('/profile', { replace: true });
+      })
+      .catch(({ response }) => {
+        const reason = response?.data?.reason;
+
+        if (reason) {
+          notifyError(reason);
+        }
+      });
   };
 
   return (
