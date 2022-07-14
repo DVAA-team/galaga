@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 export abstract class HttpClient {
@@ -12,17 +11,24 @@ export abstract class HttpClient {
       timeout: 5000,
     });
 
-    this._initializeResponseInterceptor();
+    this._initializeResponseInterceptor =
+      this._initializeResponseInterceptor.bind(this);
   }
 
-  private _initializeResponseInterceptor = () => {
+  private _initializeResponseInterceptor() {
     this.instance.interceptors.response.use(
       this._handleResponse,
       this._handleError
     );
-  };
+  }
 
-  private _handleResponse = ({ data }: AxiosResponse) => data;
+  // eslint-disable-next-line class-methods-use-this
+  private _handleResponse({ data }: AxiosResponse) {
+    return data;
+  }
 
-  protected _handleError = (error: any) => Promise.reject(error);
+  // eslint-disable-next-line class-methods-use-this
+  protected _handleError(error: any) {
+    return Promise.reject(error);
+  }
 }
