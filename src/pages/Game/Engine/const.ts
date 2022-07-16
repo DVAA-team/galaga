@@ -1,0 +1,17 @@
+export const GAME_HEIGHT = 420;
+export const GAME_WIDTH = 640;
+export const PLAYER_HEIGHT = 30;
+export const PLAYER_WIDTH = 30;
+export const TOP_PADDING = 10;
+export const BOTTOM_PADDING = 10;
+export const LEFT_PADDING = 10;
+export const RIGHT_PADDING = 10;
+export const ENEMY_WIDTH = 30;
+export const ENEMY_HEIGHT = 30;
+export const ENEMY_GAP = 3;
+export const ENEMY_FIRE_RATE = 1500; // раз в 1,5 секунды
+export const PLAYER_FIRE_RATE = 500; // раз в 0,5 секунды
+export const ENEMY_BULLET_HEIGHT = 6;
+export const ENEMY_BULLET_WIDTH = 3;
+export const PLAYER_BULLET_HEIGHT = 3;
+export const PLAYER_BULLET_WIDTH = 3;
