@@ -1,0 +1,14 @@
+.avatar {
+  @apply w-48 h-48 rounded-full mb-5 relative;
+  @apply bg-[url('../../assets/images/stub-image.svg')];
+  @apply bg-no-repeat bg-center bg-gray-100;
+
+  &:hover {
+    &::after {
+      content: "Загрузить";
+      @apply absolute top-0 left-0 bottom-0 right-0;
+      @apply rounded-full flex justify-center items-center;
+      @apply text-white text-lg bg-opacity-50 bg-black;
+    }
+  }
+}

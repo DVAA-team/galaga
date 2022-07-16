@@ -1,5 +1,5 @@
 import { HttpClient } from './HttpClient';
-import { TSignIn, TSignUp, TUser, TUserDTO, TPassword } from './types';
+import { TChangePasswordDTO, TSignIn, TSignUp, TUser, TUserDTO } from './types';
 
 class UserApi extends HttpClient {
   public constructor() {
@@ -17,8 +17,19 @@ class UserApi extends HttpClient {
   public editUser = (data: TUserDTO) =>
     this.instance.put<TUser>('/user/profile', data);
 
-  public editPassword = (data: TPassword) =>
+  public editPassword = (data: TChangePasswordDTO) =>
     this.instance.put('/user/password', data);
+
+  public getAvatar = (url: string) =>
+    this.instance.get<Blob>(`/resources/${url}`, { responseType: 'blob' });
+
+  public editAvatar = (avatar: Blob) => {
+    const data = new FormData();
+    data.append('avatar', avatar);
+    return this.instance.put('/user/profile/avatar', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  };
 }
 
 export const userApi = new UserApi();

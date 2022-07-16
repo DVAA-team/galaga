@@ -27,7 +27,7 @@ export abstract class HttpClient {
     return data;
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
   protected _handleError(error: any) {
     return Promise.reject(error);
   }
