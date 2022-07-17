@@ -1,6 +1,6 @@
 FROM node:16
 WORKDIR /var/www
-COPY package*.json .
+COPY package*.json ./
 RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
