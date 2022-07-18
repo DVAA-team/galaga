@@ -1,3 +1,4 @@
+import { AbstractGameObject, isRectCollide } from './AbstractGameObject';
 import {
   BOTTOM_PADDING,
   ENEMY_GAP,
@@ -9,13 +10,12 @@ import {
   RIGHT_PADDING,
   TOP_PADDING,
 } from './const';
-import { GameObject, isRectCollide } from './GameObject';
 import { isPlayer, Player } from './Player';
 import { Projectile, ProjectileType } from './Projectile';
 import { isSwarm, Swarm } from './Swarm';
 import { Vector } from './Vector';
 
-export type GameEngineOptions = {
+export type TGameEngineOptions = {
   ctx: CanvasRenderingContext2D;
   debug?: boolean;
   width: number;
@@ -36,35 +36,35 @@ enum GameState {
 }
 
 export class GameEngine {
-  private ctx: CanvasRenderingContext2D;
+  private _ctx: CanvasRenderingContext2D;
 
-  private playerAction = {
+  private _playerAction = {
     left: false,
     right: false,
     fire: false,
   };
 
-  private gameState: GameState = GameState.init;
+  private _gameState: GameState = GameState.init;
 
-  private score = 0;
+  private _score = 0;
 
-  private onScoreUpdate: (newScore: number) => void;
+  private _onScoreUpdate: (newScore: number) => void;
 
-  private onGameOver: (score: number) => void;
+  private _onGameOver: (score: number) => void;
 
-  private animationFrameId = 0;
+  private _animationFrameId = 0;
 
-  private lastTime = performance.now();
+  private _lastTime = performance.now();
 
-  private objects: GameObject[] = [];
+  private _objects: AbstractGameObject[] = [];
 
-  private objectsClass: typeof GameObject[] = [];
+  private _objectsClass: typeof AbstractGameObject[] = [];
 
-  private gameAreaWidth: number;
+  private _gameAreaWidth: number;
 
-  private gameAreaHeight: number;
+  private _gameAreaHeight: number;
 
-  private debug: boolean;
+  private _debug: boolean;
 
   private _keyDownHandlerWithContext: (e: KeyboardEvent) => void;
 
@@ -77,13 +77,13 @@ export class GameEngine {
     height,
     onScoreUpdate,
     onGameOver,
-  }: GameEngineOptions) {
-    this.ctx = ctx;
-    this.debug = debug ?? false;
-    this.gameAreaWidth = width;
-    this.gameAreaHeight = height;
-    this.onScoreUpdate = onScoreUpdate ?? noop;
-    this.onGameOver = onGameOver ?? noop;
+  }: TGameEngineOptions) {
+    this._ctx = ctx;
+    this._debug = debug ?? false;
+    this._gameAreaWidth = width;
+    this._gameAreaHeight = height;
+    this._onScoreUpdate = onScoreUpdate ?? noop;
+    this._onGameOver = onGameOver ?? noop;
 
     this._keyDownHandlerWithContext = this._keyDownHandler.bind(this);
     this._keyUpHandlerWithContext = this._keyUpHandler.bind(this);
@@ -98,20 +98,20 @@ export class GameEngine {
       window.addEventListener('keydown', this._keyDownHandlerWithContext);
       window.addEventListener('keyup', this._keyUpHandlerWithContext);
 
-      this.gameState = GameState.run;
+      this._gameState = GameState.run;
 
       // Запускаем основной цикл игры
-      this.lastTime = performance.now();
-      this.animationFrameId = requestAnimationFrame(this._gameLoop.bind(this));
+      this._lastTime = performance.now();
+      this._animationFrameId = requestAnimationFrame(this._gameLoop.bind(this));
     };
 
-    if (this.gameState === GameState.ready) {
+    if (this._gameState === GameState.ready) {
       // Первый запуск
       run();
-    } else if (this.gameState === GameState.gameOver) {
+    } else if (this._gameState === GameState.gameOver) {
       // Перезапуск
-      this.objects = [];
-      this.score = 0;
+      this._objects = [];
+      this._score = 0;
       this.init().then(run);
     } else {
       throw new Error('Ошибка старта игры, неверное состояние');
@@ -122,7 +122,7 @@ export class GameEngine {
    * Остановка игры
    */
   public stop() {
-    if (this.gameState !== GameState.run) {
+    if (this._gameState !== GameState.run) {
       throw new Error('Ошибка остановки игры, неверное состояние');
     }
 
@@ -130,16 +130,16 @@ export class GameEngine {
     window.removeEventListener('keyup', this._keyUpHandlerWithContext);
 
     // Устраняет залипание клавиш, если были нажаты в момент остановки
-    this.playerAction.fire = false;
-    this.playerAction.left = false;
-    this.playerAction.right = false;
+    this._playerAction.fire = false;
+    this._playerAction.left = false;
+    this._playerAction.right = false;
 
-    this.onGameOver(this.score);
+    this._onGameOver(this._score);
 
     // Остановка основного цикла спустя 1 сек, для отрисовки возможных анимаций взрыва и т.д.
     window.setTimeout(() => {
-      this.gameState = GameState.gameOver;
-      cancelAnimationFrame(this.animationFrameId);
+      this._gameState = GameState.gameOver;
+      cancelAnimationFrame(this._animationFrameId);
     }, 1000);
   }
 
@@ -149,8 +149,8 @@ export class GameEngine {
    * @param score - Добавляемое количество очков
    */
   public addScore(score: number) {
-    this.score += score;
-    this.onScoreUpdate(this.score);
+    this._score += score;
+    this._onScoreUpdate(this._score);
   }
 
   /**
@@ -159,12 +159,12 @@ export class GameEngine {
    * @param objectClass - Конструктор игрового объекта или массив конструкторов
    */
   public registerObject(
-    objectClass: typeof GameObject | typeof GameObject[]
+    objectClass: typeof AbstractGameObject | typeof AbstractGameObject[]
   ): void {
     if (Array.isArray(objectClass)) {
-      this.objectsClass.push(...objectClass);
+      this._objectsClass.push(...objectClass);
     } else {
-      this.objectsClass.push(objectClass);
+      this._objectsClass.push(objectClass);
     }
   }
 
@@ -174,22 +174,22 @@ export class GameEngine {
    * @returns Возвращает true при удачной инициализации игровых объектов
    */
   public async init() {
-    this.objectsClass.forEach((ObjectClass) => {
-      let object: GameObject | null = null;
+    this._objectsClass.forEach((ObjectClass) => {
+      let object: AbstractGameObject | null = null;
       if (isPlayer(ObjectClass)) {
         //  Создание игроков
         object = new ObjectClass({
-          ctx: this.ctx,
-          debug: this.debug,
+          ctx: this._ctx,
+          debug: this._debug,
           position: new Vector(
-            this.gameAreaWidth / 2 - PLAYER_WIDTH,
-            this.gameAreaHeight - PLAYER_HEIGHT - BOTTOM_PADDING
+            this._gameAreaWidth / 2 - PLAYER_WIDTH,
+            this._gameAreaHeight - PLAYER_HEIGHT - BOTTOM_PADDING
           ),
           velocity: new Vector(0, 0),
           width: PLAYER_WIDTH,
           height: PLAYER_HEIGHT,
           onFire: (projectile) => {
-            this.objects.push(projectile);
+            this._objects.push(projectile);
           },
         });
       } else if (isSwarm(ObjectClass)) {
@@ -207,26 +207,29 @@ export class GameEngine {
             (ENEMY_WIDTH + ENEMY_GAP) -
           ENEMY_GAP;
         object = new ObjectClass({
-          ctx: this.ctx,
-          debug: this.debug,
-          position: new Vector(this.gameAreaWidth / 2 - width / 2, TOP_PADDING),
+          ctx: this._ctx,
+          debug: this._debug,
+          position: new Vector(
+            this._gameAreaWidth / 2 - width / 2,
+            TOP_PADDING
+          ),
           velocity: new Vector(2, 0),
           width,
           height,
           formation,
           onFire: (projectile) => {
-            this.objects.push(projectile);
+            this._objects.push(projectile);
           },
         });
       }
 
       if (object) {
-        this.objects.push(object);
+        this._objects.push(object);
       }
     });
 
     // Инициализация объектов, подгрузка спрайтов и тд.
-    const objectInit = this.objects.map((object) =>
+    const objectInit = this._objects.map((object) =>
       object.init().catch((error) => console.error(error))
     );
 
@@ -235,7 +238,7 @@ export class GameEngine {
       throw new Error('Init objects failure');
     }
 
-    this.gameState = GameState.ready;
+    this._gameState = GameState.ready;
     return true;
   }
 
@@ -248,14 +251,14 @@ export class GameEngine {
     switch (code) {
       case 'ArrowLeft':
       case 'KeyA':
-        this.playerAction.left = true;
+        this._playerAction.left = true;
         break;
       case 'ArrowRight':
       case 'KeyD':
-        this.playerAction.right = true;
+        this._playerAction.right = true;
         break;
       case 'Space':
-        this.playerAction.fire = true;
+        this._playerAction.fire = true;
         break;
       default:
         break;
@@ -271,14 +274,14 @@ export class GameEngine {
     switch (code) {
       case 'ArrowLeft':
       case 'KeyA':
-        this.playerAction.left = false;
+        this._playerAction.left = false;
         break;
       case 'ArrowRight':
       case 'KeyD':
-        this.playerAction.right = false;
+        this._playerAction.right = false;
         break;
       case 'Space':
-        this.playerAction.fire = false;
+        this._playerAction.fire = false;
         break;
       default:
         break;
@@ -291,20 +294,20 @@ export class GameEngine {
    * @param nowTime - Время в мсек прошедшее с последнего вызова
    */
   private _gameLoop(nowTime: DOMHighResTimeStamp) {
-    const dt = nowTime - this.lastTime;
-    this.lastTime = nowTime;
+    const dt = nowTime - this._lastTime;
+    this._lastTime = nowTime;
 
     this._clear();
     this._garbageCollector();
 
     let gameOver = true;
 
-    for (let i = 0; i < this.objects.length; i += 1) {
-      this.objects[i].update(dt);
+    for (let i = 0; i < this._objects.length; i += 1) {
+      this._objects[i].update(dt);
 
-      if (this.objects[i] instanceof Projectile) {
+      if (this._objects[i] instanceof Projectile) {
         // Обработка пуль
-        const projectile = this.objects[i] as Projectile;
+        const projectile = this._objects[i] as Projectile;
         if (
           this._outOfBoundary(
             projectile.position,
@@ -315,13 +318,13 @@ export class GameEngine {
           projectile.delete();
         } else {
           // Проверка на пересечения
-          for (let j = 0; j < this.objects.length; j += 1) {
+          for (let j = 0; j < this._objects.length; j += 1) {
             if (
-              !(this.objects[j] instanceof Projectile) &&
-              !this.objects[j].hasDelete
+              !(this._objects[j] instanceof Projectile) &&
+              !this._objects[j].hasDelete
             ) {
               // Обрабатывает только те объекты которые не являются пулями и еще не удалены
-              const gameObject = this.objects[j];
+              const gameObject = this._objects[j];
 
               if (isRectCollide(gameObject, projectile)) {
                 if (
@@ -346,37 +349,38 @@ export class GameEngine {
             }
           }
         }
-      } else if (this.objects[i] instanceof Swarm) {
+      } else if (this._objects[i] instanceof Swarm) {
         // Обработка перемещения роя
-        const swarm = this.objects[i] as Swarm;
+        const swarm = this._objects[i] as Swarm;
         gameOver = false; // Если рой все еще присутствует на игровом поле игра не окончена
         if (
           swarm.position.x < 10 ||
-          swarm.position.x + swarm.width > this.gameAreaWidth - 10
+          swarm.position.x + swarm.width > this._gameAreaWidth - 10
         ) {
           swarm.revertVelocityX();
         }
-      } else if (this.objects[i] instanceof Player) {
+      } else if (this._objects[i] instanceof Player) {
         // Обработка перемещения игрока
-        const player = this.objects[i] as Player;
-        if (this.playerAction.left && player.position.x >= LEFT_PADDING) {
+        const player = this._objects[i] as Player;
+        if (this._playerAction.left && player.position.x >= LEFT_PADDING) {
           player.left();
         } else if (
-          this.playerAction.right &&
-          player.position.x <= this.gameAreaWidth - player.width - RIGHT_PADDING
+          this._playerAction.right &&
+          player.position.x <=
+            this._gameAreaWidth - player.width - RIGHT_PADDING
         ) {
           player.right();
         } else {
           player.stop();
         }
 
-        if (this.playerAction.fire) {
+        if (this._playerAction.fire) {
           player.fire();
         }
       }
     }
 
-    this.animationFrameId = requestAnimationFrame(this._gameLoop.bind(this));
+    this._animationFrameId = requestAnimationFrame(this._gameLoop.bind(this));
     if (gameOver) {
       this.stop();
     }
@@ -386,12 +390,12 @@ export class GameEngine {
    * Удаляет игровые объекта помеченные на удаление
    */
   private _garbageCollector() {
-    let objectCount = this.objects.length;
+    let objectCount = this._objects.length;
     let deleteObjectCount = 0;
     for (let i = 0; i < objectCount; i += 1) {
-      const object = this.objects[i];
+      const object = this._objects[i];
       if (object.hasDelete) {
-        this.objects.push(...this.objects.splice(i, 1));
+        this._objects.push(...this._objects.splice(i, 1));
         objectCount -= 1;
         deleteObjectCount += 1;
       } else if (object instanceof Swarm) {
@@ -399,7 +403,7 @@ export class GameEngine {
         object.garbageCollector();
       }
     }
-    this.objects.splice(objectCount, deleteObjectCount);
+    this._objects.splice(objectCount, deleteObjectCount);
   }
 
   /**
@@ -411,10 +415,10 @@ export class GameEngine {
    * @returns Возражает true если объект находится за границами игрового поля
    */
   private _outOfBoundary(position: Vector, width: number, height: number) {
-    if (position.y + height <= 0 || position.y >= this.gameAreaHeight) {
+    if (position.y + height <= 0 || position.y >= this._gameAreaHeight) {
       return true;
     }
-    if (position.x + width <= 0 || position.x >= this.gameAreaWidth) {
+    if (position.x + width <= 0 || position.x >= this._gameAreaWidth) {
       return true;
     }
     return false;
@@ -424,6 +428,6 @@ export class GameEngine {
    * Очистка игрового поля
    */
   private _clear() {
-    this.ctx.clearRect(0, 0, this.gameAreaWidth, this.gameAreaHeight);
+    this._ctx.clearRect(0, 0, this._gameAreaWidth, this._gameAreaHeight);
   }
 }

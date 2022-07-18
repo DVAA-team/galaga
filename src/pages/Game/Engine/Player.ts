@@ -1,20 +1,24 @@
+import {
+  AbstractGameObject,
+  GameObjectType,
+  TGameObjectOptions,
+} from './AbstractGameObject';
 import { PLAYER_FIRE_RATE } from './const';
-import { GameObject, GameObjectOptions, GameObjectType } from './GameObject';
 import { createPlayerProjectile } from './Projectile';
 import { Vector } from './Vector';
 
-type PlayerOptions = GameObjectOptions & {
-  onFire: (p: GameObject) => void;
+type TPlayerOptions = TGameObjectOptions & {
+  onFire: (p: AbstractGameObject) => void;
 };
 
-export class Player extends GameObject {
+export class Player extends AbstractGameObject {
   static type = GameObjectType.Player;
 
-  private _onFire: (p: GameObject) => void;
+  private _onFire: (p: AbstractGameObject) => void;
 
-  private elapsedTimeOnFile = 0;
+  private _elapsedTimeOnFile = 0;
 
-  constructor(options: PlayerOptions) {
+  constructor(options: TPlayerOptions) {
     super(options);
     this._onFire = options.onFire;
   }
@@ -27,7 +31,7 @@ export class Player extends GameObject {
   }
 
   public update(dt: number): void {
-    this.elapsedTimeOnFile += dt;
+    this._elapsedTimeOnFile += dt;
     this.position.x += this.velocity.x;
     this.draw();
   }
@@ -57,8 +61,8 @@ export class Player extends GameObject {
    * Выстрел игрока
    */
   public fire() {
-    if (this.elapsedTimeOnFile >= PLAYER_FIRE_RATE) {
-      this.elapsedTimeOnFile = 0;
+    if (this._elapsedTimeOnFile >= PLAYER_FIRE_RATE) {
+      this._elapsedTimeOnFile = 0;
       this._onFire(
         createPlayerProjectile(
           this.ctx,
@@ -82,6 +86,6 @@ export class Player extends GameObject {
  * @returns Возвращает true если переданный конструктор является
  * конструктором Player иначе false
  */
-export function isPlayer(val: typeof GameObject): val is typeof Player {
+export function isPlayer(val: typeof AbstractGameObject): val is typeof Player {
   return val.type === GameObjectType.Player;
 }

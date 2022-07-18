@@ -12,7 +12,7 @@ export interface IGameObject {
   update(dt: number): void;
 }
 
-export type GameObjectOptions = {
+export type TGameObjectOptions = {
   ctx: CanvasRenderingContext2D;
   debug?: boolean;
   position: Vector;
@@ -21,7 +21,7 @@ export type GameObjectOptions = {
   height: number;
 };
 
-export abstract class GameObject implements IGameObject {
+export abstract class AbstractGameObject implements IGameObject {
   static type = GameObjectType.Unknown;
 
   public position: Vector;
@@ -45,7 +45,7 @@ export abstract class GameObject implements IGameObject {
     velocity,
     width,
     height,
-  }: GameObjectOptions) {
+  }: TGameObjectOptions) {
     this.ctx = ctx;
     this.debug = debug ?? false;
     this.position = position;
@@ -113,7 +113,10 @@ export abstract class GameObject implements IGameObject {
  * @param obj2 - Второй проверяемый объект
  * @returns Результат проверки true - есть пересечение иначе false
  */
-export function isRectCollide(obj1: GameObject, obj2: GameObject): boolean {
+export function isRectCollide(
+  obj1: AbstractGameObject,
+  obj2: AbstractGameObject
+): boolean {
   if (
     obj1.position.x + obj1.width >= obj2.position.x &&
     obj1.position.x <= obj2.position.x + obj2.width &&
