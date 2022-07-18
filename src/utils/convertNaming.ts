@@ -11,10 +11,6 @@ export type TSnakeToCamelCaseNested<T> = T extends object
     }
   : T;
 
-// type TCamelToSnakeCase<TKey extends string> = TKey extends `${infer T}${Uppercase<U>}`
-//     ?
-//     :
-
 function isObject(value: unknown): value is Record<string, unknown> {
   return (
     typeof value === 'object' &&

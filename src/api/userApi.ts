@@ -1,5 +1,7 @@
+import { AxiosRequestHeaders } from 'axios';
+import { clientToServerNaming } from '../utils/convertNaming';
 import { AbstractHttpClient } from './AbstractHttpClient';
-import { TPassword, TSignIn, TSignUp, TUser, TUserDTO } from './types';
+import { TChangePasswordDTO, TSignIn, TSignUp, TUser, TUserDTO } from './types';
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
@@ -17,8 +19,21 @@ class UserApi extends AbstractHttpClient {
   public editUser = (data: TUserDTO) =>
     this.instance.put<TUser>('/user/profile', data);
 
-  public editPassword = (data: TPassword) =>
+  public editPassword = (data: TChangePasswordDTO) =>
     this.instance.put('/user/password', data);
+
+  public getAvatar = (url: string) =>
+    this.instance.get<Blob>(`/resources/${url}`, { responseType: 'blob' });
+
+  public editAvatar = (avatar: Blob) => {
+    const data = new FormData();
+    data.append('avatar', avatar);
+    return this.instance.put('/user/profile/avatar', data, {
+      headers: clientToServerNaming({
+        contentType: 'multipart/form-data',
+      }) as AxiosRequestHeaders,
+    });
+  };
 }
 
 export const userApi = new UserApi();

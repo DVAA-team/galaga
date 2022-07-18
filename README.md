@@ -2,6 +2,9 @@
 
 Легендарная аркадная игра 80х
 
+## Badges
+![Heroku](https://heroku-badge.herokuapp.com/?app=galaga-dvaa)
+
 ## Технологии
 
 Проект создан на базе:
