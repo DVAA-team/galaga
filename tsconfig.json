@@ -13,7 +13,7 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "declaration": false,
-    "sourceMap": false,
+    "sourceMap": true,
     "baseUrl": ".",
     "outDir": "./dist",
     "paths": {
