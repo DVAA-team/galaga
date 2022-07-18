@@ -73,7 +73,7 @@ const Profile = () => {
       createImageBitmap(files[0]).then((img) => {
         setOriginAvatar(img);
       });
-      // eslint-disable-next-line no-param-reassign
+
       event.target.value = '';
     }
   };
@@ -144,7 +144,7 @@ const Profile = () => {
       <input
         id="avatar"
         type="file"
-        className={`hidden`}
+        className="hidden"
         onChange={onAvatarClick}
       />
       <label htmlFor="avatar" className={`${styles.avatar} overflow-hidden`}>
