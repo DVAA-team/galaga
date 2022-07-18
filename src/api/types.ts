@@ -13,7 +13,7 @@ export type TUser = {
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
-export type TUserDTO = Omit<TUser, 'id, avatar, you'>;
+export type TUserDTO = Omit<TUser, 'id' | 'avatar' | 'you'>;
 
 export type TSignIn = {
   login: string;
@@ -29,3 +29,11 @@ export type TPassword = {
 };
 
 export type TSignUp = TUserDTO & TPassword;
+
+export type TChangePassword = {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordRepeat: string;
+};
+
+export type TChangePasswordDTO = Omit<TChangePassword, 'newPassword_repeat'>;
