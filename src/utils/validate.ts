@@ -39,7 +39,7 @@ export const schemaSignUp = object({
     .min(6, `${errorText.min} 6`)
     .max(40, `${errorText.max} 40`)
     .matches(regPassword, errorText.format),
-  password_repeat: string()
+  passwordRepeat: string()
     .required(errorText.required)
     .oneOf([ref('password'), null], errorText.password),
   email: string()
@@ -50,13 +50,13 @@ export const schemaSignUp = object({
     .min(10, `${errorText.min} 10`)
     .max(15, `${errorText.max} 15`)
     .matches(regPhone, errorText.format),
-  second_name: string()
+  secondName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
-  first_name: string()
+  firstName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
-  display_name: string()
+  displayName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
 });
@@ -75,13 +75,13 @@ export const schemaProfile = object({
     .min(10, `${errorText.min} 10`)
     .max(15, `${errorText.max} 15`)
     .matches(regPhone, errorText.format),
-  second_name: string()
+  secondName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
-  first_name: string()
+  firstName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
-  display_name: string()
+  displayName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
 });
@@ -97,7 +97,7 @@ export const schemaChangePassword = object({
     .min(6, `${errorText.min} 6`)
     .max(40, `${errorText.max} 40`)
     .matches(regPassword, errorText.format),
-  newPassword_repeat: string()
+  newPasswordRepeat: string()
     .required(errorText.required)
     .oneOf([ref('newPassword'), null], errorText.password),
 });

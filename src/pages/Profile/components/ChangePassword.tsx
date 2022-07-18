@@ -9,15 +9,15 @@ import { Input } from '../../../components/Input';
 import { notifyError } from '../../../utils/notify';
 import { schemaChangePassword } from '../../../utils/validate';
 
-type ChangePasswordProps = {
+type TChangePasswordProps = {
   onClose: () => void;
 };
 
-const ChangePassword: FC<ChangePasswordProps> = ({ onClose }) => {
+const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
   const defaultValues: TChangePassword = {
     newPassword: '',
     oldPassword: '',
-    newPassword_repeat: '',
+    newPasswordRepeat: '',
   };
 
   const {
@@ -68,8 +68,8 @@ const ChangePassword: FC<ChangePasswordProps> = ({ onClose }) => {
           placeholder="Новый пароль (еще раз)"
           withLabel={true}
           type="password"
-          {...register('newPassword_repeat', { required: true })}
-          error={errors.newPassword_repeat}
+          {...register('newPasswordRepeat', { required: true })}
+          error={errors.newPasswordRepeat}
         />
         <div className="flex justify-between w-full max-w-md ">
           <Button cls="mx-0" text="Применить" type="submit" />

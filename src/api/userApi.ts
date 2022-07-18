@@ -1,7 +1,9 @@
-import { HttpClient } from './HttpClient';
+import { AxiosRequestHeaders } from 'axios';
+import { clientToServerNaming } from '../utils/convertNaming';
+import { AbstractHttpClient } from './AbstractHttpClient';
 import { TChangePasswordDTO, TSignIn, TSignUp, TUser, TUserDTO } from './types';
 
-class UserApi extends HttpClient {
+class UserApi extends AbstractHttpClient {
   public constructor() {
     super('https://ya-praktikum.tech/api/v2');
   }
@@ -27,7 +29,9 @@ class UserApi extends HttpClient {
     const data = new FormData();
     data.append('avatar', avatar);
     return this.instance.put('/user/profile/avatar', data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: clientToServerNaming({
+        contentType: 'multipart/form-data',
+      }) as AxiosRequestHeaders,
     });
   };
 }

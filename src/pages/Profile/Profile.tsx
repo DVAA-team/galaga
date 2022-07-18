@@ -10,28 +10,28 @@ import { Input } from '../../components/Input';
 import { notify, notifyError } from '../../utils/notify';
 import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
-import CropAvatar, { onSaveHandler } from './components/CropAvatar';
+import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
 import styles from './Profile.module.css';
 
-type Profile = {
+type TProfile = {
   login: string;
   email: string;
   phone: string;
-  second_name: string;
-  first_name: string;
-  display_name?: string;
+  secondName: string;
+  firstName: string;
+  displayName?: string;
 };
 
 const Profile = () => {
   const navigate = useNavigate();
 
-  const defaultValues: Profile = {
+  const defaultValues: TProfile = {
     login: '',
     email: '',
-    first_name: '',
-    second_name: '',
-    display_name: '',
+    firstName: '',
+    secondName: '',
+    displayName: '',
     phone: '',
   };
 
@@ -40,7 +40,7 @@ const Profile = () => {
     handleSubmit,
     formState: { errors, isValid },
     reset,
-  } = useForm<Profile>({
+  } = useForm<TProfile>({
     mode: 'onChange',
     resolver: yupResolver(schemaProfile),
     defaultValues,
@@ -93,7 +93,7 @@ const Profile = () => {
       });
   };
 
-  const saveCropAvatarHandler: onSaveHandler = (image) => {
+  const saveCropAvatarHandler: TOnSaveHandler = (image) => {
     setAvatar(image);
     setOriginAvatar(undefined);
     userApi
@@ -154,20 +154,20 @@ const Profile = () => {
         <Input
           placeholder="Имя"
           withLabel={true}
-          {...register('first_name', { required: true })}
-          error={errors.first_name}
+          {...register('firstName', { required: true })}
+          error={errors.firstName}
         />
         <Input
           placeholder="Фамилия"
           withLabel={true}
-          {...register('second_name', { required: true })}
-          error={errors.second_name}
+          {...register('secondName', { required: true })}
+          error={errors.secondName}
         />
         <Input
           placeholder="Отображаемое имя"
           withLabel={true}
-          {...register('display_name', { required: true })}
-          error={errors.display_name}
+          {...register('displayName', { required: true })}
+          error={errors.displayName}
         />
         <Input
           placeholder="Логин"

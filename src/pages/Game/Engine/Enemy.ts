@@ -1,6 +1,6 @@
-import { GameObject, GameObjectType } from './GameObject';
+import { AbstractGameObject, GameObjectType } from './AbstractGameObject';
 
-export class Enemy extends GameObject {
+export class Enemy extends AbstractGameObject {
   static type = GameObjectType.Enemy;
 
   public inSwarm = true;

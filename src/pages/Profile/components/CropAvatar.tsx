@@ -8,16 +8,16 @@ import {
 } from 'react';
 import { Button } from '../../../components/Button';
 
-export type onSaveHandler = (image: Blob) => void;
+export type TOnSaveHandler = (image: Blob) => void;
 
-type CropAvatarProps = {
+type TCropAvatarProps = {
   image: ImageBitmap;
   border: number;
   size: number;
-  onSave: onSaveHandler;
+  onSave: TOnSaveHandler;
 };
 
-const CropAvatar: FC<CropAvatarProps> = ({ image, border, size, onSave }) => {
+const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [drag, setDrag] = useState(false);
   const [imageOptions, setImageOptions] = useState(() => {
