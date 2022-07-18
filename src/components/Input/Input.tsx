@@ -1,7 +1,7 @@
-import { InputHTMLAttributes, FC, ForwardedRef, forwardRef } from 'react';
+import { FC, ForwardedRef, forwardRef, InputHTMLAttributes } from 'react';
 import { FieldError } from 'react-hook-form';
 
-type OwnProps = {
+type TOwnProps = {
   type?: string;
   value?: string;
   id?: string;
@@ -15,9 +15,9 @@ type OwnProps = {
   ref?: ForwardedRef<HTMLInputElement>;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-type Props = FC<OwnProps>;
+type TProps = FC<TOwnProps>;
 
-const Input: Props = forwardRef((props, ref) => {
+const Input: TProps = forwardRef((props, ref) => {
   const {
     cls = '',
     type = 'text',

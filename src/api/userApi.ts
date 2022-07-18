@@ -1,7 +1,7 @@
-import { HttpClient } from './HttpClient';
-import { TSignIn, TSignUp, TUser, TUserDTO, TPassword } from './types';
+import { AbstractHttpClient } from './AbstractHttpClient';
+import { TPassword, TSignIn, TSignUp, TUser, TUserDTO } from './types';
 
-class UserApi extends HttpClient {
+class UserApi extends AbstractHttpClient {
   public constructor() {
     super('https://ya-praktikum.tech/api/v2');
   }

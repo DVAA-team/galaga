@@ -1,27 +1,27 @@
-import { ENEMY_FIRE_RATE, ENEMY_GAP, ENEMY_HEIGHT, ENEMY_WIDTH } from './const';
-import { Enemy } from './Enemy';
 import {
-  GameObject,
-  GameObjectOptions,
+  AbstractGameObject,
   GameObjectType,
   isRectCollide,
-} from './GameObject';
+  TGameObjectOptions,
+} from './AbstractGameObject';
+import { ENEMY_FIRE_RATE, ENEMY_GAP, ENEMY_HEIGHT, ENEMY_WIDTH } from './const';
+import { Enemy } from './Enemy';
 import { createEnemyProjectile, Projectile } from './Projectile';
 import { Vector } from './Vector';
 
-type SwarmOptions = GameObjectOptions & {
+type TSwarmOptions = TGameObjectOptions & {
   formation: number[][];
-  onFire: (p: GameObject) => void;
+  onFire: (p: AbstractGameObject) => void;
 };
 
-export class Swarm extends GameObject {
+export class Swarm extends AbstractGameObject {
   private _formation: number[][] = [[]];
 
   private _enemys: Enemy[] = [];
 
-  private _onFire: (p: GameObject) => void;
+  private _onFire: (p: AbstractGameObject) => void;
 
-  constructor(options: SwarmOptions) {
+  constructor(options: TSwarmOptions) {
     super(options);
     this._formation = options.formation;
     this._onFire = options.onFire;
@@ -29,7 +29,7 @@ export class Swarm extends GameObject {
 
   static type = GameObjectType.Swarm;
 
-  private elapsedTimeOnFile = 0;
+  private _elapsedTimeOnFile = 0;
 
   public async init(): Promise<boolean> {
     // Загрузка спрайтов и т.д.
@@ -100,7 +100,7 @@ export class Swarm extends GameObject {
   }
 
   public update(dt: number): void {
-    this.elapsedTimeOnFile += dt;
+    this._elapsedTimeOnFile += dt;
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
 
@@ -113,8 +113,8 @@ export class Swarm extends GameObject {
       }
       enemy.update(dt);
       // Стрельба случайного врага из роя
-      if (idx === fireEnemyIdx && this.elapsedTimeOnFile >= ENEMY_FIRE_RATE) {
-        this.elapsedTimeOnFile = 0;
+      if (idx === fireEnemyIdx && this._elapsedTimeOnFile >= ENEMY_FIRE_RATE) {
+        this._elapsedTimeOnFile = 0;
         this._onFire(
           createEnemyProjectile(
             this.ctx,
@@ -150,6 +150,6 @@ export class Swarm extends GameObject {
  * @returns Возвращает true если переданный конструктор является
  * конструктором Swarm иначе false
  */
-export function isSwarm(val: typeof GameObject): val is typeof Swarm {
+export function isSwarm(val: typeof AbstractGameObject): val is typeof Swarm {
   return val.type === GameObjectType.Swarm;
 }

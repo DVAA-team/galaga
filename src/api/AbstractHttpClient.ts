@@ -5,7 +5,7 @@ import axios, {
 } from 'axios';
 import { clientToServerNaming } from '../utils/convertNaming';
 
-export abstract class HttpClient {
+export abstract class AbstractHttpClient {
   protected readonly instance: AxiosInstance;
 
   public constructor(baseURL: string) {
@@ -34,7 +34,7 @@ export abstract class HttpClient {
     return data;
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
   protected _handleError(error: any) {
     return Promise.reject(error);
   }
