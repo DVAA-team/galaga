@@ -54,11 +54,7 @@
       },
       {
         "selector": "property",
-        "format": ["camelCase"],
-        "filter": {
-          "regex": "[\"']",
-          "match": true
-        }
+        "format": ["camelCase"]
       },
       {
         "selector": "property",
