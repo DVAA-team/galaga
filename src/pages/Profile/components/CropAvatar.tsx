@@ -18,23 +18,25 @@ type TCropAvatarProps = {
 };
 
 const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
+  const CANVAS_WIDTH = size + border * 2;
+  const CANVAS_HEIGHT = size + border * 2;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [drag, setDrag] = useState(false);
   const [imageOptions, setImageOptions] = useState(() => {
     const ratio = image.height / image.width;
-    let imgHeight = size + border * 2;
-    let imgWidth = size + border * 2;
+    let imgHeight = CANVAS_HEIGHT;
+    let imgWidth = CANVAS_WIDTH;
     let imgX = 0;
     let imgY = 0;
     if (ratio > 1) {
-      imgHeight = size + border * 2;
+      imgHeight = CANVAS_HEIGHT;
       imgWidth = imgHeight / ratio;
       imgY = 0;
-      imgX = (size + border * 2) / 2 - imgWidth / 2;
+      imgX = CANVAS_WIDTH / 2 - imgWidth / 2;
     } else {
-      imgWidth = size + border * 2;
+      imgWidth = CANVAS_WIDTH;
       imgHeight = imgWidth * ratio;
-      imgY = (size + border * 2) / 2 - imgHeight / 2;
+      imgY = CANVAS_HEIGHT / 2 - imgHeight / 2;
       imgX = 0;
     }
 
@@ -50,16 +52,10 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
 
   const drawOverlay = (ctx: CanvasRenderingContext2D) => {
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
     ctx.beginPath();
-    ctx.arc(
-      (size + border * 2) / 2,
-      (size + border * 2) / 2,
-      size / 2,
-      0,
-      Math.PI * 2
-    );
-    ctx.rect(0, 0, size + border * 2, size + border * 2);
+    ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, size / 2, 0, Math.PI * 2);
+    ctx.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.fill('evenodd');
     ctx.restore();
   };
@@ -135,7 +131,7 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
     if (!ctx) {
       throw new Error('Error get context');
     }
-    ctx.clearRect(0, 0, size + border * 2, size + border * 2);
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     drawImage(ctx);
     drawOverlay(ctx);
@@ -147,8 +143,8 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
         <canvas
           ref={canvasRef}
           className="cursor-pointer"
-          width={size + border * 2}
-          height={size + border * 2}
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
           onMouseDown={MouseDownHandler}
           onMouseUp={MouseUpHandler}
           onMouseMove={MouseMoveHandler}

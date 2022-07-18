@@ -1,12 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeEventHandler, useEffect, useState } from 'react';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { TUserDTO } from '../../api/types';
 import { userApi } from '../../api/userApi';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
+import {
+  clientToServerNaming,
+  serverToClientNaming,
+} from '../../utils/convertNaming';
 import { notify, notifyError } from '../../utils/notify';
 import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
@@ -50,10 +54,10 @@ const Profile = () => {
   const [avatar, setAvatar] = useState<Blob>();
   const [showChangePassword, setShowChangePassword] = useState(false);
 
-  const onSubmit: SubmitHandler<FieldValues> = (data: unknown) => {
+  const onSubmit: SubmitHandler<TProfile> = (data) => {
     if (isValid) {
       userApi
-        .editUser(data as TUserDTO)
+        .editUser(clientToServerNaming(data) as TUserDTO)
         .then(() => {
           notify('Профиль обновлен');
         })
@@ -114,7 +118,7 @@ const Profile = () => {
     userApi
       .getUser()
       .then(({ data }) => {
-        reset(data);
+        reset(serverToClientNaming(data));
         if (data.avatar) {
           userApi
             .getAvatar(data.avatar)
@@ -140,69 +144,66 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className="container mx-auto flex flex-col justify-center items-center flex-wrap h-full">
+    <div className="container mx-auto flex flex-col justify-center items-center flex-nowrap h-full py-5">
       <input
         id="avatar"
         type="file"
         className="hidden"
         onChange={onAvatarClick}
       />
-      <label htmlFor="avatar" className={`${styles.avatar} overflow-hidden`}>
+      <label htmlFor="avatar" className={styles.avatar}>
         {avatar && <img src={URL.createObjectURL(avatar)} alt="Аватар" />}
       </label>
       <Form handlerSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Имя"
-          withLabel={true}
           {...register('firstName', { required: true })}
           error={errors.firstName}
         />
         <Input
           placeholder="Фамилия"
-          withLabel={true}
           {...register('secondName', { required: true })}
           error={errors.secondName}
         />
         <Input
           placeholder="Отображаемое имя"
-          withLabel={true}
           {...register('displayName', { required: true })}
           error={errors.displayName}
         />
         <Input
           placeholder="Логин"
-          withLabel={true}
           {...register('login', { required: true })}
           error={errors.login}
         />
         <Input
           placeholder="E-mail"
-          withLabel={true}
           {...register('email', { required: true })}
           type="tel"
           error={errors.email}
         />
         <Input
           placeholder="Телефон"
-          withLabel={true}
+          cls="w-full"
           {...register('phone', { required: true })}
           type="tel"
           error={errors.phone}
         />
-        <Button cls="w-full mt-12" text="Сохранить" type="submit" />
-      </Form>
-      <div className="flex justify-between w-full max-w-md pt-9">
         <Button
           text="Сменить пароль"
-          cls="mx-0 bg-gray-500 hover:bg-gray-700"
+          cls="mx-0 bg-gray-500 hover:bg-gray-700 w-full"
           onClick={() => setShowChangePassword(true)}
         />
-        <Button
-          text="Выйти"
-          cls="mx-0 bg-red-500 hover:bg-red-700"
-          onClick={onLogout}
-        />
-      </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button cls="mx-0" text="Сохранить" type="submit" />
+
+          <Button
+            text="Выйти"
+            cls="mx-0 bg-red-500 hover:bg-red-700"
+            onClick={onLogout}
+          />
+        </div>
+      </Form>
+
       {originAvatar && (
         <CropAvatar
           image={originAvatar}
