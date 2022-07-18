@@ -1,15 +1,15 @@
 import { FC, FormEvent } from 'react';
 
-type OwnProps = {
+type TOwnProps = {
   title?: string;
   handlerSubmit: (e: FormEvent<HTMLFormElement>) => void;
   children?: JSX.Element | JSX.Element[];
   cls?: string;
 };
 
-type Props = FC<OwnProps>;
+type TProps = FC<TOwnProps>;
 
-const Form: Props = (props) => {
+const Form: TProps = (props) => {
   const { handlerSubmit, title = '', cls = '', children } = props;
 
   return (

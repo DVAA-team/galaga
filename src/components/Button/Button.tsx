@@ -1,15 +1,15 @@
 import { ButtonHTMLAttributes, FC } from 'react';
 
-type OwnProps = {
+type TOwnProps = {
   text?: string;
   type?: string;
   cls?: string;
   onClick?: () => void;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-type Props = FC<OwnProps>;
+type TProps = FC<TOwnProps>;
 
-const Button: Props = (props) => {
+const Button: TProps = (props) => {
   const { text, type = 'button', cls = '', onClick } = props;
 
   return (

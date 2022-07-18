@@ -32,7 +32,43 @@
     "no-restricted-syntax": ["off", "ForOfStatement"],
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
+    "@typescript-eslint/no-shadow": ["error"],
+    "no-param-reassign": ["error", { "props": false }],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": ["typeAlias", "typeParameter"],
+        "format": ["PascalCase"],
+        "prefix": ["T"]
+      },
+      {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "prefix": ["I"]
+      },
+      {
+        "selector": "class",
+        "modifiers": ["abstract"],
+        "format": ["PascalCase"],
+        "prefix": ["Abstract"]
+      },
+      {
+        "selector": "property",
+        "format": ["camelCase"]
+      },
+      {
+        "selector": "property",
+        "format": ["camelCase"],
+        "modifiers": ["private"],
+        "leadingUnderscore": "require"
+      },
+      {
+        "selector": "method",
+        "format": ["camelCase"],
+        "modifiers": ["private"],
+        "leadingUnderscore": "require"
+      }
+    ]
   },
   "settings": {
     "import/extensions": [".ts", ".tsx"]

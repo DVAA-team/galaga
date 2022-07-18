@@ -1,12 +1,19 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, {
+  AxiosInstance,
+  AxiosRequestHeaders,
+  AxiosResponse,
+} from 'axios';
+import { clientToServerNaming } from '../utils/convertNaming';
 
-export abstract class HttpClient {
+export abstract class AbstractHttpClient {
   protected readonly instance: AxiosInstance;
 
   public constructor(baseURL: string) {
     this.instance = axios.create({
       baseURL,
-      headers: { 'Content-Type': 'application/json' },
+      headers: clientToServerNaming({
+        contentType: 'application/json',
+      }) as AxiosRequestHeaders,
       withCredentials: true,
       timeout: 5000,
     });
@@ -27,7 +34,7 @@ export abstract class HttpClient {
     return data;
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
   protected _handleError(error: any) {
     return Promise.reject(error);
   }

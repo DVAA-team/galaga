@@ -1,24 +1,25 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { TSignUp } from '../../api/types';
+import { userApi } from '../../api/userApi';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { schemaSignUp } from '../../utils/validate';
-import { TSignUp } from '../../api/types';
-import { userApi } from '../../api/userApi';
+import { TSnakeToCamelCaseNested } from '../../utils/convertNaming';
 import { notifyError } from '../../utils/notify';
+import { schemaSignUp } from '../../utils/validate';
 
 const SignUp = () => {
   const navigate = useNavigate();
 
-  const defaultValues: TSignUp = {
+  const defaultValues: TSnakeToCamelCaseNested<TSignUp> = {
     login: '',
     password: '',
-    password_repeat: '',
+    passwordRepeat: '',
     email: '',
-    first_name: '',
-    second_name: '',
+    firstName: '',
+    secondName: '',
     phone: '',
   };
 

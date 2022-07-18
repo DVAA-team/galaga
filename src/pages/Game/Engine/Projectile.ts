@@ -1,10 +1,10 @@
+import { AbstractGameObject, TGameObjectOptions } from './AbstractGameObject';
 import {
   ENEMY_BULLET_HEIGHT,
   ENEMY_BULLET_WIDTH,
   PLAYER_BULLET_HEIGHT,
   PLAYER_BULLET_WIDTH,
 } from './const';
-import { GameObject, GameObjectOptions } from './GameObject';
 import { Vector } from './Vector';
 
 export enum ProjectileType {
@@ -12,14 +12,14 @@ export enum ProjectileType {
   enemy,
 }
 
-type ProjectileOptions = GameObjectOptions & {
+type TProjectileOptions = TGameObjectOptions & {
   type: ProjectileType;
 };
 
-export class Projectile extends GameObject {
+export class Projectile extends AbstractGameObject {
   public type: ProjectileType;
 
-  constructor(options: ProjectileOptions) {
+  constructor(options: TProjectileOptions) {
     super(options);
     this.type = options.type;
   }
