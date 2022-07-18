@@ -6,7 +6,10 @@ import { userApi } from '../../api/userApi';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { TSnakeToCamelCaseNested } from '../../utils/convertNaming';
+import {
+  clientToServerNaming,
+  TSnakeToCamelCaseNested,
+} from '../../utils/convertNaming';
 import { notifyError } from '../../utils/notify';
 import { schemaSignUp } from '../../utils/validate';
 
@@ -27,15 +30,15 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TSignUp>({
+  } = useForm<TSnakeToCamelCaseNested<TSignUp>>({
     mode: 'onChange',
     resolver: yupResolver(schemaSignUp),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TSignUp> = (d: TSignUp) => {
+  const onSubmit: SubmitHandler<TSnakeToCamelCaseNested<TSignUp>> = (d) => {
     userApi
-      .signUp(d)
+      .signUp(clientToServerNaming(d) as TSignUp)
       .then(() => {
         navigate('/profile', { replace: true });
       })
@@ -63,13 +66,13 @@ const SignUp = () => {
         />
         <Input
           placeholder="Имя"
-          {...register('first_name', { required: true })}
-          error={errors.first_name}
+          {...register('firstName', { required: true })}
+          error={errors.firstName}
         />
         <Input
           placeholder="Фамилия"
-          {...register('second_name', { required: true })}
-          error={errors.second_name}
+          {...register('secondName', { required: true })}
+          error={errors.secondName}
         />
         <Input
           placeholder="Телефон"
@@ -86,8 +89,8 @@ const SignUp = () => {
         <Input
           placeholder="Пароль еще раз"
           type="password"
-          {...register('password_repeat', { required: true })}
-          error={errors.password_repeat}
+          {...register('passwordRepeat', { required: true })}
+          error={errors.passwordRepeat}
         />
         <Button cls="w-full mt-12" text="Зарегистрироваться" type="submit" />
         <div className="w-full text-center mt-3">
