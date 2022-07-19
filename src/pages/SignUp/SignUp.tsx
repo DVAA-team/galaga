@@ -59,7 +59,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap h-full">
+    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
       <Form title="Регистрация" handlerSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Email"

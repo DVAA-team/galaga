@@ -52,7 +52,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap h-full">
+    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
       <Form title="Вход" handlerSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Логин"

@@ -36,39 +36,41 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed flex justify-center items-center w-full h-full backdrop-blur-md">
-      <Form title="Смените пароль" handlerSubmit={handleSubmit(onSubmit)}>
-        <Input
-          placeholder="Старый пароль"
-          withLabel={true}
-          type="password"
-          {...register('oldPassword', { required: true })}
-          error={errors.oldPassword}
-        />
-        <Input
-          placeholder="Новый пароль"
-          withLabel={true}
-          type="password"
-          {...register('newPassword', { required: true })}
-          error={errors.newPassword}
-        />
-        <Input
-          placeholder="Новый пароль (еще раз)"
-          withLabel={true}
-          type="password"
-          {...register('newPasswordRepeat', { required: true })}
-          error={errors.newPasswordRepeat}
-        />
-        <div className="flex justify-between w-full max-w-md ">
-          <Button cls="mx-0" text="Применить" type="submit" />
-          <Button
-            cls="mx-0 bg-red-500 hover:bg-red-700"
-            text="Отменить"
-            type="submit"
-            onClick={onClose}
+    <div className="fixed flex flex-row justify-center items-center w-full h-full backdrop-blur-md top-0 left-0 overflow-scroll py-5 box-border">
+      <div className="m-auto w-full max-w-md">
+        <Form title="Смените пароль" handlerSubmit={handleSubmit(onSubmit)}>
+          <Input
+            placeholder="Старый пароль"
+            withLabel={true}
+            type="password"
+            {...register('oldPassword', { required: true })}
+            error={errors.oldPassword}
           />
-        </div>
-      </Form>
+          <Input
+            placeholder="Новый пароль"
+            withLabel={true}
+            type="password"
+            {...register('newPassword', { required: true })}
+            error={errors.newPassword}
+          />
+          <Input
+            placeholder="Новый пароль (еще раз)"
+            withLabel={true}
+            type="password"
+            {...register('newPasswordRepeat', { required: true })}
+            error={errors.newPasswordRepeat}
+          />
+          <div className="flex justify-between w-full max-w-md ">
+            <Button cls="mx-0" text="Применить" type="submit" />
+            <Button
+              cls="mx-0 bg-red-500 hover:bg-red-700"
+              text="Отменить"
+              type="submit"
+              onClick={onClose}
+            />
+          </div>
+        </Form>
+      </div>
     </div>
   );
 };
