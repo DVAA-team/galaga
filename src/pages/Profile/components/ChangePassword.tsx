@@ -1,12 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import userService from '../../../services/userService';
 import { TChangePassword } from '../../../api/types';
-import { userApi } from '../../../api/userApi';
 import { Button } from '../../../components/Button';
 import { Form } from '../../../components/Form';
 import { Input } from '../../../components/Input';
-import { notifyError } from '../../../utils/notify';
 import { schemaChangePassword } from '../../../utils/validate';
 
 type TChangePasswordProps = {
@@ -32,18 +31,7 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
 
   const onSubmit: SubmitHandler<TChangePassword> = (data) => {
     if (isValid) {
-      userApi
-        .editPassword(data)
-        .then(() => {
-          onClose();
-        })
-        .catch(({ response }) => {
-          const reason = response?.data?.reason;
-
-          if (reason) {
-            notifyError(reason);
-          }
-        });
+      userService.editPassword(data).then(onClose);
     }
   };
 

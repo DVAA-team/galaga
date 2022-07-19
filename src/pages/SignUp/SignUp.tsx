@@ -1,8 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { TSignUp } from '../../api/types';
-import { userApi } from '../../api/userApi';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -10,11 +11,25 @@ import {
   clientToServerNaming,
   TSnakeToCamelCaseNested,
 } from '../../utils/convertNaming';
-import { notifyError } from '../../utils/notify';
 import { schemaSignUp } from '../../utils/validate';
+import { useAuth } from '../../hooks/useAuth';
+import { setUser } from '../../store/slices/userSlice';
+import userService from '../../services/userService';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const userData = useAuth();
+  const dispatch = useDispatch();
+
+  const redirectToProfile = () => {
+    navigate('/profile', { replace: true });
+  };
+
+  useEffect(() => {
+    if (userData !== null) {
+      redirectToProfile();
+    }
+  }, [redirectToProfile, userData]);
 
   const defaultValues: TSnakeToCamelCaseNested<TSignUp> = {
     login: '',
@@ -37,18 +52,10 @@ const SignUp = () => {
   });
 
   const onSubmit: SubmitHandler<TSnakeToCamelCaseNested<TSignUp>> = (d) => {
-    userApi
-      .signUp(clientToServerNaming(d) as TSignUp)
-      .then(() => {
-        navigate('/profile', { replace: true });
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+    userService.signUp(clientToServerNaming(d) as TSignUp).then(() => {
+      navigate('/profile', { replace: true });
+      dispatch(setUser({ user: d }));
+    });
   };
 
   return (

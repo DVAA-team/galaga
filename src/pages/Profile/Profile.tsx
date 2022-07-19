@@ -1,22 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import userService from '../../services/userService';
 import { TUserDTO } from '../../api/types';
-import { userApi } from '../../api/userApi';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import {
-  clientToServerNaming,
-  serverToClientNaming,
-} from '../../utils/convertNaming';
-import { notify, notifyError } from '../../utils/notify';
+import { clientToServerNaming } from '../../utils/convertNaming';
 import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
 import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
 import styles from './Profile.module.css';
+import { setUser } from '../../store/slices/userSlice';
 
 type TProfile = {
   login: string;
@@ -29,6 +28,8 @@ type TProfile = {
 
 const Profile = () => {
   const navigate = useNavigate();
+  const userData = useAuth();
+  const dispatch = useDispatch();
 
   const defaultValues: TProfile = {
     login: '',
@@ -56,17 +57,10 @@ const Profile = () => {
 
   const onSubmit: SubmitHandler<TProfile> = (data) => {
     if (isValid) {
-      userApi
+      userService
         .editUser(clientToServerNaming(data) as TUserDTO)
-        .then(() => {
-          notify('Профиль обновлен');
-        })
-        .catch(({ response }) => {
-          const reason = response?.data?.reason;
-
-          if (reason) {
-            notifyError(reason);
-          }
+        .then((user) => {
+          dispatch(setUser({ user }));
         });
     }
   };
@@ -83,65 +77,30 @@ const Profile = () => {
   };
 
   const onLogout = () => {
-    userApi
-      .logOut()
-      .then(() => {
-        navigate('/', { replace: true });
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+    userService.logOut().then(() => {
+      navigate('/', { replace: true });
+      dispatch(setUser({ user: null }));
+    });
   };
 
   const saveCropAvatarHandler: TOnSaveHandler = (image) => {
     setAvatar(image);
     setOriginAvatar(undefined);
-    userApi
-      .editAvatar(image)
-      .then(() => {
-        notify('Аватар обновлен');
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+    userService.editAvatar(image);
   };
 
   useEffect(() => {
-    userApi
-      .getUser()
-      .then(({ data }) => {
-        reset(serverToClientNaming(data));
-        if (data.avatar) {
-          userApi
-            .getAvatar(data.avatar)
-            .then((res) => {
-              setAvatar(res.data);
-            })
-            .catch(({ response }) => {
-              const reason = response?.data?.reason;
+    if (userData !== null) {
+      reset(userData);
+      const userAvatar = userData.avatar;
 
-              if (reason) {
-                notifyError(reason);
-              }
-            });
-        }
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
-  }, [reset]);
+      if (userAvatar) {
+        userService.getAvatar(userAvatar).then((res) => {
+          setAvatar(res as Blob);
+        });
+      }
+    }
+  }, [userData, reset]);
 
   return (
     <div className="container mx-auto flex flex-col justify-center items-center flex-nowrap h-full py-5">

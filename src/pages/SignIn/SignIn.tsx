@@ -1,16 +1,31 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { setUser } from '../../store/slices/userSlice';
+import userService from '../../services/userService';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
 import { schemaSignIn } from '../../utils/validate';
-import { userApi } from '../../api/userApi';
 import { TSignIn } from '../../api/types';
-import { notifyError } from '../../utils/notify';
+import { useAuth } from '../../hooks/useAuth';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const userData = useAuth();
+  const dispatch = useDispatch();
+
+  const redirectToProfile = () => {
+    navigate('/profile', { replace: true });
+  };
+
+  useEffect(() => {
+    if (userData !== null) {
+      redirectToProfile();
+    }
+  }, [redirectToProfile, userData]);
 
   const defaultValues: TSignIn = {
     login: '',
@@ -28,18 +43,12 @@ const SignIn = () => {
   });
 
   const onSubmit: SubmitHandler<TSignIn> = (d: TSignIn) => {
-    userApi
-      .signIn(d)
-      .then(() => {
-        navigate('/profile', { replace: true });
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+    userService.signIn(d).then((user) => {
+      if (user) {
+        dispatch(setUser({ user }));
+        redirectToProfile();
+      }
+    });
   };
 
   return (
