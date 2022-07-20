@@ -100,7 +100,9 @@ const Profile = () => {
 
       if (userAvatar) {
         userService.getAvatar(userAvatar).then((res) => {
-          setAvatar(res as Blob);
+          if (res) {
+            setAvatar(res);
+          }
         });
       }
     }
