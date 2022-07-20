@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { setUser } from '../../store/slices/userSlice';
+import { setUserProfile } from '../../store/slices/userSlice';
 import userService from '../../services/userService';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
@@ -43,9 +43,9 @@ const SignIn = () => {
   });
 
   const onSubmit: SubmitHandler<TSignIn> = (d: TSignIn) => {
-    userService.signIn(d).then((user) => {
-      if (user) {
-        dispatch(setUser({ user }));
+    userService.signIn(d).then((profile) => {
+      if (profile) {
+        dispatch(setUserProfile(profile));
         redirectToProfile();
       }
     });

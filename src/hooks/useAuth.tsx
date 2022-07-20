@@ -4,12 +4,14 @@ import { TRootState } from '../store';
 import { TUser } from '../api/types';
 
 export const useAuth = () => {
-  const [userData, setUserData] = useState<TUser | null>(null);
+  const [userProfile, setUserProfile] = useState<TUser | null>(null);
   const { user } = useSelector((state: TRootState) => state);
 
   useEffect(() => {
-    setUserData(user.data as TUser);
+    if (user) {
+      setUserProfile(user.profile);
+    }
   }, [user]);
 
-  return userData;
+  return userProfile;
 };

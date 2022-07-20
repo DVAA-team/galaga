@@ -7,7 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/slices/userSlice';
+import { setUserProfile } from '../../store/slices/userSlice';
 import userService from '../../services/userService';
 import { Home } from '../../pages/Home';
 import { SignIn } from '../../pages/SignIn';
@@ -22,12 +22,12 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    userService.getUser().then((user) => {
-      if (user !== null) {
-        dispatch(setUser({ user }));
+    userService.getUser().then((profile) => {
+      if (profile !== null) {
+        dispatch(setUserProfile(profile));
       }
     });
-  }, []);
+  }, [dispatch]);
 
   return (
     <BrowserRouter>

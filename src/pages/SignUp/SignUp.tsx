@@ -13,7 +13,7 @@ import {
 } from '../../utils/convertNaming';
 import { schemaSignUp } from '../../utils/validate';
 import { useAuth } from '../../hooks/useAuth';
-import { setUser } from '../../store/slices/userSlice';
+import { setUserProfile } from '../../store/slices/userSlice';
 import userService from '../../services/userService';
 
 const SignUp = () => {
@@ -54,7 +54,7 @@ const SignUp = () => {
   const onSubmit: SubmitHandler<TSnakeToCamelCaseNested<TSignUp>> = (d) => {
     userService.signUp(clientToServerNaming(d) as TSignUp).then(() => {
       navigate('/profile', { replace: true });
-      dispatch(setUser({ user: d }));
+      dispatch(setUserProfile(d));
     });
   };
 

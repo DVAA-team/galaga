@@ -14,7 +14,7 @@ import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
 import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
-import { setUser } from '../../store/slices/userSlice';
+import { setUserProfile } from '../../store/slices/userSlice';
 import styles from './Profile.module.css';
 
 type TProfile = {
@@ -59,8 +59,8 @@ const Profile = () => {
     if (isValid) {
       userService
         .editUser(clientToServerNaming(data) as TUserDTO)
-        .then((user) => {
-          dispatch(setUser({ user }));
+        .then((profile) => {
+          dispatch(setUserProfile(profile));
         });
     }
   };
@@ -79,7 +79,7 @@ const Profile = () => {
   const onLogout = () => {
     userService.logOut().then(() => {
       navigate('/', { replace: true });
-      dispatch(setUser({ user: null }));
+      dispatch(setUserProfile(null));
     });
   };
 

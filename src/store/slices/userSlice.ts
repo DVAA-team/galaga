@@ -3,23 +3,23 @@ import { TUser } from '../../api/types';
 import { serverToClientNaming } from '../../utils/convertNaming';
 
 interface IState {
-  data: TUser | null;
+  profile: TUser | null;
 }
 
 const initialState: IState = {
-  data: null,
+  profile: null,
 };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser(state, action) {
-      state.data = serverToClientNaming(action.payload.user);
+    setUserProfile(state, action) {
+      state.profile = serverToClientNaming(action.payload);
     },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUserProfile } = userSlice.actions;
 
 export default userSlice.reducer;
