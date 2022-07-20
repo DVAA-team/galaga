@@ -21,6 +21,16 @@
   },
   "plugins": ["@typescript-eslint", "prettier", "import"],
   "rules": {
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/*.test.ts?(x)",
+          "**/*.spec.ts?(x)",
+          "**/test-utils.ts"
+        ]
+      }
+    ],
     "import/extensions": [
       "error",
       {
@@ -89,6 +99,18 @@
     "@typescript-eslint/no-var-requires": 0
   },
   "settings": {
-    "import/extensions": [".ts", ".tsx"]
+    "import/extensions": [".ts", ".tsx"],
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["^@utils", "./src/utils"],
+          ["^@api", "./src/api"],
+          ["^@assets", "./src/assets"],
+          ["^@components", "./src/components"],
+          ["^@pages", "./src/pages"]
+        ],
+        "extensions": [".ts", ".tsx", ".js", ".jsx", ".json"]
+      }
+    }
   }
 }

@@ -14,10 +14,14 @@
     "skipLibCheck": true,
     "declaration": false,
     "sourceMap": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "outDir": "./dist",
     "paths": {
-      "*": ["./src/*"]
+      "@utils/*": ["./utils/*"],
+      "@api/*": ["./api/*"],
+      "@assets/*": ["./assets/*"],
+      "@components/*": ["./components/*"],
+      "@pages/*": ["./pages/*"]
     },
     "typeRoots": ["typings/**/*.d.ts", "node_modules/@types"],
     "noImplicitAny": true,
