@@ -3,28 +3,21 @@ import { ChangeEventHandler, useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { TUserDTO } from '../../api/types';
+
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
 import { useAuth } from '../../hooks/useAuth';
 import userService from '../../services/userService';
-import { clientToServerNaming } from '../../utils/convertNaming';
 import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
 import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
+import { TUser } from '../../services/types';
 import { setUserProfile } from '../../store/slices/userSlice';
 import styles from './Profile.module.css';
 
-type TProfile = {
-  login: string;
-  email: string;
-  phone: string;
-  secondName: string;
-  firstName: string;
-  displayName?: string;
-};
+type TProfile = Omit<TUser, 'id' | 'avatar'>;
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -61,11 +54,11 @@ const Profile = () => {
 
   const onSubmit: SubmitHandler<TProfile> = (data) => {
     if (isValid) {
-      userService
-        .editUser(clientToServerNaming(data) as TUserDTO)
-        .then((profile) => {
+      userService.editUser(data).then((profile) => {
+        if (profile) {
           dispatch(setUserProfile(profile));
-        });
+        }
+      });
     }
   };
 
@@ -88,15 +81,18 @@ const Profile = () => {
   };
 
   const saveCropAvatarHandler: TOnSaveHandler = (image) => {
-    setAvatar(image);
-    setOriginAvatar(undefined);
-    userService.editAvatar(image);
+    userService.editAvatar(image).then((res) => {
+      if (res) {
+        setAvatar(image);
+        setOriginAvatar(undefined);
+      }
+    });
   };
 
   useEffect(() => {
     if (userData !== null) {
       reset(userData);
-      const userAvatar = userData.avatar;
+      const { avatar: userAvatar } = userData;
 
       if (userAvatar) {
         userService.getAvatar(userAvatar).then((res) => {

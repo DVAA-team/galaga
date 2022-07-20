@@ -1,7 +1,12 @@
-import { AxiosRequestHeaders } from 'axios';
-import { clientToServerNaming } from '../utils/convertNaming';
 import { AbstractHttpClient } from './AbstractHttpClient';
-import { TChangePasswordDTO, TSignIn, TSignUp, TUser, TUserDTO } from './types';
+import {
+  TChangePasswordRequest,
+  TSignUpResponse,
+  TSingInRequest,
+  TSingUpRequest,
+  TUserResponse,
+  TUserUpdateRequest,
+} from './types';
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
@@ -10,16 +15,18 @@ class UserApi extends AbstractHttpClient {
 
   public logOut = () => this.instance.post('/auth/logout', {});
 
-  public signIn = (data: TSignIn) => this.instance.post('/auth/signin', data);
+  public signIn = (data: TSingInRequest) =>
+    this.instance.post('/auth/signin', data);
 
-  public signUp = (data: TSignUp) => this.instance.post('/auth/signup', data);
+  public signUp = (data: TSingUpRequest) =>
+    this.instance.post<TSignUpResponse>('/auth/signup', data);
 
-  public getUser = () => this.instance.get<TUser>('/auth/user');
+  public getUser = () => this.instance.get<TUserResponse>('/auth/user');
 
-  public editUser = (data: TUserDTO) =>
-    this.instance.put<TUser>('/user/profile', data);
+  public editUser = (data: TUserUpdateRequest) =>
+    this.instance.put<TUserResponse>('/user/profile', data);
 
-  public editPassword = (data: TChangePasswordDTO) =>
+  public editPassword = (data: TChangePasswordRequest) =>
     this.instance.put('/user/password', data);
 
   public getAvatar = (url: string) =>
@@ -28,10 +35,13 @@ class UserApi extends AbstractHttpClient {
   public editAvatar = (avatar: Blob) => {
     const data = new FormData();
     data.append('avatar', avatar);
-    return this.instance.put('/user/profile/avatar', data, {
-      headers: clientToServerNaming({
-        contentType: 'multipart/form-data',
-      }) as AxiosRequestHeaders,
+
+    return this.instance.put<TUserResponse>('/user/profile/avatar', data, {
+      headers: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        'Content-Type': 'multipart/form-data',
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
     });
   };
 }

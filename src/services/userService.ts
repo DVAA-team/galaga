@@ -1,92 +1,96 @@
 import axios, { AxiosError } from 'axios';
-import { TChangePasswordDTO, TSignIn, TSignUp, TUserDTO } from '../api/types';
-import { notifyError, notifySuccess } from '../utils/notify';
+
+import { TSingUpRequest, TUserUpdateRequest } from '../api/types';
 import { userApi } from '../api/userApi';
+import {
+  clientToServerNaming,
+  serverToClientNaming,
+} from '../utils/convertNaming';
+import { notifyError, notifySuccess } from '../utils/notify';
+import { TChangePassword, TSignIn, TSignUp, TUser } from './types';
 
 type TServerError = { reason: string };
 
-const errorHandler = (e: AxiosError) => {
-  if (axios.isAxiosError(e)) {
-    const error = e as AxiosError<TServerError>;
-    const reason = error.response?.data?.reason;
-
-    if (reason) {
-      notifyError(reason);
-    }
-  }
-};
-
 class UserService {
-  // eslint-disable-next-line class-methods-use-this
-  public getUser = async () => {
-    const user = await userApi
-      .getUser()
-      .then((r) => r.data)
-      .catch(() => false);
+  public lastError: Error | null = null;
 
-    return user;
+  private _errorHandler = (e: AxiosError) => {
+    if (axios.isAxiosError(e)) {
+      const error = e as AxiosError<TServerError>;
+      const reason = error.response?.data?.reason;
+
+      if (reason) {
+        notifyError(reason);
+      }
+    }
+    this.lastError = e;
+    return null;
   };
 
-  public signIn = async (d: TSignIn) => {
-    const user = await userApi
-      .signIn(d)
-      .then(() => {
-        const response = this.getUser();
-        return response;
-      })
-      .catch(errorHandler);
-
-    return user;
-  };
-
-  // eslint-disable-next-line class-methods-use-this
-  public signUp = async (d: TSignUp) => {
-    const user = await userApi.signUp(d).catch(errorHandler);
-
-    return user;
-  };
-
-  // eslint-disable-next-line class-methods-use-this
-  public logOut = () => userApi.logOut().catch(errorHandler);
-
-  // eslint-disable-next-line class-methods-use-this
-  public editUser = (d: TUserDTO) =>
+  public getUser = () =>
     userApi
-      .editUser(d)
-      .then((response) => {
-        const { data } = response;
-        notifySuccess('Профиль обновлен');
-        return data;
-      })
-      .catch(errorHandler);
+      .getUser()
+      .then(({ data }) => serverToClientNaming(data))
+      .catch(this._errorHandler);
 
-  // eslint-disable-next-line class-methods-use-this
-  public editPassword = (d: TChangePasswordDTO) =>
+  public signIn = (d: TSignIn) =>
+    userApi.signIn(d).then(this.getUser).catch(this._errorHandler);
+
+  public signUp = (d: TSignUp) =>
+    userApi
+      .signUp(clientToServerNaming(d) as TSingUpRequest)
+      .then(({ data }) => serverToClientNaming(data))
+      .then(this.getUser)
+      .catch(this._errorHandler);
+
+  public logOut = () =>
+    userApi
+      .logOut()
+      .then(() => true)
+      .catch((error) => {
+        this._errorHandler(error);
+        return false;
+      });
+
+  public editUser = (d: Omit<TUser, 'id' | 'avatar'>) =>
+    userApi
+      .editUser(clientToServerNaming(d) as TUserUpdateRequest)
+      .then(({ data }) => serverToClientNaming(data))
+      .then((user) => {
+        notifySuccess('Профиль обновлен');
+        return user;
+      })
+      .catch(this._errorHandler);
+
+  public editPassword = (d: TChangePassword) =>
     userApi
       .editPassword(d)
       .then(() => {
         notifySuccess('Пароль успешно обновлен!');
+        return true;
       })
-      .catch(errorHandler);
+      .catch((error) => {
+        this._errorHandler(error);
+        return false;
+      });
 
-  // eslint-disable-next-line class-methods-use-this
   public getAvatar = (d: string) =>
     userApi
       .getAvatar(d)
-      .then((response) => {
-        const { data } = response;
-        return data;
-      })
-      .catch(errorHandler);
+      .then(({ data }) => data)
+      .catch(this._errorHandler);
 
-  // eslint-disable-next-line class-methods-use-this
   public editAvatar = (d: Blob) =>
     userApi
       .editAvatar(d)
       .then(() => {
         notifySuccess('Аватар успешно обновлен!');
+        return true;
       })
-      .catch(errorHandler);
+      .catch((error) => {
+        this._errorHandler(error);
+        return false;
+      });
 }
 
 export default new UserService();

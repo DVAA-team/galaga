@@ -1,11 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import userService from '../../../services/userService';
-import { TChangePassword } from '../../../api/types';
+
 import { Button } from '../../../components/Button';
 import { Form } from '../../../components/Form';
 import { Input } from '../../../components/Input';
+import userService from '../../../services/userService';
 import { schemaChangePassword } from '../../../utils/validate';
 
 type TChangePasswordProps = {
@@ -13,7 +13,7 @@ type TChangePasswordProps = {
 };
 
 const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
-  const defaultValues: TChangePassword = {
+  const defaultValues = {
     newPassword: '',
     oldPassword: '',
     newPasswordRepeat: '',
@@ -23,15 +23,19 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<TChangePassword>({
+  } = useForm<typeof defaultValues>({
     mode: 'onChange',
     resolver: yupResolver(schemaChangePassword),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TChangePassword> = (data) => {
+  const onSubmit: SubmitHandler<typeof defaultValues> = (data) => {
     if (isValid) {
-      userService.editPassword(data).then(onClose);
+      userService.editPassword(data).then((res) => {
+        if (res) {
+          onClose();
+        }
+      });
     }
   };
 

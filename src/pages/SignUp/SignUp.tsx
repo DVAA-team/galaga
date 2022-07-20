@@ -1,20 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
 import { useCallback, useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { TSignUp } from '../../api/types';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import {
-  clientToServerNaming,
-  TSnakeToCamelCaseNested,
-} from '../../utils/convertNaming';
-import { schemaSignUp } from '../../utils/validate';
 import { useAuth } from '../../hooks/useAuth';
-import { setUserProfile } from '../../store/slices/userSlice';
 import userService from '../../services/userService';
+import { setUserProfile } from '../../store/slices/userSlice';
+import { schemaSignUp } from '../../utils/validate';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -31,7 +27,7 @@ const SignUp = () => {
     }
   }, [redirectToProfile, userData]);
 
-  const defaultValues: TSnakeToCamelCaseNested<TSignUp> = {
+  const defaultValues = {
     login: '',
     password: '',
     passwordRepeat: '',
@@ -45,16 +41,18 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TSnakeToCamelCaseNested<TSignUp>>({
+  } = useForm<typeof defaultValues>({
     mode: 'onChange',
     resolver: yupResolver(schemaSignUp),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TSnakeToCamelCaseNested<TSignUp>> = (d) => {
-    userService.signUp(clientToServerNaming(d) as TSignUp).then(() => {
-      navigate('/profile', { replace: true });
-      dispatch(setUserProfile(d));
+  const onSubmit: SubmitHandler<typeof defaultValues> = (d) => {
+    userService.signUp(d).then((res) => {
+      if (res) {
+        navigate('/profile', { replace: true });
+        dispatch(setUserProfile(res));
+      }
     });
   };
 

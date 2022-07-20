@@ -1,16 +1,16 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { useCallback, useEffect } from 'react';
-import { setUserProfile } from '../../store/slices/userSlice';
-import userService from '../../services/userService';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { schemaSignIn } from '../../utils/validate';
-import { TSignIn } from '../../api/types';
 import { useAuth } from '../../hooks/useAuth';
+import userService from '../../services/userService';
+import { setUserProfile } from '../../store/slices/userSlice';
+import { schemaSignIn } from '../../utils/validate';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const SignIn = () => {
     }
   }, [redirectToProfile, userData]);
 
-  const defaultValues: TSignIn = {
+  const defaultValues = {
     login: '',
     password: '',
   };
@@ -36,13 +36,13 @@ const SignIn = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TSignIn>({
+  } = useForm<typeof defaultValues>({
     mode: 'onChange',
     resolver: yupResolver(schemaSignIn),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TSignIn> = (d: TSignIn) => {
+  const onSubmit: SubmitHandler<typeof defaultValues> = (d) => {
     userService.signIn(d).then((profile) => {
       if (profile) {
         dispatch(setUserProfile(profile));
