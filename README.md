@@ -3,7 +3,7 @@
 Легендарная аркадная игра 80х
 
 ## Badges
-![Heroku](https://heroku-badge.herokuapp.com/?app=galaga-dvaa)
+[![Deploy](https://github.com/DVAA-team/galaga/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/DVAA-team/galaga/actions/workflows/deploy.yml)
 
 ## Технологии
 
