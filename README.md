@@ -3,7 +3,7 @@
 Легендарная аркадная игра 80х
 
 ## Badges
-[![Deploy](https://github.com/DVAA-team/galaga/actions/workflows/deploy.yml/badge.svg)](https://github.com/DVAA-team/galaga/actions/workflows/deploy.yml)
+[![Deploy](https://github.com/DVAA-team/galaga/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/DVAA-team/galaga/actions/workflows/deploy.yml)
 
 ## Технологии
 
