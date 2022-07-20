@@ -2,7 +2,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { setUserProfile } from '../../store/slices/userSlice';
 import userService from '../../services/userService';
 import { Button } from '../../components/Button';
@@ -17,9 +17,9 @@ const SignIn = () => {
   const userData = useAuth();
   const dispatch = useDispatch();
 
-  const redirectToProfile = () => {
+  const redirectToProfile = useCallback(() => {
     navigate('/profile', { replace: true });
-  };
+  }, [navigate]);
 
   useEffect(() => {
     if (userData !== null) {

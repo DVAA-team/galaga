@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChangeEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -30,6 +30,10 @@ const Profile = () => {
   const navigate = useNavigate();
   const userData = useAuth();
   const dispatch = useDispatch();
+
+  const redirectToHome = useCallback(() => {
+    navigate('/', { replace: true });
+  }, [navigate]);
 
   const defaultValues: TProfile = {
     login: '',
@@ -77,9 +81,9 @@ const Profile = () => {
   };
 
   const onLogout = () => {
-    userService.logOut().then(() => {
-      navigate('/', { replace: true });
+    userService.logOut().finally(() => {
       dispatch(setUserProfile(null));
+      redirectToHome();
     });
   };
 
