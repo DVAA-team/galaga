@@ -1,6 +1,20 @@
+import axios, { AxiosError } from 'axios';
 import { TChangePasswordDTO, TSignIn, TSignUp, TUserDTO } from '../api/types';
 import { notifyError, notifySuccess } from '../utils/notify';
 import { userApi } from '../api/userApi';
+
+type TServerError = { reason: string };
+
+const errorHandler = (e: AxiosError) => {
+  if (axios.isAxiosError(e)) {
+    const error = e as AxiosError<TServerError>;
+    const reason = error.response?.data?.reason;
+
+    if (reason) {
+      notifyError(reason);
+    }
+  }
+};
 
 class UserService {
   // eslint-disable-next-line class-methods-use-this
@@ -8,13 +22,7 @@ class UserService {
     const user = await userApi
       .getUser()
       .then((r) => r.data)
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          throw new Error(reason);
-        }
-      });
+      .catch(() => false);
 
     return user;
   };
@@ -26,39 +34,20 @@ class UserService {
         const response = this.getUser();
         return response;
       })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+      .catch(errorHandler);
 
     return user;
   };
 
   // eslint-disable-next-line class-methods-use-this
   public signUp = async (d: TSignUp) => {
-    const user = await userApi.signUp(d).catch(({ response }) => {
-      const reason = response?.data?.reason;
-
-      if (reason) {
-        notifyError(reason);
-      }
-    });
+    const user = await userApi.signUp(d).catch(errorHandler);
 
     return user;
   };
 
   // eslint-disable-next-line class-methods-use-this
-  public logOut = () =>
-    userApi.logOut().catch(({ response }) => {
-      const reason = response?.data?.reason;
-
-      if (reason) {
-        notifyError(reason);
-      }
-    });
+  public logOut = () => userApi.logOut().catch(errorHandler);
 
   // eslint-disable-next-line class-methods-use-this
   public editUser = (d: TUserDTO) =>
@@ -69,13 +58,7 @@ class UserService {
         notifySuccess('Профиль обновлен');
         return data;
       })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+      .catch(errorHandler);
 
   // eslint-disable-next-line class-methods-use-this
   public editPassword = (d: TChangePasswordDTO) =>
@@ -84,13 +67,7 @@ class UserService {
       .then(() => {
         notifySuccess('Пароль успешно обновлен!');
       })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+      .catch(errorHandler);
 
   // eslint-disable-next-line class-methods-use-this
   public getAvatar = (d: string) =>
@@ -100,13 +77,7 @@ class UserService {
         const { data } = response;
         return data;
       })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+      .catch(errorHandler);
 
   // eslint-disable-next-line class-methods-use-this
   public editAvatar = (d: Blob) =>
@@ -115,13 +86,7 @@ class UserService {
       .then(() => {
         notifySuccess('Аватар успешно обновлен!');
       })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+      .catch(errorHandler);
 }
 
 export default new UserService();
