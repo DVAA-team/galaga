@@ -1,21 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useDispatch } from 'react-redux';
 import { ChangeEventHandler, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import userService from '../../services/userService';
 import { TUserDTO } from '../../api/types';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
+import { useAuth } from '../../hooks/useAuth';
+import userService from '../../services/userService';
 import { clientToServerNaming } from '../../utils/convertNaming';
 import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
 import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
-import styles from './Profile.module.css';
 import { setUser } from '../../store/slices/userSlice';
+import styles from './Profile.module.css';
 
 type TProfile = {
   login: string;
@@ -104,8 +104,8 @@ const Profile = () => {
 
   return (
     <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
-      <div className="profile w-full max-w-md">
-        <div className="profile__avatar mb-5">
+      <div className="w-full max-w-md">
+        <div className="mb-5">
           <input
             id="avatar"
             type="file"
