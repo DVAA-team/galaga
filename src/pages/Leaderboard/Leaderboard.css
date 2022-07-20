@@ -1,0 +1,73 @@
+@import "../../assets/styles/abstracts/_variables.css";
+
+.pedestal {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  height: 250px;
+  margin-bottom: 4rem;
+  @apply w-full md:w-6/12 mt-20 md:mt-32 lg:mt-40;
+
+  .pedestal-footing {
+    width: 100%;
+    border-radius: 12px;
+    background-color: $glob-color-dark-70;
+    display: flex;
+    justify-content: space-between;
+    height: 75%;
+
+    .pedestal-footing-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5em 0 1rem;
+      position: relative;
+      width: 33%;
+    }
+  }
+
+  .pedestal-avatar {
+    position: absolute;
+    bottom: 75%;
+  }
+
+  .pedestal-champion {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    padding: 6em 0 3rem;
+    justify-content: space-between;
+    align-items: center;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+    background-color: $glob-color-dark-90;
+    height: 100%;
+    @apply w-1/3;
+  }
+}
+
+.champions-arena::-webkit-scrollbar {
+  display: none;
+}
+
+.champions-arena {
+  min-height: 350px;
+  width: 100%;
+  border-radius: 40px;
+  background-color: $glob-color-dark-90;
+  padding: 3rem;
+  overflow: auto;
+  max-height: 400px;
+
+  .champions-arena-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(95 89 89 / 54%);
+    @apply px-2 md:px-16;
+    @apply py-4;
+  }
+}

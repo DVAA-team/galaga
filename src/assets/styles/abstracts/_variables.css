@@ -1,6 +1,17 @@
-$glob-color-blue: #0d6efd;
+$glob-color-blue: #1fb6ff;
+$glob-color-gold: #fa0;
+$glob-color-green: #13ce66;
 $glob-color-white: #fff;
+$glob-color-dark: #151729;
+$glob-color-dark-90: rgba(21 23 41 / 90%);
+$glob-color-dark-70: rgba(21 23 41 / 70%);
 
-$glob-text-font-stack: "Ubuntu", "Open Sans", "Helvetica Neue Light",
-  "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+$glob-color-primary: #1fb6ff;
+$glob-color-success: #13ce66;
+$glob-color-warning: #fa0;
+$glob-color-muted: #6b7280;
+$glob-color-border: #d3dce6;
+
+$glob-text-font-stack: "Ubuntu", "Open Sans", "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial",
+  sans-serif;
 $glob-code-font-stack: inconsolata, monospace;

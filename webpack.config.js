@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -28,6 +29,18 @@ module.exports = {
       {
         test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
         type: 'asset/resource',
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              extract: true,
+              publicPath: '/static/',
+            },
+          },
+        ],
       },
       {
         test: /\.tsx?$/,
@@ -64,5 +77,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
+    new SpriteLoaderPlugin(),
   ],
 };
