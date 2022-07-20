@@ -1,6 +1,5 @@
 import axios, { AxiosError } from 'axios';
 
-import { TSingUpRequest, TUserUpdateRequest } from '../api/types';
 import { userApi } from '../api/userApi';
 import {
   clientToServerNaming,
@@ -38,7 +37,7 @@ class UserService {
 
   public signUp = (d: TSignUp) =>
     userApi
-      .signUp(clientToServerNaming(d) as TSingUpRequest)
+      .signUp(clientToServerNaming(d))
       .then(({ data }) => serverToClientNaming(data))
       .then(this.getUser)
       .catch(this._errorHandler);
@@ -54,7 +53,7 @@ class UserService {
 
   public editUser = (d: Omit<TUser, 'id' | 'avatar'>) =>
     userApi
-      .editUser(clientToServerNaming(d) as TUserUpdateRequest)
+      .editUser(clientToServerNaming(d))
       .then(({ data }) => serverToClientNaming(data))
       .then((user) => {
         notifySuccess('Профиль обновлен');
