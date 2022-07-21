@@ -5,7 +5,7 @@ import defaultAvatar from '../../assets/images/ico/avatar.svg';
 const Avatar: TProps = ({ ...props }) => {
   const { borderType, className, style, type, size, badge, alt, ...rest } = props;
 
-  const wrapperClassObject = () => {
+  const getWrapperClasses = () => {
     let cls = 'avatar';
     if (type === 'circle') {
       cls += ' avatar-circle';
@@ -26,7 +26,7 @@ const Avatar: TProps = ({ ...props }) => {
   );
 
   return (
-    <div className={wrapperClassObject()}>
+    <div className={getWrapperClasses()}>
       <img className={type === 'circle' ? 'avatar-circle' : ''} alt={alt} {...rest} style={style} />
       {badge && badgeTemplate}
     </div>
