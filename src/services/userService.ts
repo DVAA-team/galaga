@@ -26,11 +26,12 @@ class UserService {
     return null;
   };
 
+  // eslint-disable-next-line class-methods-use-this
   public getUser = () =>
     userApi
       .getUser()
       .then(({ data }) => serverToClientNaming(data))
-      .catch(this._errorHandler);
+      .catch(() => null);
 
   public signIn = (d: TSignIn) =>
     userApi.signIn(d).then(this.getUser).catch(this._errorHandler);
