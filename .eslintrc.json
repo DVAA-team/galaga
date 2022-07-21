@@ -27,7 +27,8 @@
         "devDependencies": [
           "**/*.test.ts?(x)",
           "**/*.spec.ts?(x)",
-          "**/test-utils.ts"
+          "**/test-utils.ts",
+          "webpack.config.js"
         ]
       }
     ],
