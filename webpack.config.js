@@ -33,10 +33,7 @@ module.exports = {
         test: /\.tsx?$/,
         use: [
           {
-            loader: 'ts-loader',
-            options: {
-              configFile: path.resolve(__dirname, 'tsconfig.json'),
-            },
+            loader: 'babel-loader',
           },
         ],
         exclude: /(node_modules)/,
