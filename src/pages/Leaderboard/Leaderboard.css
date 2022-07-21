@@ -49,10 +49,6 @@
   }
 }
 
-.champions-arena::-webkit-scrollbar {
-  display: none;
-}
-
 .champions-arena {
   min-height: 350px;
   width: 100%;
@@ -60,7 +56,6 @@
   background-color: $glob-color-dark-90;
   padding: 3rem;
   overflow: auto;
-  max-height: 400px;
 
   .champions-arena-item {
     display: flex;
