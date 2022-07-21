@@ -1,140 +1,42 @@
 import './Leaderboard.css';
-import { Avatar } from '../../components/Avatar';
-import fakeAvatar from '../../assets/images/ico/avatar.svg';
+import { useEffect, useState } from 'react';
+import { ChampionsArenaItem } from './components/ChampionsArenaItem';
+import { Pedestal } from './components/Pedestal';
+import { IUserData } from './types';
 
-const Leaderboard = () => (
-  <div className="container mx-auto flex flex-row justify-center items-center flex-wrap">
-    <h1 className="w-full mt-3 text-3xl text-center font-bold">Leaderboard page</h1>
-    <div className="pedestal">
-      <div className="pedestal-footing">
-        <div className="pedestal-footing-item">
-          <Avatar
-            src={fakeAvatar}
-            className="pedestal-avatar"
-            alt="Jackson"
-            borderType="blue"
-            badge="2"
-            size="xxl"
-          />
-          <p>Jackson</p>
-          <p className="font-bold text-primary">1847</p>
-          <p className="text-muted">@username</p>
-        </div>
-        <div className="pedestal-footing-item">
-          <Avatar
-            src={fakeAvatar}
-            className="pedestal-avatar"
-            alt="Jackson"
-            borderType="green"
-            badge="3"
-            size="xxl"
-          />
-          <p>Jackson</p>
-          <p className="font-bold text-success">1847</p>
-          <p className="text-muted">@username</p>
-        </div>
-      </div>
-      <div className="pedestal-champion">
-        <Avatar
-          src={fakeAvatar}
-          className="pedestal-avatar"
-          alt="Jackson"
-          borderType="gold"
-          size="xxl"
-          badge="1"
-        />
-        <p>Jackson</p>
-        <p className="font-bold text-gold">1847</p>
-        <p className="text-muted">@username</p>
+const Leaderboard = () => {
+  const [champions, setChampions] = useState<IUserData[]>([]);
+  const [users, setUsers] = useState<IUserData[]>([]);
+
+  useEffect(() => {
+    setChampions([
+      { username: 'fu1000', displayName: 'First user', score: 3000 },
+      { username: 'fu2000', displayName: 'Second user', score: 2000 },
+      { username: 'fu3000', displayName: 'Third user', score: 1000 },
+    ]);
+
+    setUsers([
+      { username: 'usr1', displayName: 'User 1', score: 500 },
+      { username: 'usr2', displayName: 'User 2', score: 400 },
+      { username: 'usr3', displayName: 'User 3', score: 300 },
+      { username: 'usr4', displayName: 'User 4', score: 200 },
+      { username: 'usr5', displayName: 'User 5', score: 100 },
+    ]);
+  }, []);
+
+  return (
+    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap">
+      <h1 className="w-full mt-3 text-3xl text-center font-bold">Leaderboard page</h1>
+
+      <Pedestal first={champions[0]} second={champions[1]} third={champions[2]} />
+
+      <div className="champions-arena">
+        {users.map((user) => (
+          <ChampionsArenaItem key={user.username} userData={user} />
+        ))}
       </div>
     </div>
-    <div className="champions-arena">
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-      <div className="champions-arena-item">
-        <div className="flex items-center">
-          <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar} />
-          </div>
-          <div>
-            <div>Sebastian</div>
-            <small className="text-muted">@username</small>
-          </div>
-        </div>
-        <div>1024</div>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 export default Leaderboard;
