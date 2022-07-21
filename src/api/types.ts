@@ -1,31 +1,56 @@
-export type TUser = {
-  // FIXME
+export type TSingUpRequest = {
   /* eslint-disable @typescript-eslint/naming-convention */
-  id?: number;
   login: string;
   first_name: string;
   second_name: string;
-  display_name?: string;
   email: string;
-  avatar?: string;
   phone: string;
-  you?: boolean;
+  password: string;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
-export type TUserDTO = Omit<TUser, 'id, avatar, you'>;
+export type TSignUpResponse = {
+  id: number;
+};
 
-export type TSignIn = {
+export type TSingInRequest = {
   login: string;
   password: string;
 };
 
-export type TPassword = {
-  // FIXME
+export type TUserResponse = {
   /* eslint-disable @typescript-eslint/naming-convention */
-  password: string;
-  password_repeat: string;
+  id: number;
+  login: string;
+  first_name: string;
+  second_name: string;
+  display_name: string | null;
+  email: string;
+  avatar: string | null;
+  phone: string;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
-export type TSignUp = TUserDTO & TPassword;
+export type TUserUpdateRequest = {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  login: string;
+  first_name: string;
+  second_name: string;
+  display_name: string | null;
+  email: string;
+  phone: string;
+  /* eslint-enable @typescript-eslint/naming-convention */
+};
+
+export type TChangePasswordRequest = {
+  oldPassword: string;
+  newPassword: string;
+};
+
+export type TChangeAvatarRequest = {
+  avatar: File;
+};
+
+export type TBabRequestError = {
+  reason: string;
+};

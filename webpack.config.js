@@ -56,6 +56,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        exclude: /\.module\.css$/,
         use: [
           {
             loader: 'style-loader',
@@ -64,6 +65,28 @@ module.exports = {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
+            },
+          },
+          {
+            loader: 'postcss-loader',
+          },
+        ],
+      },
+      {
+        test: /\.module\.css$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+              modules: {
+                localIdentName: '[local]--[hash:base64:5]',
+                hashStrategy: 'minimal-subset',
+              },
             },
           },
           {
