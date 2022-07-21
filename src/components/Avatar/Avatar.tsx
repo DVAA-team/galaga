@@ -16,7 +16,7 @@ const Avatar: TProps = ({ ...props }) => {
     if (size) {
       cls += ` avatar-${size}`;
     }
-    return `${cls} ${className}`;
+    return `${cls} ${className ?? ''}`;
   };
 
   const renderBadge = () => {
