@@ -1,7 +1,7 @@
-import './Leaderboard.css';
 import { useEffect, useState } from 'react';
 import { ChampionsArenaItem } from './components/ChampionsArenaItem';
 import { Pedestal } from './components/Pedestal';
+import './Leaderboard.css';
 import { IUserData } from './types';
 
 const Leaderboard = () => {
@@ -26,9 +26,15 @@ const Leaderboard = () => {
 
   return (
     <div className="container mx-auto flex flex-row justify-center items-center flex-wrap">
-      <h1 className="w-full mt-3 text-3xl text-center font-bold">Leaderboard page</h1>
+      <h1 className="w-full mt-3 text-3xl text-center font-bold">
+        Leaderboard page
+      </h1>
 
-      <Pedestal first={champions[0]} second={champions[1]} third={champions[2]} />
+      <Pedestal
+        first={champions[0]}
+        second={champions[1]}
+        third={champions[2]}
+      />
 
       <div className="champions-arena">
         {users.map((user) => (

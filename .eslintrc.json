@@ -86,8 +86,7 @@
         "leadingUnderscore": "require"
       }
     ],
-    "@typescript-eslint/no-var-requires": 0,
-    "max-len": ["error", { "code": 110 }]
+    "@typescript-eslint/no-var-requires": 0
   },
   "settings": {
     "import/extensions": [".ts", ".tsx"]

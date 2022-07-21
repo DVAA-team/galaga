@@ -1,6 +1,6 @@
+import defaultAvatar from '../../assets/images/ico/avatar.svg';
 import './Avatar.css';
 import { TProps } from './types';
-import defaultAvatar from '../../assets/images/ico/avatar.svg';
 
 const Avatar: TProps = ({ ...props }) => {
   const {
@@ -30,14 +30,24 @@ const Avatar: TProps = ({ ...props }) => {
   };
 
   const badgeTemplate = (
-    <div className={`avatar-badge ${borderType ? `avatar-badge-${borderType}` : ''}`}>
+    <div
+      className={`avatar-badge ${
+        borderType ? `avatar-badge-${borderType}` : ''
+      }`}
+    >
       <div style={{ transform: 'rotate(-45deg)' }}>{badge}</div>
     </div>
   );
 
   return (
     <div className={getWrapperClasses()}>
-      <img src={src} className={type === 'circle' ? 'avatar-circle' : ''} alt={alt} {...rest} style={style} />
+      <img
+        src={src}
+        className={type === 'circle' ? 'avatar-circle' : ''}
+        alt={alt}
+        {...rest}
+        style={style}
+      />
       {badge && badgeTemplate}
     </div>
   );
