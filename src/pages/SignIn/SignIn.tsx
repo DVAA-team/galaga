@@ -1,18 +1,33 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
+import { useAuth } from '../../hooks/useAuth';
+import userService from '../../services/userService';
+import { setUserProfile } from '../../store/slices/userSlice';
 import { schemaSignIn } from '../../utils/validate';
-import { userApi } from '../../api/userApi';
-import { TSignIn } from '../../api/types';
-import { notifyError } from '../../utils/notify';
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const userData = useAuth();
+  const dispatch = useDispatch();
 
-  const defaultValues: TSignIn = {
+  const redirectToProfile = useCallback(() => {
+    navigate('/profile', { replace: true });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (userData !== null) {
+      redirectToProfile();
+    }
+  }, [redirectToProfile, userData]);
+
+  const defaultValues = {
     login: '',
     password: '',
   };
@@ -21,29 +36,23 @@ const SignIn = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TSignIn>({
+  } = useForm<typeof defaultValues>({
     mode: 'onChange',
     resolver: yupResolver(schemaSignIn),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TSignIn> = (d: TSignIn) => {
-    userApi
-      .signIn(d)
-      .then(() => {
-        navigate('/profile', { replace: true });
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+  const onSubmit: SubmitHandler<typeof defaultValues> = (d) => {
+    userService.signIn(d).then((profile) => {
+      if (profile) {
+        dispatch(setUserProfile(profile));
+        redirectToProfile();
+      }
+    });
   };
 
   return (
-    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap h-full">
+    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
       <Form title="Вход" handlerSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Логин"
