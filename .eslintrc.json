@@ -33,10 +33,10 @@
     ],
     "import/extensions": [
       "error",
+      "never",
       {
-        "*.ts": "never",
-        "*.tsx": "never",
-        "*.css": "always"
+        "json": "always",
+        "css": "always"
       }
     ],
     "import/prefer-default-export": "off",
@@ -99,17 +99,11 @@
     "@typescript-eslint/no-var-requires": 0
   },
   "settings": {
-    "import/extensions": [".ts", ".tsx"],
+    "import/extensions": [".ts", ".tsx", ".css"],
     "import/resolver": {
       "alias": {
-        "map": [
-          ["^@utils", "./src/utils"],
-          ["^@api", "./src/api"],
-          ["^@assets", "./src/assets"],
-          ["^@components", "./src/components"],
-          ["^@pages", "./src/pages"]
-        ],
-        "extensions": [".ts", ".tsx", ".js", ".jsx", ".json"]
+        "extensions": [".ts", ".tsx", ".js", ".jsx", ".css", ".json"],
+        "map": [["@", "./src"]]
       }
     }
   }

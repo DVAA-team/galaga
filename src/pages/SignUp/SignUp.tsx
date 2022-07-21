@@ -1,22 +1,33 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { TSignUp } from '../../api/types';
-import { userApi } from '../../api/userApi';
+
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import {
-  clientToServerNaming,
-  TSnakeToCamelCaseNested,
-} from '../../utils/convertNaming';
-import { notifyError } from '../../utils/notify';
+import { useAuth } from '../../hooks/useAuth';
+import userService from '../../services/userService';
+import { setUserProfile } from '../../store/slices/userSlice';
 import { schemaSignUp } from '../../utils/validate';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const userData = useAuth();
+  const dispatch = useDispatch();
 
-  const defaultValues: TSnakeToCamelCaseNested<TSignUp> = {
+  const redirectToProfile = useCallback(() => {
+    navigate('/profile', { replace: true });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (userData !== null) {
+      redirectToProfile();
+    }
+  }, [redirectToProfile, userData]);
+
+  const defaultValues = {
     login: '',
     password: '',
     passwordRepeat: '',
@@ -30,29 +41,23 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TSnakeToCamelCaseNested<TSignUp>>({
+  } = useForm<typeof defaultValues>({
     mode: 'onChange',
     resolver: yupResolver(schemaSignUp),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TSnakeToCamelCaseNested<TSignUp>> = (d) => {
-    userApi
-      .signUp(clientToServerNaming(d) as TSignUp)
-      .then(() => {
+  const onSubmit: SubmitHandler<typeof defaultValues> = (d) => {
+    userService.signUp(d).then((res) => {
+      if (res) {
         navigate('/profile', { replace: true });
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+        dispatch(setUserProfile(res));
+      }
+    });
   };
 
   return (
-    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap h-full">
+    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
       <Form title="Регистрация" handlerSubmit={handleSubmit(onSubmit)}>
         <Input
           placeholder="Email"

@@ -11,7 +11,7 @@ export const notifyError = (text: string) =>
     progress: undefined,
   });
 
-export const notify = (text: string) =>
+export const notifySuccess = (text: string) =>
   toast.success(text, {
     position: 'top-right',
     autoClose: 5000,

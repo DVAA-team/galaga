@@ -1,5 +1,5 @@
-import { render, screen } from '@utils/test-utils';
-import { userApi } from '../../../api/userApi';
+import { userApi } from '@/api/userApi';
+import { render, screen } from '@/utils/test-utils';
 import ChangePassword from './ChangePassword';
 
 jest.mock('../../../api/userApi');

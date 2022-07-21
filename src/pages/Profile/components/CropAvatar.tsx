@@ -152,8 +152,8 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
   }, [CANVAS_HEIGHT, CANVAS_WIDTH, drawImage, drawOverlay, imageOptions]);
 
   return (
-    <div className="fixed flex justify-center items-center w-full h-full backdrop-blur-md">
-      <div className="p-4 rounded-lg bg-white flex flex-col justify-center items-center max-w-min">
+    <div className="fixed flex flex-row justify-center items-center w-full h-full backdrop-blur-md top-0 left-0 overflow-scroll py-5 box-border">
+      <div className="m-auto p-4 rounded-lg bg-white flex flex-col justify-center items-center max-w-min">
         <canvas
           ref={canvasRef}
           className="cursor-pointer"

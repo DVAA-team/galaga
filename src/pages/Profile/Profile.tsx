@@ -1,34 +1,32 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ChangeEventHandler, useEffect, useState } from 'react';
+import { ChangeEventHandler, useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { TUserDTO } from '../../api/types';
-import { userApi } from '../../api/userApi';
+
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import {
-  clientToServerNaming,
-  serverToClientNaming,
-} from '../../utils/convertNaming';
-import { notify, notifyError } from '../../utils/notify';
+import { useAuth } from '../../hooks/useAuth';
+import userService from '../../services/userService';
 import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
 import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
+import { TUser } from '../../services/types';
+import { setUserProfile } from '../../store/slices/userSlice';
 import styles from './Profile.module.css';
 
-type TProfile = {
-  login: string;
-  email: string;
-  phone: string;
-  secondName: string;
-  firstName: string;
-  displayName?: string;
-};
+type TProfile = Omit<TUser, 'id' | 'avatar'>;
 
 const Profile = () => {
   const navigate = useNavigate();
+  const userData = useAuth();
+  const dispatch = useDispatch();
+
+  const redirectToHome = useCallback(() => {
+    navigate('/', { replace: true });
+  }, [navigate]);
 
   const defaultValues: TProfile = {
     login: '',
@@ -56,18 +54,11 @@ const Profile = () => {
 
   const onSubmit: SubmitHandler<TProfile> = (data) => {
     if (isValid) {
-      userApi
-        .editUser(clientToServerNaming(data) as TUserDTO)
-        .then(() => {
-          notify('Профиль обновлен');
-        })
-        .catch(({ response }) => {
-          const reason = response?.data?.reason;
-
-          if (reason) {
-            notifyError(reason);
-          }
-        });
+      userService.editUser(data).then((profile) => {
+        if (profile) {
+          dispatch(setUserProfile(profile));
+        }
+      });
     }
   };
 
@@ -83,126 +74,100 @@ const Profile = () => {
   };
 
   const onLogout = () => {
-    userApi
-      .logOut()
-      .then(() => {
-        navigate('/', { replace: true });
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+    userService.logOut().finally(() => {
+      dispatch(setUserProfile(null));
+      redirectToHome();
+    });
   };
 
   const saveCropAvatarHandler: TOnSaveHandler = (image) => {
-    setAvatar(image);
-    setOriginAvatar(undefined);
-    userApi
-      .editAvatar(image)
-      .then(() => {
-        notify('Аватар обновлен');
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
+    userService.editAvatar(image).then((res) => {
+      if (res) {
+        setAvatar(image);
+        setOriginAvatar(undefined);
+      }
+    });
   };
 
   useEffect(() => {
-    userApi
-      .getUser()
-      .then(({ data }) => {
-        reset(serverToClientNaming(data));
-        if (data.avatar) {
-          userApi
-            .getAvatar(data.avatar)
-            .then((res) => {
-              setAvatar(res.data);
-            })
-            .catch(({ response }) => {
-              const reason = response?.data?.reason;
+    if (userData !== null) {
+      reset(userData);
+      const { avatar: userAvatar } = userData;
 
-              if (reason) {
-                notifyError(reason);
-              }
-            });
-        }
-      })
-      .catch(({ response }) => {
-        const reason = response?.data?.reason;
-
-        if (reason) {
-          notifyError(reason);
-        }
-      });
-  }, [reset]);
+      if (userAvatar) {
+        userService.getAvatar(userAvatar).then((res) => {
+          if (res) {
+            setAvatar(res);
+          }
+        });
+      }
+    }
+  }, [userData, reset]);
 
   return (
-    <div className="container mx-auto flex flex-col justify-center items-center flex-nowrap h-full py-5">
-      <input
-        id="avatar"
-        type="file"
-        className="hidden"
-        onChange={onAvatarClick}
-      />
-      <label htmlFor="avatar" className={styles.avatar}>
-        {avatar && <img src={URL.createObjectURL(avatar)} alt="Аватар" />}
-      </label>
-      <Form handlerSubmit={handleSubmit(onSubmit)}>
-        <Input
-          placeholder="Имя"
-          {...register('firstName', { required: true })}
-          error={errors.firstName}
-        />
-        <Input
-          placeholder="Фамилия"
-          {...register('secondName', { required: true })}
-          error={errors.secondName}
-        />
-        <Input
-          placeholder="Отображаемое имя"
-          {...register('displayName', { required: true })}
-          error={errors.displayName}
-        />
-        <Input
-          placeholder="Логин"
-          {...register('login', { required: true })}
-          error={errors.login}
-        />
-        <Input
-          placeholder="E-mail"
-          {...register('email', { required: true })}
-          type="tel"
-          error={errors.email}
-        />
-        <Input
-          placeholder="Телефон"
-          cls="w-full"
-          {...register('phone', { required: true })}
-          type="tel"
-          error={errors.phone}
-        />
-        <Button
-          text="Сменить пароль"
-          cls="mx-0 bg-gray-500 hover:bg-gray-700 w-full"
-          onClick={() => setShowChangePassword(true)}
-        />
-        <div className="flex justify-between items-center mt-4">
-          <Button cls="mx-0" text="Сохранить" type="submit" />
-
-          <Button
-            text="Выйти"
-            cls="mx-0 bg-red-500 hover:bg-red-700"
-            onClick={onLogout}
+    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
+      <div className="w-full max-w-md">
+        <div className="mb-5">
+          <input
+            id="avatar"
+            type="file"
+            className="hidden"
+            onChange={onAvatarClick}
           />
+          <label htmlFor="avatar" className={styles.avatar}>
+            {avatar && <img src={URL.createObjectURL(avatar)} alt="Аватар" />}
+          </label>
         </div>
-      </Form>
+        <Form handlerSubmit={handleSubmit(onSubmit)}>
+          <Input
+            placeholder="Имя"
+            {...register('firstName', { required: true })}
+            error={errors.firstName}
+          />
+          <Input
+            placeholder="Фамилия"
+            {...register('secondName', { required: true })}
+            error={errors.secondName}
+          />
+          <Input
+            placeholder="Отображаемое имя"
+            {...register('displayName', { required: true })}
+            error={errors.displayName}
+          />
+          <Input
+            placeholder="Логин"
+            {...register('login', { required: true })}
+            error={errors.login}
+          />
+          <Input
+            placeholder="E-mail"
+            {...register('email', { required: true })}
+            type="tel"
+            error={errors.email}
+          />
+          <Input
+            placeholder="Телефон"
+            cls="w-full"
+            {...register('phone', { required: true })}
+            type="tel"
+            error={errors.phone}
+          />
+          <Button
+            text="Сменить пароль"
+            cls="mx-0 bg-gray-500 hover:bg-gray-700 w-full"
+            onClick={() => setShowChangePassword(true)}
+          />
+          <div className="flex justify-between items-center mt-4">
+            <Button cls="mx-0" text="Сохранить" type="submit" />
+
+            <Button
+              text="Выйти"
+              cls="mx-0 bg-red-500 hover:bg-red-700"
+              onClick={onLogout}
+            />
+          </div>
+        </Form>
+      </div>
 
       {originAvatar && (
         <CropAvatar

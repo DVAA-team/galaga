@@ -17,11 +17,7 @@
     "baseUrl": "src",
     "outDir": "./dist",
     "paths": {
-      "@utils/*": ["./utils/*"],
-      "@api/*": ["./api/*"],
-      "@assets/*": ["./assets/*"],
-      "@components/*": ["./components/*"],
-      "@pages/*": ["./pages/*"]
+      "@/*": ["./*"]
     },
     "typeRoots": ["typings/**/*.d.ts", "node_modules/@types"],
     "noImplicitAny": true,
