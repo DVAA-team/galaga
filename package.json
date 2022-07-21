@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack serve --mode development --open --hot",
     "build": "webpack --mode production",
-    "lint": "tsc --noEmit && eslint --ext 'ts' --ext 'tsx' src/ && stylelint '**/*.css'",
+    "lint": "prettier --check . && tsc --noEmit && eslint --ext 'ts' --ext 'tsx' src/ && stylelint '**/*.css'",
     "prepare": "husky install && git config --local commit.template .husky/.gitcommittemplate",
     "docker-build": "docker build -t galaga .",
     "docker-run": "docker run --init -p 3000:3000 galaga",
