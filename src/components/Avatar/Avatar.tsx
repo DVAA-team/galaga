@@ -19,21 +19,16 @@ const Avatar: TProps = ({ ...props }) => {
     return `${cls} ${className ?? ''}`;
   };
 
-  const renderBadge = () => {
-    if (badge) {
-      return (
-        <div className={`avatar-badge ${borderType ? `avatar-badge-${borderType}` : ''}`}>
-          <div style={{ transform: 'rotate(-45deg)' }}>{badge}</div>
-        </div>
-      );
-    }
-    return '';
-  };
+  const badgeTemplate = (
+    <div className={`avatar-badge ${borderType ? `avatar-badge-${borderType}` : ''}`}>
+      <div style={{ transform: 'rotate(-45deg)' }}>{badge}</div>
+    </div>
+  );
 
   return (
     <div className={wrapperClassObject()}>
       <img className={type === 'circle' ? 'avatar-circle' : ''} alt={alt} {...rest} style={style} />
-      {renderBadge()}
+      {badge && badgeTemplate}
     </div>
   );
 };
