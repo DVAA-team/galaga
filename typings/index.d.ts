@@ -4,8 +4,7 @@ declare module '*.png' {
 }
 
 declare module '*.svg' {
-  const content: {
-    url?: string;
-  };
+  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
+  const content: any;
   export default content;
 }

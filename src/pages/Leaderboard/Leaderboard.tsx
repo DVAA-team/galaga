@@ -1,6 +1,6 @@
 import './Leaderboard.css';
 import { Avatar } from '../../components/Avatar';
-import fakeAvatar1 from '../../assets/images/jobs.png';
+import fakeAvatar from '../../assets/images/ico/avatar.svg';
 
 const Leaderboard = () => (
   <div className="container mx-auto flex flex-row justify-center items-center flex-wrap">
@@ -9,7 +9,7 @@ const Leaderboard = () => (
       <div className="pedestal-footing">
         <div className="pedestal-footing-item">
           <Avatar
-            src={fakeAvatar1}
+            src={fakeAvatar}
             className="pedestal-avatar"
             alt="Jackson"
             borderType="blue"
@@ -22,7 +22,7 @@ const Leaderboard = () => (
         </div>
         <div className="pedestal-footing-item">
           <Avatar
-            src={fakeAvatar1}
+            src={fakeAvatar}
             className="pedestal-avatar"
             alt="Jackson"
             borderType="green"
@@ -36,7 +36,7 @@ const Leaderboard = () => (
       </div>
       <div className="pedestal-champion">
         <Avatar
-          src={fakeAvatar1}
+          src={fakeAvatar}
           className="pedestal-avatar"
           alt="Jackson"
           borderType="gold"
@@ -52,7 +52,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
@@ -64,7 +64,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
@@ -76,7 +76,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
@@ -88,7 +88,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
@@ -100,7 +100,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
@@ -112,7 +112,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
@@ -124,7 +124,7 @@ const Leaderboard = () => (
       <div className="champions-arena-item">
         <div className="flex items-center">
           <div className="mr-4 md:mr-10">
-            <Avatar src={fakeAvatar1} />
+            <Avatar src={fakeAvatar} />
           </div>
           <div>
             <div>Sebastian</div>
