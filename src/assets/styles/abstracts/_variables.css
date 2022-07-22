@@ -12,6 +12,6 @@ $glob-color-warning: #fa0;
 $glob-color-muted: #6b7280;
 $glob-color-border: #d3dce6;
 
-$glob-text-font-stack: "Ubuntu", "Open Sans", "Helvetica Neue Light", "Helvetica Neue", "Helvetica", "Arial",
-  sans-serif;
+$glob-text-font-stack: "Ubuntu", "Open Sans", "Helvetica Neue Light",
+  "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 $glob-code-font-stack: inconsolata, monospace;
