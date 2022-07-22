@@ -1,0 +1,82 @@
+@import "../../assets/styles/abstracts/_variables.css";
+
+$_avatar-border-width: 0.3rem;
+
+.avatar {
+  position: relative;
+  width: 3.125rem;
+  height: 3.125rem;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.avatar-circle {
+  border-radius: 100%;
+}
+
+.avatar-xs {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.avatar-sm {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.avatar-lg {
+  width: 4.25rem;
+  height: 4.25rem;
+}
+
+.avatar-xl {
+  width: 5.625rem;
+  height: 5.625rem;
+}
+
+.avatar-xxl {
+  width: 7rem;
+  height: 7rem;
+}
+
+.avatar-border-gold {
+  border: $_avatar-border-width solid $glob-color-gold;
+}
+
+.avatar-border-blue {
+  border: $_avatar-border-width solid $glob-color-blue;
+}
+
+.avatar-border-green {
+  border: $_avatar-border-width solid $glob-color-green;
+}
+
+.avatar-badge {
+  content: " ";
+  position: absolute;
+  height: 30%;
+  width: 30%;
+  left: 35%;
+  bottom: -15%;
+  border-radius: 5px;
+  transform: rotate(45deg);
+  background-color: $glob-color-primary;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.avatar-badge-gold {
+  background-color: $glob-color-gold;
+}
+
+.avatar-badge-blue {
+  background-color: $glob-color-blue;
+}
+
+.avatar-badge-green {
+  background-color: $glob-color-green;
+}
