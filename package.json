@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack serve --mode development --open --hot",
     "build": "webpack --mode production",
-    "lint": "tsc --noEmit && eslint --ext 'ts' --ext 'tsx' src/ && stylelint '**/*.css'",
+    "lint": "tsc --noEmit && prettier --check . && eslint --ext 'ts' --ext 'tsx' src/ && stylelint '**/*.css'",
     "prepare": "husky install && git config --local commit.template .husky/.gitcommittemplate",
     "docker-build": "docker build -t galaga .",
     "docker-run": "docker run --init -p 3000:3000 galaga",
@@ -59,6 +59,7 @@
     "stylelint": "14.9.1",
     "stylelint-config-prettier": "9.0.3",
     "stylelint-config-standard": "26.0.0",
+    "svg-sprite-loader": "6.0.11",
     "tailwindcss": "3.1.5",
     "ts-loader": "9.3.1",
     "typescript": "4.7.4",

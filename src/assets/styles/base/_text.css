@@ -1,0 +1,17 @@
+@import "../abstracts/_variables.css";
+
+.text-primary {
+  color: $glob-color-primary;
+}
+
+.text-muted {
+  color: $glob-color-muted;
+}
+
+.text-success {
+  color: $glob-color-success;
+}
+
+.text-gold {
+  color: $glob-color-gold;
+}
