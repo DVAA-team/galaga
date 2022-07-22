@@ -5,7 +5,7 @@ const config: Config.InitialOptions = {
   verbose: true,
   testEnvironment: 'jsdom',
   moduleNameMapper: {
-    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
     '@hookform/resolvers/yup':
       '<rootDir>/node_modules/@hookform/resolvers/yup/dist/yup.js',
     '@hookform/resolvers':
