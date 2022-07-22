@@ -9,6 +9,7 @@ test('Корректно рендериться с заданным тексто
 
   expect(renderedButton).toBeInTheDocument();
 });
+
 test('Срабатывает клик', async () => {
   const buttonText = 'Кнопка';
   const onClose = jest.fn();
