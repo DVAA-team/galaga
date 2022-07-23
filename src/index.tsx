@@ -12,5 +12,3 @@ if (container !== null) {
     </Provider>
   );
 }
-
-// Проверка тестов
