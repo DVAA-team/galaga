@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const dotenv = require('dotenv');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ module.exports = {
     historyApiFallback: true,
   },
   resolve: {
+    plugins: [new TsconfigPathsPlugin()],
     extensions: ['.tsx', '.ts', '.css', '.js'],
   },
   module: {
@@ -46,10 +48,7 @@ module.exports = {
         test: /\.tsx?$/,
         use: [
           {
-            loader: 'ts-loader',
-            options: {
-              configFile: path.resolve(__dirname, 'tsconfig.json'),
-            },
+            loader: 'babel-loader',
           },
         ],
         exclude: /(node_modules)/,

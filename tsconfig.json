@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "declaration": false,
     "sourceMap": true,
+    "baseUrl": "src",
     "outDir": "./dist",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "typeRoots": ["typings/**/*.d.ts", "node_modules/@types"],
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
