@@ -1,13 +1,12 @@
 name: Test
 
 on:
+  workflow_dispatch:
   pull_request:
-    branches:
-      - main
+    branches: [ master ]
 
 jobs:
   build:
-    if: github.repository_owner == 'DVAA-team'
     runs-on: ubuntu-latest
 
     strategy:
