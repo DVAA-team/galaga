@@ -56,9 +56,6 @@ export const schemaSignUp = object({
   firstName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
-  displayName: string()
-    .required(errorText.required)
-    .matches(regName, errorText.format),
 });
 
 export const schemaProfile = object({

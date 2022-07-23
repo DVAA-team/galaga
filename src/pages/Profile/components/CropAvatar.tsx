@@ -1,6 +1,7 @@
 import {
   FC,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -50,31 +51,44 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
     };
   });
 
-  const drawOverlay = (ctx: CanvasRenderingContext2D) => {
-    ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-    ctx.beginPath();
-    ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, size / 2, 0, Math.PI * 2);
-    ctx.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    ctx.fill('evenodd');
-    ctx.restore();
-  };
+  const drawOverlay = useCallback(
+    (ctx: CanvasRenderingContext2D) => {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+      ctx.beginPath();
+      ctx.arc(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, size / 2, 0, Math.PI * 2);
+      ctx.rect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.fill('evenodd');
+      ctx.restore();
+    },
+    [CANVAS_HEIGHT, CANVAS_WIDTH, size]
+  );
 
-  const drawImage = (
-    ctx: CanvasRenderingContext2D,
-    offset: { x: number; y: number } = { x: 0, y: 0 }
-  ) => {
-    ctx.save();
-    ctx.scale(imageOptions.scale, imageOptions.scale);
-    ctx.drawImage(
+  const drawImage = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      offset: { x: number; y: number } = { x: 0, y: 0 }
+    ) => {
+      ctx.save();
+      ctx.scale(imageOptions.scale, imageOptions.scale);
+      ctx.drawImage(
+        image,
+        imageOptions.x + offset.x,
+        imageOptions.y + offset.y,
+        imageOptions.width,
+        imageOptions.height
+      );
+      ctx.restore();
+    },
+    [
       image,
-      imageOptions.x + offset.x,
-      imageOptions.y + offset.y,
+      imageOptions.height,
+      imageOptions.scale,
       imageOptions.width,
-      imageOptions.height
-    );
-    ctx.restore();
-  };
+      imageOptions.x,
+      imageOptions.y,
+    ]
+  );
 
   const MouseMoveHandler: MouseEventHandler<HTMLCanvasElement> = (event) => {
     if (!drag) {
@@ -135,11 +149,11 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
 
     drawImage(ctx);
     drawOverlay(ctx);
-  }, [imageOptions]);
+  }, [CANVAS_HEIGHT, CANVAS_WIDTH, drawImage, drawOverlay, imageOptions]);
 
   return (
-    <div className="fixed flex justify-center items-center w-full h-full backdrop-blur-md">
-      <div className="p-4 rounded-lg bg-white flex flex-col justify-center items-center max-w-min">
+    <div className="fixed flex flex-row justify-center items-center w-full h-full backdrop-blur-md top-0 left-0 overflow-scroll py-5 box-border">
+      <div className="m-auto p-4 rounded-lg bg-white flex flex-col justify-center items-center max-w-min">
         <canvas
           ref={canvasRef}
           className="cursor-pointer"

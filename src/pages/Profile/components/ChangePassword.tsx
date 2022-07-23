@@ -1,12 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { TChangePassword } from '../../../api/types';
-import { userApi } from '../../../api/userApi';
+
 import { Button } from '../../../components/Button';
 import { Form } from '../../../components/Form';
 import { Input } from '../../../components/Input';
-import { notifyError } from '../../../utils/notify';
+import userService from '../../../services/userService';
 import { schemaChangePassword } from '../../../utils/validate';
 
 type TChangePasswordProps = {
@@ -14,7 +13,7 @@ type TChangePasswordProps = {
 };
 
 const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
-  const defaultValues: TChangePassword = {
+  const defaultValues = {
     newPassword: '',
     oldPassword: '',
     newPasswordRepeat: '',
@@ -24,63 +23,58 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<TChangePassword>({
+  } = useForm<typeof defaultValues>({
     mode: 'onChange',
     resolver: yupResolver(schemaChangePassword),
     defaultValues,
   });
 
-  const onSubmit: SubmitHandler<TChangePassword> = (data) => {
+  const onSubmit: SubmitHandler<typeof defaultValues> = (data) => {
     if (isValid) {
-      userApi
-        .editPassword(data)
-        .then(() => {
+      userService.editPassword(data).then((res) => {
+        if (res) {
           onClose();
-        })
-        .catch(({ response }) => {
-          const reason = response?.data?.reason;
-
-          if (reason) {
-            notifyError(reason);
-          }
-        });
+        }
+      });
     }
   };
 
   return (
-    <div className="fixed flex justify-center items-center w-full h-full backdrop-blur-md">
-      <Form title="Смените пароль" handlerSubmit={handleSubmit(onSubmit)}>
-        <Input
-          placeholder="Старый пароль"
-          withLabel={true}
-          type="password"
-          {...register('oldPassword', { required: true })}
-          error={errors.oldPassword}
-        />
-        <Input
-          placeholder="Новый пароль"
-          withLabel={true}
-          type="password"
-          {...register('newPassword', { required: true })}
-          error={errors.newPassword}
-        />
-        <Input
-          placeholder="Новый пароль (еще раз)"
-          withLabel={true}
-          type="password"
-          {...register('newPasswordRepeat', { required: true })}
-          error={errors.newPasswordRepeat}
-        />
-        <div className="flex justify-between w-full max-w-md ">
-          <Button cls="mx-0" text="Применить" type="submit" />
-          <Button
-            cls="mx-0 bg-red-500 hover:bg-red-700"
-            text="Отменить"
-            type="submit"
-            onClick={onClose}
+    <div className="fixed flex flex-row justify-center items-center w-full h-full backdrop-blur-md top-0 left-0 overflow-scroll py-5 box-border">
+      <div className="m-auto w-full max-w-md">
+        <Form title="Смените пароль" handlerSubmit={handleSubmit(onSubmit)}>
+          <Input
+            placeholder="Старый пароль"
+            withLabel={true}
+            type="password"
+            {...register('oldPassword', { required: true })}
+            error={errors.oldPassword}
           />
-        </div>
-      </Form>
+          <Input
+            placeholder="Новый пароль"
+            withLabel={true}
+            type="password"
+            {...register('newPassword', { required: true })}
+            error={errors.newPassword}
+          />
+          <Input
+            placeholder="Новый пароль (еще раз)"
+            withLabel={true}
+            type="password"
+            {...register('newPasswordRepeat', { required: true })}
+            error={errors.newPasswordRepeat}
+          />
+          <div className="flex justify-between w-full max-w-md ">
+            <Button cls="mx-0" text="Применить" type="submit" />
+            <Button
+              cls="mx-0 bg-red-500 hover:bg-red-700"
+              text="Отменить"
+              type="submit"
+              onClick={onClose}
+            />
+          </div>
+        </Form>
+      </div>
     </div>
   );
 };
