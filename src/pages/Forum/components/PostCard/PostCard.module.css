@@ -1,0 +1,36 @@
+@import "../../../../assets/styles/abstracts/_variables.css";
+
+.card {
+  @apply w-full px-8 py-6 mb-6;
+
+  &:hover {
+    background-color: $glob-color-dark;
+  }
+
+  background-color: $glob-color-dark-90;
+  border-radius: 16px;
+
+  &_title {
+    @apply text-lg font-bold mb-8;
+  }
+
+  &_body {
+    @apply w-full flex justify-between;
+  }
+
+  &_date {
+    @apply text-sm;
+
+    color: $glob-color-muted;
+  }
+
+  &_username {
+    @apply text-lg mb-1;
+  }
+
+  &_infotext {
+    @apply mx-2 text-sm;
+
+    color: $glob-color-secondary;
+  }
+}

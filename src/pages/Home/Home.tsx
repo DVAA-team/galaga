@@ -60,6 +60,11 @@ const Home = () => {
               Leaderboard
             </Link>
           </li>
+          <li>
+            <Link className="font-bold underline" to="/forum">
+              Forum
+            </Link>
+          </li>
         </ul>
       </nav>
     </div>
