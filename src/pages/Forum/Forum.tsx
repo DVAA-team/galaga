@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CreatePostPanel } from './components/CreatePostPanel';
+import { CreatePostForm } from './components/CreatePostForm';
 import { PostCard } from './components/PostCard';
 import { TOwnProps as TPostProps } from './components/PostCard/types';
 
@@ -39,9 +39,9 @@ const Forum = () => {
   return (
     <div className="container mx-auto flex flex-col items-center">
       <h1 className="mt-3 text-3xl font-bold">Forum</h1>
-      <div className="w-full mt-10">
-        <CreatePostPanel />
-        <div className="mt-10">
+      <div className="w-full md:w-10/12 mt-10 flex flex-col items-center">
+        <CreatePostForm />
+        <div className="w-full mt-10">
           {posts.map((post) => (
             <Link key={post.id} to={`posts/${post.id}`}>
               <PostCard {...post} />

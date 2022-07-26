@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 type TOwnProps = {
-  handleClick?: () => (text: string) => void;
+  emitSubmit: (text: string) => void;
 };
 
 type TProps = FC<TOwnProps>;

@@ -60,19 +60,20 @@ const Message: TProps = ({
         avatarURL={userAvatarURL}
         date={date}
       />
+
       <div className={getBodyClasses()}>{text}</div>
+
       <div className={styles.footer}>
         <span>{commentsNumber} comments</span>
       </div>
-      <div className="flex flex-col items-end mt-4">
-        {isActive ? (
-          <React.Fragment>
-            {comments.map((item) => (
-              <Comment key={item.id} {...item} />
-            ))}
-          </React.Fragment>
-        ) : null}
-      </div>
+
+      {isActive && (
+        <div className="flex flex-col items-end mt-4">
+          {comments.map((item) => (
+            <Comment key={item.id} {...item} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

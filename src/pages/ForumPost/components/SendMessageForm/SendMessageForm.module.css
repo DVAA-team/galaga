@@ -1,12 +1,10 @@
 @import "../../../../assets/styles/abstracts/_variables.css";
 
 .form {
-  @apply mb-0 w-8/12 md:w-10/12 mr-4;
-
-  display: inline;
+  @apply w-full flex items-center my-8;
 
   div {
-    margin-bottom: 0;
+    @apply w-full mb-0 mr-5;
   }
 }
 
@@ -14,13 +12,13 @@
   background-color: $glob-color-white;
   border: none;
   border-radius: 5px;
-  display: inline;
 }
 
 .button {
   @apply px-2 w-4/12 md:w-2/12 md:px-4 mx-0;
 
   background-color: $glob-color-warning;
+  white-space: nowrap;
 
   &:hover {
     background-color: $glob-color-warning-hover;
