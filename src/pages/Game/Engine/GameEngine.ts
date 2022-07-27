@@ -52,8 +52,6 @@ export class GameEngine {
 
   private _onGameOver: (score: number) => void;
 
-  private _animationFrameId = 0;
-
   private _lastTime = performance.now();
 
   private _objects: AbstractGameObject[] = [];
@@ -102,7 +100,7 @@ export class GameEngine {
 
       // Запускаем основной цикл игры
       this._lastTime = performance.now();
-      this._animationFrameId = requestAnimationFrame(this._gameLoop.bind(this));
+      requestAnimationFrame(this._gameLoop.bind(this));
     };
 
     if (this._gameState === GameState.ready) {
@@ -114,7 +112,9 @@ export class GameEngine {
       this._score = 0;
       this.init().then(run);
     } else {
-      throw new Error('Ошибка старта игры, неверное состояние');
+      throw new Error(
+        `Ошибка старта игры, неверное состояние ${this._gameState}`
+      );
     }
   }
 
@@ -122,10 +122,6 @@ export class GameEngine {
    * Остановка игры
    */
   public stop() {
-    if (this._gameState !== GameState.run) {
-      throw new Error('Ошибка остановки игры, неверное состояние');
-    }
-
     window.removeEventListener('keydown', this._keyDownHandlerWithContext);
     window.removeEventListener('keyup', this._keyUpHandlerWithContext);
 
@@ -133,14 +129,6 @@ export class GameEngine {
     this._playerAction.fire = false;
     this._playerAction.left = false;
     this._playerAction.right = false;
-
-    this._onGameOver(this._score);
-
-    // Остановка основного цикла спустя 1 сек, для отрисовки возможных анимаций взрыва и т.д.
-    window.setTimeout(() => {
-      this._gameState = GameState.gameOver;
-      cancelAnimationFrame(this._animationFrameId);
-    }, 1000);
   }
 
   /**
@@ -183,7 +171,10 @@ export class GameEngine {
           debug: this._debug,
           position: new Vector(
             this._gameAreaWidth / 2 - PLAYER_WIDTH,
-            this._gameAreaHeight - PLAYER_HEIGHT - BOTTOM_PADDING
+            this._gameAreaHeight -
+              PLAYER_HEIGHT -
+              BOTTOM_PADDING -
+              PLAYER_HEIGHT / 2
           ),
           velocity: new Vector(0, 0),
           width: PLAYER_WIDTH,
@@ -195,10 +186,11 @@ export class GameEngine {
       } else if (isSwarm(ObjectClass)) {
         // Создание роя
         const formation = [
-          [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-          [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-          [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+          [0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0],
+          [0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0],
+          [0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0],
+          [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+          [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         ];
         const height =
           formation.length * (ENEMY_HEIGHT + ENEMY_GAP) - ENEMY_GAP;
@@ -300,7 +292,9 @@ export class GameEngine {
     this._clear();
     this._garbageCollector();
 
-    let gameOver = true;
+    let isGameOver = true;
+    let hasPlayers = false;
+    let hasSwarm = false;
 
     for (let i = 0; i < this._objects.length; i += 1) {
       this._objects[i].update(dt);
@@ -332,9 +326,9 @@ export class GameEngine {
                   projectile.type === ProjectileType.player
                 ) {
                   // Пуля игрока столкнулась с роем
-                  gameObject.calcCollide(projectile);
-                  if (projectile.hasDelete) {
-                    this.addScore(100);
+                  const score = gameObject.calcCollide(projectile);
+                  if (score) {
+                    this.addScore(score);
                   }
                 } else if (
                   gameObject instanceof Player &&
@@ -343,7 +337,7 @@ export class GameEngine {
                   // Пуля роя столкнулась с игроком
                   projectile.delete();
                   gameObject.delete();
-                  gameOver = true;
+                  isGameOver = true;
                 }
               }
             }
@@ -351,8 +345,9 @@ export class GameEngine {
         }
       } else if (this._objects[i] instanceof Swarm) {
         // Обработка перемещения роя
+        hasSwarm = true;
         const swarm = this._objects[i] as Swarm;
-        gameOver = false; // Если рой все еще присутствует на игровом поле игра не окончена
+        isGameOver = false; // Если рой все еще присутствует на игровом поле игра не окончена
         if (
           swarm.position.x < 10 ||
           swarm.position.x + swarm.width > this._gameAreaWidth - 10
@@ -361,6 +356,7 @@ export class GameEngine {
         }
       } else if (this._objects[i] instanceof Player) {
         // Обработка перемещения игрока
+        hasPlayers = true;
         const player = this._objects[i] as Player;
         if (this._playerAction.left && player.position.x >= LEFT_PADDING) {
           player.left();
@@ -380,8 +376,13 @@ export class GameEngine {
       }
     }
 
-    this._animationFrameId = requestAnimationFrame(this._gameLoop.bind(this));
-    if (gameOver) {
+    if (hasPlayers && hasSwarm) {
+      requestAnimationFrame(this._gameLoop.bind(this));
+    } else {
+      this._gameState = GameState.gameOver;
+      this._onGameOver(this._score);
+    }
+    if (isGameOver) {
       this.stop();
     }
   }
@@ -394,13 +395,14 @@ export class GameEngine {
     let deleteObjectCount = 0;
     for (let i = 0; i < objectCount; i += 1) {
       const object = this._objects[i];
+      if (object instanceof Swarm) {
+        // Если объект рой, запускаем внутренний garbageCollector
+        object.garbageCollector();
+      }
       if (object.hasDelete) {
         this._objects.push(...this._objects.splice(i, 1));
         objectCount -= 1;
         deleteObjectCount += 1;
-      } else if (object instanceof Swarm) {
-        // Если объект рой, запускаем внутренний garbageCollector
-        object.garbageCollector();
       }
     }
     this._objects.splice(objectCount, deleteObjectCount);
