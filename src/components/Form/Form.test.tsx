@@ -2,7 +2,7 @@ import { render, screen } from '@/utils/test-utils';
 import Form from '@/components/Form/Form';
 import { Button } from '@/components/Button';
 
-describe('Форма', () => {
+describe.skip('Форма', () => {
   test('должна корректно рендериться', () => {
     const onSubmit = jest.fn();
     const { container } = render(<Form handlerSubmit={onSubmit} />);
