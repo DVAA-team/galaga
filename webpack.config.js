@@ -13,6 +13,7 @@ module.exports = {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: '/',
   },
   devtool: 'source-map',
   devServer: {
@@ -98,6 +99,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      inject: 'body',
     }),
     new SpriteLoaderPlugin(),
   ],

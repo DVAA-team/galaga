@@ -1,0 +1,13 @@
+@import "../../assets/styles/abstracts/_variables.css";
+
+.body {
+  @apply w-full mt-10 h-full overflow-auto;
+
+  background-color: $glob-color-dark;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.title {
+  @apply text-lg font-bold text-center mb-4;
+}
