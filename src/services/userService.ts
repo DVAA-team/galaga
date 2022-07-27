@@ -1,11 +1,11 @@
 import axios, { AxiosError } from 'axios';
 
-import { userApi } from '../api/userApi';
+import { userApi } from '@/api/userApi';
 import {
   clientToServerNaming,
   serverToClientNaming,
-} from '../utils/convertNaming';
-import { notifyError, notifySuccess } from '../utils/notify';
+} from '@/utils/convertNaming';
+import { notifyError, notifySuccess } from '@/utils/notify';
 import { TChangePassword, TSignIn, TSignUp, TUser } from './types';
 
 type TServerError = { reason: string };

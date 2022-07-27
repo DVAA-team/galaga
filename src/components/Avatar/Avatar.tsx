@@ -41,13 +41,7 @@ const Avatar: TProps = ({ ...props }) => {
 
   return (
     <div className={getWrapperClasses()}>
-      <img
-        src={src}
-        className={type === 'circle' ? 'avatar-circle' : ''}
-        alt={alt}
-        {...rest}
-        style={style}
-      />
+      <img src={src} alt={alt} style={style} {...rest} />
       {badge && badgeTemplate}
     </div>
   );

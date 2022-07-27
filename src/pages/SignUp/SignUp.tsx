@@ -4,13 +4,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { setUserProfile } from '@/store/slices/userSlice';
+import { schemaSignUp } from '@/utils/validate';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { useAuth } from '../../hooks/useAuth';
 import userService from '../../services/userService';
-import { setUserProfile } from '../../store/slices/userSlice';
-import { schemaSignUp } from '../../utils/validate';
 
 const SignUp = () => {
   const navigate = useNavigate();

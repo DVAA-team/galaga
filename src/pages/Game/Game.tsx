@@ -11,7 +11,7 @@ const enum Status {
   run = 'run',
 }
 
-const GamePage = () => {
+const Game = () => {
   const [gameStatus, setGameStatus] = useState(Status.start);
 
   const [score, setScore] = useState(0);
@@ -86,4 +86,4 @@ const GamePage = () => {
   );
 };
 
-export default GamePage;
+export default Game;
