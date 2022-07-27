@@ -1,5 +1,6 @@
 import Sound from '@/pages/Game/Engine/Sound';
 import axios from 'axios';
+import { AudioContext as AudioContextMock } from 'standardized-audio-context-mock';
 
 type TSound = {
   name: string;
@@ -15,10 +16,14 @@ class SoundMap {
 
   private _sounds: Sound[] = [];
 
-  private _audioContext = new AudioContext();
+  private _audioContext: AudioContext;
 
   constructor(options: TAudioOptions) {
     const { sounds } = options;
+
+    this._audioContext = !global.AudioContext
+      ? (new AudioContextMock() as unknown as AudioContext)
+      : new AudioContext();
     this._load = Promise.all(
       sounds.map((sound) =>
         axios

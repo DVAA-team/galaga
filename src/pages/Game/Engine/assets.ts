@@ -1,8 +1,8 @@
-import spritesUrl from '@/assets/images/GalagaOriginalMini.png';
-import fireSoundUrl from '@/assets/sounds_firing.mp3';
-import killSoundUrl from '@/assets/sounds_kill.mp3';
 import SoundMap from '@/pages/Game/Engine/SoundMap';
 import SpriteMap from '@/pages/Game/Engine/SpriteMap';
+import spritesUrl from '../../../assets/images/GalagaOriginalMini.png';
+import fireSoundUrl from '../../../assets/sounds_firing.mp3';
+import killSoundUrl from '../../../assets/sounds_kill.mp3';
 
 export const enum SpriteType {
   player = 'player',
