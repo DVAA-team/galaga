@@ -17,6 +17,8 @@ import { Dashboard } from '../../pages/Dashboard';
 import { Game } from '../../pages/Game';
 import { Leaderboard } from '../../pages/Leaderboard';
 import { NotFound } from '../../pages/NotFound';
+import { Forum } from '../../pages/Forum';
+import { ForumPost } from '../../pages/ForumPost';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -39,6 +41,10 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/forum">
+          <Route path="" element={<Forum />} />
+          <Route path="posts/:postId" element={<ForumPost />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer />

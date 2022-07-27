@@ -1,0 +1,8 @@
+@import "../../../../assets/styles/abstracts/_variables.css";
+
+.comment {
+  @apply px-4 py-2 mt-2 w-fit;
+
+  background-color: $glob-color-dark-third;
+  border-radius: 6px 0 6px 6px;
+}

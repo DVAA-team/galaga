@@ -1,0 +1,35 @@
+@import "../../../../assets/styles/abstracts/_variables.css";
+
+.body {
+  @apply w-full mt-4 p-5 cursor-pointer;
+
+  background-color: $glob-color-dark-second;
+  border-radius: 0 6px 6px;
+
+  &.mine {
+    background-color: $glob-color-primary-light;
+  }
+
+  &.active {
+    background-color: $glob-color-dark-third;
+    border-right: 5px solid $glob-color-warning;
+    transition: background-color 0.2s;
+  }
+}
+
+.footer {
+  @apply text-right mt-2 text-sm;
+
+  color: $glob-color-secondary;
+
+  span {
+    cursor: pointer;
+  }
+}
+
+.comment {
+  @apply px-4 py-2 mt-2 w-fit;
+
+  background-color: $glob-color-dark-third;
+  border-radius: 6px 0 6px 6px;
+}
