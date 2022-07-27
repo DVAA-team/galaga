@@ -1,0 +1,41 @@
+@import "https://fonts.googleapis.com/css2?family=VT323&display=swap";
+
+.container {
+  @apply w-screen h-screen flex flex-col;
+
+  & > *:first-child,
+  & > *:last-child {
+    @apply basis-full;
+  }
+}
+
+.spacer {
+  @apply grow;
+
+  backdrop-filter: blur(15px);
+}
+
+.game {
+  @apply relative flex shrink-0;
+
+  &_overlay {
+    @apply absolute flex flex-col
+      justify-center items-center inset-0;
+
+    backdrop-filter: blur(5px);
+  }
+
+  &_area {
+    @apply relative;
+  }
+
+  &_score {
+    @apply absolute text-white top-1 left-2 text-4xl font-bold;
+
+    font-family: "VT323", monospace;
+  }
+
+  &_text {
+    @apply pb-4 text-xl font-bold;
+  }
+}
