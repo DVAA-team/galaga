@@ -4,17 +4,17 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '@/hooks/useAuth';
+import { schemaProfile } from '@/utils/validate';
+import { TUser } from '@/services/types';
+import { setUserProfile } from '@/store/slices/userSlice';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
-import { useAuth } from '../../hooks/useAuth';
 import userService from '../../services/userService';
-import { schemaProfile } from '../../utils/validate';
 import ChangePassword from './components/ChangePassword';
 import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
-import { TUser } from '../../services/types';
-import { setUserProfile } from '../../store/slices/userSlice';
 import styles from './Profile.module.css';
 
 type TProfile = Omit<TUser, 'id' | 'avatar'>;
@@ -118,7 +118,7 @@ const Profile = () => {
             {avatar && <img src={URL.createObjectURL(avatar)} alt="Аватар" />}
           </label>
         </div>
-        <Form handlerSubmit={handleSubmit(onSubmit)}>
+        <Form title="Профиль" handlerSubmit={handleSubmit(onSubmit)}>
           <Input
             placeholder="Имя"
             {...register('firstName', { required: true })}

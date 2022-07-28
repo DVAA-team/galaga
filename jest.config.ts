@@ -10,6 +10,8 @@ const config: Config.InitialOptions = {
       '<rootDir>/node_modules/@hookform/resolvers/yup/dist/yup.js',
     '@hookform/resolvers':
       '<rootDir>/node_modules/@hookform/resolvers/dist/resolvers.js',
+    '\\.(css|less)$': '<rootDir>/src/__mocks__/styleMock.js',
+    '\\.(svg|png|mp3)$': '<rootDir>/src/__mocks__/fileMock.js',
   },
 };
 export default config;

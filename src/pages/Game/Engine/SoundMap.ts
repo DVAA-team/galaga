@@ -19,6 +19,7 @@ class SoundMap {
 
   constructor(options: TAudioOptions) {
     const { sounds } = options;
+
     this._load = Promise.all(
       sounds.map((sound) =>
         axios

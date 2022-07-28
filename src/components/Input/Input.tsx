@@ -24,7 +24,7 @@ const Input: TProps = forwardRef((props, ref) => {
     placeholder = '',
     id,
     name,
-    withLabel,
+    withLabel = false,
     labelText = placeholder,
     required,
     error,
