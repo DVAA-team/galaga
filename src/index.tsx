@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store';
 import App from './components/App/App';
+import { registerServiceWorker } from './registerServiceWorker';
 
 const container = document.getElementById('root');
 if (container !== null) {
@@ -12,3 +13,5 @@ if (container !== null) {
     </Provider>
   );
 }
+
+registerServiceWorker();
