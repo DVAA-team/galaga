@@ -89,7 +89,6 @@
     "react-router-dom": "6.3.0",
     "react-toastify": "9.0.5",
     "redux-thunk": "2.4.1",
-    "standardized-audio-context-mock": "9.5.4",
     "yup": "0.32.11"
   }
 }
