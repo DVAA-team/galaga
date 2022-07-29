@@ -12,17 +12,14 @@ export const registerServiceWorker = () => {
             );
           },
           (err) => {
-            // eslint-disable-next-line no-console
-            console.log('ServiceWorker registration failed: ', err);
+            throw new Error(`ServiceWorker registration failed: ${err}`);
           }
         )
         .catch((err) => {
-          // eslint-disable-next-line no-console
-          console.log(err);
+          throw new Error(err);
         });
     });
   } else {
-    // eslint-disable-next-line no-console
-    console.log('service worker is not supported');
+    throw new Error('service worker is not supported');
   }
 };
