@@ -42,6 +42,7 @@
     "@typescript-eslint/parser": "5.30.5",
     "autoprefixer": "10.4.7",
     "babel-loader": "8.2.5",
+    "copy-webpack-plugin": "11.0.0",
     "canvas": "2.9.3",
     "css-loader": "6.7.1",
     "cssnano": "5.1.12",
