@@ -1,0 +1,27 @@
+@import "../../../../assets/styles/abstracts/_variables.css";
+
+.form {
+  @apply flex w-full justify-between;
+
+  div {
+    @apply w-full mx-5 mb-0;
+  }
+
+  .input {
+    background-color: $glob-color-dark-90;
+    border: none;
+    border-radius: 5px;
+    color: $glob-color-white;
+  }
+
+  .button {
+    @apply px-2 md:px-4;
+
+    background-color: $glob-color-warning;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: $glob-color-warning-hover;
+    }
+  }
+}

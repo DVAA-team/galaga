@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 const dotenv = require('dotenv');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ module.exports = {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: '/',
   },
   devtool: 'source-map',
   devServer: {
@@ -23,22 +25,32 @@ module.exports = {
     historyApiFallback: true,
   },
   resolve: {
+    plugins: [new TsconfigPathsPlugin()],
     extensions: ['.tsx', '.ts', '.css', '.js'],
   },
   module: {
     rules: [
       {
-        test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+        test: /\.(?:ico|gif|png|jpg|jpeg|mp3)$/i,
         type: 'asset/resource',
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'svg-sprite-loader',
+            options: {
+              extract: true,
+              publicPath: '/static/',
+            },
+          },
+        ],
       },
       {
         test: /\.tsx?$/,
         use: [
           {
-            loader: 'ts-loader',
-            options: {
-              configFile: path.resolve(__dirname, 'tsconfig.json'),
-            },
+            loader: 'babel-loader',
           },
         ],
         exclude: /(node_modules)/,
@@ -88,6 +100,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      inject: 'body',
     }),
     new CopyWebpackPlugin({
       patterns: [{ from: './public/serviceWorker.js' }],

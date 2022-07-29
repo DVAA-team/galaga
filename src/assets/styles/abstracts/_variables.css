@@ -1,5 +1,22 @@
-$glob-color-blue: #0d6efd;
+$glob-color-blue: #1fb6ff;
+$glob-color-gold: #fa0;
+$glob-color-green: #13ce66;
 $glob-color-white: #fff;
+$glob-color-black: #212529;
+
+$glob-color-primary: #1fb6ff;
+$glob-color-primary-light: #86b7fe;
+$glob-color-success: #13ce66;
+$glob-color-secondary: #8492a6;
+$glob-color-warning: #ff7849;
+$glob-color-warning-hover: #e36a42;
+$glob-color-muted: #6b7280;
+$glob-color-border: #d3dce6;
+$glob-color-dark: #151729;
+$glob-color-dark-second: #252a40;
+$glob-color-dark-third: #1e2237;
+$glob-color-dark-90: rgba(21 23 41 / 90%);
+$glob-color-dark-70: rgba(21 23 41 / 70%);
 
 $glob-text-font-stack: "Ubuntu", "Open Sans", "Helvetica Neue Light",
   "Helvetica Neue", "Helvetica", "Arial", sans-serif;

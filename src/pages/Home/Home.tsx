@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 
 const Home = () => {
   const userData = useAuth();
@@ -58,6 +58,11 @@ const Home = () => {
           <li>
             <Link className="font-bold underline" to="/leaderboard">
               Leaderboard
+            </Link>
+          </li>
+          <li>
+            <Link className="font-bold underline" to="/forum">
+              Forum
             </Link>
           </li>
         </ul>

@@ -59,7 +59,7 @@ export class Vector {
 
   public add(...[a, b]: unknown[]): Vector {
     if (typeof a === 'number' && typeof b === 'number') {
-      return new Vector(this.x - a, this.y - b);
+      return new Vector(this.x + a, this.y + b);
     }
     if (a instanceof Vector) {
       return new Vector(this.x + a.x, this.y + a.y);

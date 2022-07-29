@@ -1,0 +1,11 @@
+@import "../../assets/styles/abstracts/_variables.css";
+
+.username {
+  @apply mb-1;
+}
+
+.date {
+  @apply text-sm;
+
+  color: $glob-color-muted;
+}

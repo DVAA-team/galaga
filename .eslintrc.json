@@ -21,12 +21,23 @@
   },
   "plugins": ["@typescript-eslint", "prettier", "import"],
   "rules": {
-    "import/extensions": [
+    "import/no-extraneous-dependencies": [
       "error",
       {
-        "*.ts": "never",
-        "*.tsx": "never",
-        "*.css": "always"
+        "devDependencies": [
+          "**/*.test.ts?(x)",
+          "**/*.spec.ts?(x)",
+          "**/test-utils.ts",
+          "webpack.config.js"
+        ]
+      }
+    ],
+    "import/extensions": [
+      "error",
+      "never",
+      {
+        "json": "always",
+        "css": "always"
       }
     ],
     "import/prefer-default-export": "off",
@@ -89,6 +100,12 @@
     "@typescript-eslint/no-var-requires": 0
   },
   "settings": {
-    "import/extensions": [".ts", ".tsx"]
+    "import/extensions": [".ts", ".tsx", ".css"],
+    "import/resolver": {
+      "alias": {
+        "extensions": [".ts", ".tsx", ".js", ".jsx", ".css", ".json"],
+        "map": [["@", "./src"]]
+      }
+    }
   }
 }
