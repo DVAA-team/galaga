@@ -1,20 +1,17 @@
 const STATIC_ASSETS = ['/static/sprite.svg', '/manifest.json'];
 
-const STATIC_CACHE_NAME = 'static-data';
-const DYNAMIC_CACHE_NAME = 'dynamic-data';
+const STATIC_CACHE_NAME = 'static-data-v1';
+const DYNAMIC_CACHE_NAME = 'dynamic-data-v1';
 
 const networkFirst = async (request) => {
-  if (!(request.url.indexOf('http') === 0)) return;
-
   const cache = await caches.open(DYNAMIC_CACHE_NAME);
   try {
     const response = await fetch(request);
     cache.put(request, response.clone());
-    // eslint-disable-next-line consistent-return
+
     return response;
   } catch (error) {
-    // eslint-disable-next-line consistent-return, no-return-await
-    return await cache.match(request);
+    return cache.match(request);
   }
 };
 
