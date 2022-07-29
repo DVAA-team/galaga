@@ -34,11 +34,6 @@ const Home = () => {
           Profile
         </Link>
       </li>
-      <li>
-        <Link className="font-bold underline" to="/game">
-          Game
-        </Link>
-      </li>
     </>
   );
 
@@ -50,6 +45,11 @@ const Home = () => {
       <nav>
         <ul className="text-center">
           {isAuthorized ? renderAuthLinks() : renderNotAuthLinks()}
+          <li>
+            <Link className="font-bold underline" to="/game">
+              Game
+            </Link>
+          </li>
           <li>
             <Link className="font-bold underline" to="/dashboard">
               Dashboard
