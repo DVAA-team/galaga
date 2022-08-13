@@ -16,7 +16,6 @@ import { isSwarm, Swarm } from './Swarm';
 import { Vector } from './Vector';
 
 export type TGameEngineOptions = {
-  ctx: CanvasRenderingContext2D;
   debug?: boolean;
   width: number;
   height: number;
@@ -36,7 +35,7 @@ enum GameState {
 }
 
 export class GameEngine {
-  private _ctx: CanvasRenderingContext2D;
+  private _ctx: CanvasRenderingContext2D | null = null;
 
   private _playerAction = {
     left: false,
@@ -69,14 +68,12 @@ export class GameEngine {
   private _keyUpHandlerWithContext: (e: KeyboardEvent) => void;
 
   constructor({
-    ctx,
     debug,
     width,
     height,
     onScoreUpdate,
     onGameOver,
   }: TGameEngineOptions) {
-    this._ctx = ctx;
     this._debug = debug ?? false;
     this._gameAreaWidth = width;
     this._gameAreaHeight = height;
@@ -110,7 +107,8 @@ export class GameEngine {
       // Перезапуск
       this._objects = [];
       this._score = 0;
-      this.init().then(run);
+      if (!this._ctx) throw new Error('Игра еще не проинициализированна');
+      this.init(this._ctx).then(run);
     } else {
       throw new Error(
         `Ошибка старта игры, неверное состояние ${this._gameState}`
@@ -129,6 +127,14 @@ export class GameEngine {
     this._playerAction.fire = false;
     this._playerAction.left = false;
     this._playerAction.right = false;
+  }
+
+  /**
+   * Экстренное завершение игры
+   */
+  public emergencyStop() {
+    this.stop();
+    this._gameState = GameState.gameOver;
   }
 
   /**
@@ -161,13 +167,14 @@ export class GameEngine {
    *
    * @returns Возвращает true при удачной инициализации игровых объектов
    */
-  public async init() {
+  public async init(ctx: CanvasRenderingContext2D) {
+    this._ctx = ctx;
     this._objectsClass.forEach((ObjectClass) => {
       let object: AbstractGameObject | null = null;
       if (isPlayer(ObjectClass)) {
         //  Создание игроков
         object = new ObjectClass({
-          ctx: this._ctx,
+          ctx: this._ctx as CanvasRenderingContext2D,
           debug: this._debug,
           position: new Vector(
             this._gameAreaWidth / 2 - PLAYER_WIDTH,
@@ -199,7 +206,7 @@ export class GameEngine {
             (ENEMY_WIDTH + ENEMY_GAP) -
           ENEMY_GAP;
         object = new ObjectClass({
-          ctx: this._ctx,
+          ctx: this._ctx as CanvasRenderingContext2D,
           debug: this._debug,
           position: new Vector(
             this._gameAreaWidth / 2 - width / 2,
@@ -376,7 +383,7 @@ export class GameEngine {
       }
     }
 
-    if (hasPlayers && hasSwarm) {
+    if (hasPlayers && hasSwarm && this._gameState === GameState.run) {
       requestAnimationFrame(this._gameLoop.bind(this));
     } else {
       this._gameState = GameState.gameOver;
@@ -430,6 +437,7 @@ export class GameEngine {
    * Очистка игрового поля
    */
   private _clear() {
+    if (!this._ctx) throw new Error('Игра еще не проинициализированна');
     this._ctx.clearRect(0, 0, this._gameAreaWidth, this._gameAreaHeight);
   }
 }

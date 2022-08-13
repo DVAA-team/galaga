@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Button } from '../../components/Button';
 import { GameEngine, GAME_HEIGHT, GAME_WIDTH, Player, Swarm } from './Engine';
@@ -10,7 +10,7 @@ const GAME_AREA = {
   height: `${GAME_HEIGHT}px`,
 };
 
-let gameEngine: GameEngine;
+let gameEngine: GameEngine | null;
 
 const enum Status {
   start = 'start',
@@ -26,32 +26,35 @@ const Game = () => {
   const gameStart = () => {
     setScore(0);
     setGameStatus(Status.run);
+    if (!gameEngine) throw new Error('Игра еще не инициализирована');
     gameEngine.start();
   };
 
-  const onCanvasRefChange = useCallback(
-    (canvasNode: HTMLCanvasElement | null) => {
-      if (canvasNode !== null) {
-        const ctx = canvasNode.getContext('2d');
-        if (ctx == null) throw new Error('Could not get 2d context');
+  useEffect(() => {
+    const canvasNode = document.querySelector<HTMLCanvasElement>('#game');
+    if (canvasNode !== null) {
+      const ctx = canvasNode.getContext('2d');
+      if (ctx == null) throw new Error('Could not get 2d context');
+      gameEngine = new GameEngine({
+        width: GAME_WIDTH,
+        height: GAME_HEIGHT,
+        debug: false,
+        onScoreUpdate: setScore,
+        onGameOver(newScore) {
+          setGameStatus(Status.gameOver);
+          setScore(newScore);
+        },
+      });
+      gameEngine.registerObject([Player, Swarm]);
+      if (gameEngine) gameEngine.init(ctx);
+    }
 
-        gameEngine = new GameEngine({
-          ctx,
-          width: GAME_WIDTH,
-          height: GAME_HEIGHT,
-          debug: false,
-          onScoreUpdate: setScore,
-          onGameOver(newScore) {
-            setGameStatus(Status.gameOver);
-            setScore(newScore);
-          },
-        });
-        gameEngine.registerObject([Player, Swarm]);
-        gameEngine.init();
-      }
-    },
-    []
-  );
+    return () => {
+      if (!gameEngine) throw new Error('Игра еще не инициализирована');
+      gameEngine.emergencyStop();
+      gameEngine = null;
+    };
+  }, []);
 
   const renderGameOverlay = () => (
     <div className={styles.game_overlay}>
@@ -82,11 +85,7 @@ const Game = () => {
         <div className={styles.spacer} />
         <div className={styles.game_area} style={GAME_AREA}>
           <p className={styles.game_score}>{score}</p>
-          <canvas
-            ref={onCanvasRefChange}
-            width={GAME_WIDTH}
-            height={GAME_HEIGHT}
-          />
+          <canvas id="game" width={GAME_WIDTH} height={GAME_HEIGHT} />
           {gameStatus !== Status.run && renderGameOverlay()}
         </div>
         <div className={styles.spacer} />
