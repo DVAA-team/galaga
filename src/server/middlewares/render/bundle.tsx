@@ -1,0 +1,77 @@
+import { renderToStaticMarkup, renderToString } from 'react-dom/server';
+import { store } from '@/store';
+import { Provider } from 'react-redux';
+import { StaticRouter } from 'react-router-dom/server';
+import { Home } from '@/pages/Home';
+import { Route, Routes } from 'react-router-dom';
+import { SignIn } from '@/pages/SignIn';
+import { SignUp } from '@/pages/SignUp';
+import { Dashboard } from '@/pages/Dashboard';
+import { Leaderboard } from '@/pages/Leaderboard';
+// FIXME: (denis) статика вообще не работает. Здесь идет попытка
+//  использовать библиотеку styled-components, но она не заиграла
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
+
+interface IPageHtmlParams {
+  bundleHtml: string;
+  styled?: string;
+}
+
+function getPageHtml(params: IPageHtmlParams) {
+  const { bundleHtml } = params;
+
+  const html = renderToStaticMarkup(
+    <html>
+      <head>
+        <meta charSet="utf-8" />
+        <link rel="icon" href="favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+        <meta
+          name="description"
+          content="Galaga - Легендарная аркадная игра 80х"
+        />
+        <link rel="apple-touch-icon" href="logo192.png" />
+        <title>Galaga</title>
+      </head>
+      <body>
+        {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
+        <div id="root" dangerouslySetInnerHTML={{ __html: bundleHtml }} />
+      </body>
+    </html>
+  );
+
+  return `<!doctype html>${html}`;
+}
+
+interface IRenderBundleArguments {
+  location: string;
+}
+
+export default ({ location }: IRenderBundleArguments) => {
+  const sheet = new ServerStyleSheet();
+
+  const bundleHtml = renderToString(
+    <StyleSheetManager sheet={sheet.instance}>
+      <Provider store={store}>
+        <StaticRouter location={location}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/sign-in" element={<SignIn />} />
+            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+          </Routes>
+        </StaticRouter>
+      </Provider>
+    </StyleSheetManager>
+  );
+
+  const styledTags = sheet.getStyleTags();
+
+  return {
+    html: getPageHtml({ bundleHtml, styled: styledTags }),
+  };
+};

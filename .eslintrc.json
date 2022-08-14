@@ -28,7 +28,9 @@
           "**/*.test.ts?(x)",
           "**/*.spec.ts?(x)",
           "**/test-utils.ts",
-          "webpack.config.js"
+          "webpack.config.ts",
+          "webpack/**",
+          "src/lib/**"
         ]
       }
     ],
