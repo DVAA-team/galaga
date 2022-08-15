@@ -46,13 +46,14 @@ const Game = () => {
         },
       });
       gameEngine.registerObject([Player, Swarm]);
-      if (gameEngine) gameEngine.init(ctx);
+      gameEngine.init(ctx);
     }
 
     return () => {
-      if (!gameEngine) throw new Error('Игра еще не инициализирована');
-      gameEngine.emergencyStop();
-      gameEngine = null;
+      if (gameEngine) {
+        gameEngine.emergencyStop();
+        gameEngine = null;
+      }
     };
   }, []);
 
