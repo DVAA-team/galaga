@@ -8,6 +8,8 @@ import cssLoader from './loaders/css';
 import svgLoader from './loaders/svg';
 import jsLoader from './loaders/js';
 
+const nodeExternals = require('webpack-node-externals');
+
 const config: Configuration = {
   name: 'server',
   target: 'node',
@@ -23,6 +25,8 @@ const config: Configuration = {
       svgLoader.server,
     ],
   },
+  externalsPresets: { node: true },
+  externals: [nodeExternals()],
   output: {
     filename: 'server.js',
     libraryTarget: 'commonjs2',

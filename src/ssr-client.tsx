@@ -1,15 +1,16 @@
-import { createRoot } from 'react-dom/client';
+import { hydrateRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
+import SsrApp from '@/components/SsrApp/SsrApp';
 import { store } from './store';
-import App from './components/App/App';
+// import App from './components/App/App';
 // import { registerServiceWorker } from './registerServiceWorker';
 
 const container = document.getElementById('root');
 if (container !== null) {
-  const root = createRoot(container);
-  root.render(
+  hydrateRoot(
+    container,
     <Provider store={store}>
-      <App />
+      <SsrApp />
     </Provider>
   );
 }

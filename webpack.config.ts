@@ -109,7 +109,7 @@
 //   ],
 // };
 
-import clientConfig from './webpack/client.config';
+import clientConfig from './webpack/ssr-client.config';
 import serverConfig from './webpack/server.config';
 
 export default [clientConfig, serverConfig];

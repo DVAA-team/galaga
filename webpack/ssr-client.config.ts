@@ -24,12 +24,12 @@ const config = {
     // Entry для работы HMR
     // IS_DEV && 'webpack-hot-middlewares/client',
     // IS_DEV && 'css-hot-loader/hotModuleReplacement',
-    path.join(SRC_DIR, 'client'),
+    path.join(SRC_DIR, 'ssr-client'),
   ].filter(Boolean),
 
   output: {
     path: DIST_DIR,
-    filename: '[name].[contenthash].js',
+    filename: 'ssr-client.js',
     // clean: true,
     publicPath: '/',
   },

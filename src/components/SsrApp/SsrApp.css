@@ -1,0 +1,12 @@
+@import "../../assets/styles/abstracts/_variables.css";
+
+.parent {
+  .child {
+    color: $glob-color-blue;
+  }
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
