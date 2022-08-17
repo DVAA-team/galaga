@@ -2,6 +2,7 @@ import path from 'path';
 import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
 // import HtmlWebpackPlugin from 'html-webpack-plugin';
 // import CopyWebpackPlugin from 'copy-webpack-plugin';
+import dotenv from 'dotenv';
 import { DIST_DIR, SRC_DIR } from './env';
 import fileLoader from './loaders/file';
 import cssLoader from './loaders/css';
@@ -9,13 +10,14 @@ import cssModuleLoader from './loaders/css-module';
 import svgLoader from './loaders/svg';
 import jsLoader from './loaders/js';
 
-// const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
-const nodeExternals = require('webpack-node-externals');
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
+
+dotenv.config();
 
 const config = {
-  name: 'ssr_client',
+  name: 'web_client',
 
-  target: 'node',
+  target: 'web',
 
   entry: [
     // IS_DEV && 'react-hot-loader/patch',
@@ -27,41 +29,47 @@ const config = {
 
   output: {
     path: DIST_DIR,
-    filename: 'ssrClient.js',
-    libraryTarget: 'commonjs2',
+    filename: 'webClient.js',
+    libraryTarget: 'var',
+    publicPath: '/',
+    library: 'WebClient',
   },
 
-  externalsPresets: { node: true },
-  externals: [nodeExternals()],
+  // devServer: {
+  //   static: {
+  //     directory: PUBLIC_DIR,
+  //   },
+  //   port: process.env.PORT || 3000,
+  //   historyApiFallback: true,
+  // },
 
   devtool: 'source-map',
 
   resolve: {
     plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
     extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx', '.css'],
-    modules: ['dist', 'node_modules'],
   },
 
   module: {
     rules: [
-      fileLoader.server,
-      cssLoader.server,
-      cssModuleLoader.server,
-      svgLoader.server,
-      jsLoader.server,
+      fileLoader.client,
+      cssLoader.client,
+      cssModuleLoader.client,
+      svgLoader.client,
+      jsLoader.client,
     ],
   },
 
-  // plugins: [
-  //   new HtmlWebpackPlugin({
-  //     template: './public/index.html',
-  //     inject: 'body',
-  //   }),
-  //   new CopyWebpackPlugin({
-  //     patterns: [{ from: './public/serviceWorker.js' }],
-  //   }),
-  //   new SpriteLoaderPlugin(),
-  // ],
+  plugins: [
+    // new HtmlWebpackPlugin({
+    //   template: './public/index.html',
+    //   inject: 'body',
+    // }),
+    // new CopyWebpackPlugin({
+    //   patterns: [{ from: './public/serviceWorker.js' }],
+    // }),
+    new SpriteLoaderPlugin(),
+  ],
 };
 
 export default config;

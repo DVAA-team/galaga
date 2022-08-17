@@ -1,21 +1,26 @@
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { store } from '@/store';
 import { Provider } from 'react-redux';
-// FIXME: (denis) статика вообще не работает. Здесь идет попытка
-//  использовать библиотеку styled-components, но она не заиграла
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
-import SsrApp from '@/components/SsrApp/SsrApp';
+import path from 'path';
+import * as fs from 'fs';
+import requireFromString from 'require-from-string';
+import { StaticRouter } from 'react-router-dom/server';
+import htmlescape from 'htmlescape';
+import { DIST_DIR } from '../../../../webpack/env';
 
 interface IPageHtmlParams {
   bundleHtml: string;
-  styled?: string;
+  location: string;
 }
 
 function getPageHtml(params: IPageHtmlParams) {
-  const { bundleHtml } = params;
-
+  const { bundleHtml, location } = params;
+  const data = {
+    location,
+    reduxInitState: {
+      test: 123,
+    },
+  };
   const html = renderToStaticMarkup(
     <html>
       <head>
@@ -33,7 +38,17 @@ function getPageHtml(params: IPageHtmlParams) {
       <body>
         {/* eslint-disable-next-line @typescript-eslint/naming-convention */}
         <div id="root" dangerouslySetInnerHTML={{ __html: bundleHtml }} />
-        <script src="/ssr-client.js"></script>
+        <script src="/webClient.js"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            // переменная WebClient создается вебпаком см. web-client.config.ts
+            // секция output ключ library. Эта переменная - это и есть само
+            // приложение. Вызывая, WebClient.default() мы вызываем hydrateRoot
+            // (см. дефолтный экспорт в файле src/ssr-client.tsx
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            __html: `WebClient.default(${htmlescape(data)});`,
+          }}
+        />
       </body>
     </html>
   );
@@ -46,19 +61,23 @@ interface IRenderBundleArguments {
 }
 
 export default ({ location }: IRenderBundleArguments) => {
-  const sheet = new ServerStyleSheet();
+  const pathBundle = path.join(DIST_DIR, 'ssrClient.js');
+
+  const ssrContent = fs
+    .readFileSync(pathBundle, {
+      encoding: 'utf-8',
+    })
+    .toString();
+
+  const { Bundle } = requireFromString(ssrContent, pathBundle);
 
   const bundleHtml = renderToString(
-    <StyleSheetManager sheet={sheet.instance}>
-      <Provider store={store}>
-        <SsrApp location={location} />
-      </Provider>
-    </StyleSheetManager>
+    <Provider store={store}>
+      <StaticRouter location={location}>
+        <Bundle />
+      </StaticRouter>
+    </Provider>
   );
 
-  const styledTags = sheet.getStyleTags();
-
-  return {
-    html: getPageHtml({ bundleHtml, styled: styledTags }),
-  };
+  return { html: getPageHtml({ bundleHtml, location }) };
 };

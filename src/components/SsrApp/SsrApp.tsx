@@ -1,31 +1,31 @@
 import '../../assets/styles/main.css';
 import './SsrApp.css';
-// import 'react-toastify/dist/ReactToastify.css';
-import { Route, Routes } from 'react-router-dom';
 
-import { FC, useEffect } from 'react';
+// FIXME: ругается на ReactToastify.css
+// import 'react-toastify/dist/ReactToastify.css';
+
+import { Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserProfile } from '@/store/slices/userSlice';
-import { StaticRouter } from 'react-router-dom/server';
-import { SignUp } from '@/pages/SignUp';
-import { Profile } from '@/pages/Profile';
-import { Dashboard } from '@/pages/Dashboard';
-import { Leaderboard } from '@/pages/Leaderboard';
-import { Forum } from '@/pages/Forum';
-import { ForumPost } from '@/pages/ForumPost';
-import { Home } from '@/pages/Home';
-import { SignIn } from '../../pages/SignIn';
 import userService from '../../services/userService';
+import { Home } from '../../pages/Home';
+import { SignIn } from '../../pages/SignIn';
+import { SignUp } from '../../pages/SignUp';
+import { Profile } from '../../pages/Profile';
+import { Dashboard } from '../../pages/Dashboard';
 
-type TOwnProps = {
-  location?: string;
-};
+// FIXME: ругается на Audiocontext - его нет на сервере.
+//  Добавил утилиту isServerEnvCheker.ts - её можно использовать для определения того где мы находимся
+// import { Game } from '../../pages/Game';
 
-type TProps = FC<TOwnProps>;
+import { Leaderboard } from '../../pages/Leaderboard';
+import { NotFound } from '../../pages/NotFound';
+import { Forum } from '../../pages/Forum';
+import { ForumPost } from '../../pages/ForumPost';
 
-const SsrApp: TProps = ({ ...props }) => {
-  const { location = '/' } = props;
-
+const SsrApp = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const SsrApp: TProps = ({ ...props }) => {
   }, [dispatch]);
 
   return (
-    <StaticRouter location={location}>
+    <>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
@@ -45,12 +45,18 @@ const SsrApp: TProps = ({ ...props }) => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+
+        {/* FIXME: ругается на Audiocontext - его нет на сервере. */}
+        {/* <Route path="/game" element={<Game />} /> */}
+
         <Route path="/forum">
           <Route path="" element={<Forum />} />
           <Route path="posts/:postId" element={<ForumPost />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
-    </StaticRouter>
+      <ToastContainer />
+    </>
   );
 };
 
