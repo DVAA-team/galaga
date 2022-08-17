@@ -1,5 +1,3 @@
-export const GAME_HEIGHT = 800;
-export const GAME_WIDTH = 1024;
 export const PLAYER_HEIGHT = 48;
 export const PLAYER_WIDTH = 48;
 export const TOP_PADDING = 10;
@@ -20,3 +18,4 @@ export const BULLET_OFFSET_Y = 12;
 export const BASE_SCORE = 100;
 export const STAR_COUNT = 150;
 export const STAR_COLORS = ['red', 'green', 'white', 'yellow'];
+export const BG_COLOR = '#0f172b';

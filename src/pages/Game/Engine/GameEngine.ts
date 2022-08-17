@@ -1,6 +1,7 @@
 import { isStar } from './Star';
 import { AbstractGameObject, isRectCollide } from './AbstractGameObject';
 import {
+  BG_COLOR,
   BOTTOM_PADDING,
   ENEMY_GAP,
   ENEMY_HEIGHT,
@@ -21,8 +22,6 @@ import { Vector } from './Vector';
 export type TGameEngineOptions = {
   ctx: CanvasRenderingContext2D;
   debug?: boolean;
-  width: number;
-  height: number;
   onScoreUpdate?: (newScore: number) => void;
   onGameOver?: (score: number) => void;
   onGameStart?: () => void;
@@ -39,6 +38,10 @@ enum GameState {
 }
 
 export class GameEngine {
+  static gameAreaWidth = 750;
+
+  static gameAreaHeight = 800;
+
   private _ctx: CanvasRenderingContext2D;
 
   private _playerAction = {
@@ -63,28 +66,19 @@ export class GameEngine {
 
   private _objectsClass: typeof AbstractGameObject[] = [];
 
-  private _gameAreaWidth: number;
-
-  private _gameAreaHeight: number;
-
   private _debug: boolean;
 
   private _keyDownHandlerWithContext: (e: KeyboardEvent) => void;
 
   private _keyUpHandlerWithContext: (e: KeyboardEvent) => void;
 
-  constructor({
-    ctx,
-    debug,
-    width,
-    height,
-    onScoreUpdate,
-    onGameOver,
-  }: TGameEngineOptions) {
+  constructor({ ctx, debug, onScoreUpdate, onGameOver }: TGameEngineOptions) {
     this._ctx = ctx;
     this._debug = debug ?? false;
-    this._gameAreaWidth = width;
-    this._gameAreaHeight = height;
+
+    ctx.canvas.width = GameEngine.gameAreaWidth;
+    ctx.canvas.height = GameEngine.gameAreaHeight;
+
     this._onScoreUpdate = onScoreUpdate ?? noop;
     this._onGameOver = onGameOver ?? noop;
 
@@ -138,6 +132,14 @@ export class GameEngine {
   }
 
   /**
+   * Экстренное завершение игры
+   */
+  public emergencyStop() {
+    this.stop();
+    this._gameState = GameState.gameOver;
+  }
+
+  /**
    * Добавляет очки
    *
    * @param score - Добавляемое количество очков
@@ -178,8 +180,8 @@ export class GameEngine {
           ctx: this._ctx,
           debug: this._debug,
           position: new Vector(
-            this._gameAreaWidth / 2 - PLAYER_WIDTH,
-            this._gameAreaHeight -
+            GameEngine.gameAreaWidth / 2 - PLAYER_WIDTH,
+            GameEngine.gameAreaHeight -
               PLAYER_HEIGHT -
               BOTTOM_PADDING -
               PLAYER_HEIGHT / 2
@@ -210,7 +212,7 @@ export class GameEngine {
           ctx: this._ctx,
           debug: this._debug,
           position: new Vector(
-            this._gameAreaWidth / 2 - width / 2,
+            GameEngine.gameAreaWidth / 2 - width / 2,
             TOP_PADDING
           ),
           velocity: new Vector(2, 0),
@@ -233,13 +235,13 @@ export class GameEngine {
           this._bgObjects.push(
             new ObjectClass({
               color: STAR_COLORS[getRandomInt(0, STAR_COLORS.length - 1)],
-              gameAreaHeight: this._gameAreaHeight,
+              gameAreaHeight: GameEngine.gameAreaHeight,
               ctx: this._ctx,
               height: 2,
               width: 2,
               position: new Vector(
-                getRandomInt(0, this._gameAreaWidth),
-                getRandomInt(0, this._gameAreaHeight)
+                getRandomInt(0, GameEngine.gameAreaWidth),
+                getRandomInt(0, GameEngine.gameAreaHeight)
               ),
               velocity: new Vector(0, 0),
               debug: false,
@@ -391,7 +393,7 @@ export class GameEngine {
         isGameOver = false; // Если рой все еще присутствует на игровом поле игра не окончена
         if (
           swarm.position.x < 10 ||
-          swarm.position.x + swarm.width > this._gameAreaWidth - 10
+          swarm.position.x + swarm.width > GameEngine.gameAreaWidth - 10
         ) {
           swarm.revertVelocityX();
         }
@@ -404,7 +406,7 @@ export class GameEngine {
         } else if (
           this._playerAction.right &&
           player.position.x <=
-            this._gameAreaWidth - player.width - RIGHT_PADDING
+            GameEngine.gameAreaWidth - player.width - RIGHT_PADDING
         ) {
           player.right();
         } else {
@@ -417,7 +419,9 @@ export class GameEngine {
       }
     }
 
-    if (hasPlayers && hasSwarm) {
+    const isGameStateRun = this._gameState === GameState.run;
+
+    if (hasPlayers && hasSwarm && isGameStateRun) {
       requestAnimationFrame(this._gameLoop.bind(this));
     } else {
       this._gameState = GameState.gameOver;
@@ -457,11 +461,12 @@ export class GameEngine {
    * @param height - Высота проверяемого объекта
    * @returns Возражает true если объект находится за границами игрового поля
    */
+  // eslint-disable-next-line class-methods-use-this
   private _outOfBoundary(position: Vector, width: number, height: number) {
-    if (position.y + height <= 0 || position.y >= this._gameAreaHeight) {
+    if (position.y + height <= 0 || position.y >= GameEngine.gameAreaHeight) {
       return true;
     }
-    if (position.x + width <= 0 || position.x >= this._gameAreaWidth) {
+    if (position.x + width <= 0 || position.x >= GameEngine.gameAreaWidth) {
       return true;
     }
     return false;
@@ -471,7 +476,12 @@ export class GameEngine {
    * Очистка игрового поля
    */
   private _clear() {
-    this._ctx.fillStyle = '#0f172b';
-    this._ctx.fillRect(0, 0, this._gameAreaWidth, this._gameAreaHeight);
+    this._ctx.fillStyle = BG_COLOR;
+    this._ctx.fillRect(
+      0,
+      0,
+      GameEngine.gameAreaWidth,
+      GameEngine.gameAreaHeight
+    );
   }
 }
