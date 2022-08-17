@@ -1,3 +1,4 @@
+import { isStar } from './Star';
 import { AbstractGameObject, isRectCollide } from './AbstractGameObject';
 import {
   BOTTOM_PADDING,
@@ -8,6 +9,8 @@ import {
   PLAYER_HEIGHT,
   PLAYER_WIDTH,
   RIGHT_PADDING,
+  STAR_COLORS,
+  STAR_COUNT,
   TOP_PADDING,
 } from './const';
 import { isPlayer, Player } from './Player';
@@ -55,6 +58,8 @@ export class GameEngine {
   private _lastTime = performance.now();
 
   private _objects: AbstractGameObject[] = [];
+
+  private _bgObjects: AbstractGameObject[] = [];
 
   private _objectsClass: typeof AbstractGameObject[] = [];
 
@@ -109,6 +114,7 @@ export class GameEngine {
     } else if (this._gameState === GameState.gameOver) {
       // Перезапуск
       this._objects = [];
+      this._bgObjects = [];
       this._score = 0;
       this.init().then(run);
     } else {
@@ -162,6 +168,8 @@ export class GameEngine {
    * @returns Возвращает true при удачной инициализации игровых объектов
    */
   public async init() {
+    this._clear();
+
     this._objectsClass.forEach((ObjectClass) => {
       let object: AbstractGameObject | null = null;
       if (isPlayer(ObjectClass)) {
@@ -213,6 +221,32 @@ export class GameEngine {
             this._objects.push(projectile);
           },
         });
+      } else if (isStar(ObjectClass)) {
+        let starCount = STAR_COUNT;
+        const getRandomInt = (min: number, max: number) => {
+          return (
+            Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) +
+            Math.ceil(min)
+          );
+        };
+        while (starCount > 0) {
+          this._bgObjects.push(
+            new ObjectClass({
+              color: STAR_COLORS[getRandomInt(0, STAR_COLORS.length - 1)],
+              gameAreaHeight: this._gameAreaHeight,
+              ctx: this._ctx,
+              height: 2,
+              width: 2,
+              position: new Vector(
+                getRandomInt(0, this._gameAreaWidth),
+                getRandomInt(0, this._gameAreaHeight)
+              ),
+              velocity: new Vector(0, 0),
+              debug: false,
+            })
+          );
+          starCount -= 1;
+        }
       }
 
       if (object) {
@@ -224,8 +258,11 @@ export class GameEngine {
     const objectInit = this._objects.map((object) =>
       object.init().catch((error) => console.error(error))
     );
+    const bgObjectInit = this._bgObjects.map((bgObject) =>
+      bgObject.init().catch((error) => console.error(error))
+    );
 
-    const initResult = await Promise.all(objectInit);
+    const initResult = await Promise.all(objectInit.concat(bgObjectInit));
     if (!initResult.every((res) => res)) {
       throw new Error('Init objects failure');
     }
@@ -295,6 +332,10 @@ export class GameEngine {
     let isGameOver = true;
     let hasPlayers = false;
     let hasSwarm = false;
+
+    for (let i = 0; i < this._bgObjects.length; i += 1) {
+      this._bgObjects[i].update(dt);
+    }
 
     for (let i = 0; i < this._objects.length; i += 1) {
       this._objects[i].update(dt);
@@ -430,6 +471,7 @@ export class GameEngine {
    * Очистка игрового поля
    */
   private _clear() {
-    this._ctx.clearRect(0, 0, this._gameAreaWidth, this._gameAreaHeight);
+    this._ctx.fillStyle = '#0f172b';
+    this._ctx.fillRect(0, 0, this._gameAreaWidth, this._gameAreaHeight);
   }
 }

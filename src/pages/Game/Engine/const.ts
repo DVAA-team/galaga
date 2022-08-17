@@ -18,3 +18,5 @@ export const PLAYER_BULLET_WIDTH = 9;
 export const BULLET_OFFSET_X = 18;
 export const BULLET_OFFSET_Y = 12;
 export const BASE_SCORE = 100;
+export const STAR_COUNT = 150;
+export const STAR_COLORS = ['red', 'green', 'white', 'yellow'];
