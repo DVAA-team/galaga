@@ -50,11 +50,11 @@ export class Star extends AbstractGameObject {
 }
 
 /**
- * Проверяет на конструктор класса Player
+ * Проверяет на конструктор класса Star
  *
  * @param val - Конструктор объекта для проверки
  * @returns Возвращает true если переданный конструктор является
- * конструктором Player иначе false
+ * конструктором Star иначе false
  */
 export function isStar(val: typeof AbstractGameObject): val is typeof Star {
   return val.type === GameObjectType.Star;
