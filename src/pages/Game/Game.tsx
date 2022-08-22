@@ -38,10 +38,14 @@ const Game = () => {
   useEffect(() => {
     const { current: canvasNode } = canvasRef;
     const { current: gameNode } = gameRef;
-    if (!canvasNode || !gameNode) throw new Error('Could not get canvas node');
+    if (!canvasNode || !gameNode) {
+      throw new Error('Could not get canvas node');
+    }
 
     const ctx = canvasNode.getContext('2d');
-    if (ctx == null) throw new Error('Could not get 2d context');
+    if (ctx == null) {
+      throw new Error('Could not get 2d context');
+    }
 
     gameEngine = new GameEngine({
       ctx,
