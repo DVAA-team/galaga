@@ -1,4 +1,10 @@
 import { app } from '@/server/app';
-import { startApp } from '@/server/utils/start-app';
+import normalizePort from '@/server/utils/normalizePort';
+import { startServer } from '@/server/utils/startApp';
+import dotenv from 'dotenv';
 
-startApp({ app });
+dotenv.config();
+
+const PORT = normalizePort(process.env.PORT || '3000');
+
+startServer(app, PORT);

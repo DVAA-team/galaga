@@ -1,12 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
-import renderBundle from './bundle';
+import renderBundle from './renderBundle';
 
-export default function render() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const location = req.url;
-    const { html } = renderBundle({ location });
-    res.send(html);
-    next();
-  };
-}
+const renderMiddleware: RequestHandler = (req, res) => {
+  const html = renderBundle({ location: req.url });
+  res.status(200).send(html);
+};
+
+export default renderMiddleware;

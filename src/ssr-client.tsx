@@ -4,28 +4,38 @@ import { Provider } from 'react-redux';
 import SsrApp from '@/components/SsrApp/SsrApp';
 import React from 'react';
 import { StaticRouter } from 'react-router-dom/server';
+import { BrowserRouter } from 'react-router-dom';
 import { store } from './store';
+import { registerServiceWorker } from './registerServiceWorker';
 
-export const Bundle: React.FC = () => {
-  return <SsrApp />;
+type TServerBundleProps = {
+  location: string;
+  data?: unknown;
 };
 
-type TBundleProps = {
-  location?: string;
+export const Bundle: React.FC<TServerBundleProps> = (props) => {
+  const { location } = props;
+  return (
+    <Provider store={store}>
+      <StaticRouter location={location}>
+        <SsrApp />
+      </StaticRouter>
+    </Provider>
+  );
 };
 
-export default (ssrProps: TBundleProps) => {
-  const { location = '' } = ssrProps;
-
+// В параметры функции можно добавить принимаемы переменные чтобы инициализировать состояние клиента
+export default () => {
   const container = document.getElementById('root');
   if (container !== null) {
     hydrateRoot(
       container,
       <Provider store={store}>
-        <StaticRouter location={location}>
+        <BrowserRouter>
           <SsrApp />
-        </StaticRouter>
+        </BrowserRouter>
       </Provider>
     );
   }
+  registerServiceWorker();
 };

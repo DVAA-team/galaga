@@ -1,67 +1,45 @@
 import path from 'path';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-// import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import CopyWebpackPlugin from 'copy-webpack-plugin';
+import { Configuration, ProvidePlugin } from 'webpack';
+import nodeExternals from 'webpack-node-externals';
+import { merge } from 'webpack-merge';
 import { DIST_DIR, SRC_DIR } from './env';
 import fileLoader from './loaders/file';
 import cssLoader from './loaders/css';
-import cssModuleLoader from './loaders/css-module';
-import svgLoader from './loaders/svg';
 import jsLoader from './loaders/js';
+import commonConfig from './common.config';
 
-// const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
-const nodeExternals = require('webpack-node-externals');
-
-const config = {
+const config: Configuration = merge(commonConfig, {
   name: 'ssr_client',
-
   target: 'node',
-
-  entry: [
-    // IS_DEV && 'react-hot-loader/patch',
-    // Entry для работы HMR
-    // IS_DEV && 'webpack-hot-middlewares/client',
-    // IS_DEV && 'css-hot-loader/hotModuleReplacement',
-    path.join(SRC_DIR, 'ssr-client'),
-  ].filter(Boolean),
-
+  entry: path.resolve(SRC_DIR, 'ssr-client'),
   output: {
-    path: DIST_DIR,
+    path: path.resolve(DIST_DIR, 'server'),
     filename: 'ssrClient.js',
     libraryTarget: 'commonjs2',
   },
-
   externalsPresets: { node: true },
-  externals: [nodeExternals()],
-
-  devtool: 'source-map',
-
-  resolve: {
-    plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
-    extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx', '.css'],
-    modules: ['dist', 'node_modules'],
-  },
+  externals: [
+    {
+      // Подключаем серверные моки
+      axios: path.resolve(__dirname, 'mocks/axios.js'),
+    },
+    nodeExternals({
+      allowlist: [/^react-toastify/],
+    }),
+  ],
 
   module: {
-    rules: [
-      fileLoader.server,
-      cssLoader.server,
-      cssModuleLoader.server,
-      svgLoader.server,
-      jsLoader.server,
-    ],
+    rules: [fileLoader.server, cssLoader.server, jsLoader.server],
   },
 
-  // plugins: [
-  //   new HtmlWebpackPlugin({
-  //     template: './public/index.html',
-  //     inject: 'body',
-  //   }),
-  //   new CopyWebpackPlugin({
-  //     patterns: [{ from: './public/serviceWorker.js' }],
-  //   }),
-  //   new SpriteLoaderPlugin(),
-  // ],
-};
+  plugins: [
+    new ProvidePlugin({
+      // Подключаем браузерные моки
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      AudioContext: path.resolve(__dirname, 'mocks/AudioContext.js'),
+      createImageBitmap: path.resolve(__dirname, 'mocks/createImageBitmap.js'),
+    }),
+  ],
+});
 
 export default config;

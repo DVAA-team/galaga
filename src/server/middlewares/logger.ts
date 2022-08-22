@@ -1,16 +1,14 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 
-export default function logger() {
-  return (req: Request, _res: Response, next: NextFunction) => {
-    // FIXME: (denis) нужно объявить свойство logger у Request,
-    //  но я не знаю как :(. Добавил interface Request в typings/app/index.d.ts,
-    //  но это не помогает
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    req.logger = () => {
-      // eslint-disable-next-line
-      console.log(req);
-    };
-    next();
+const loggerMiddleware: RequestHandler = (req, _res, next) => {
+  req.logger = (message) => {
+    const methodUrl = `${req.method} ${req.url}`;
+
+    // eslint-disable-next-line no-console
+    console.log(`${methodUrl}${message ? ` - ${message}` : ''}`);
   };
-}
+  req.logger();
+  next();
+};
+
+export default loggerMiddleware;

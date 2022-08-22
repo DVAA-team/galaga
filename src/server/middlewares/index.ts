@@ -1,8 +1,3 @@
-import { RequestHandler } from 'express';
-import loggerMiddleware from './logger';
-import renderMiddleware from './render';
-
-const logger: RequestHandler = loggerMiddleware();
-const render: RequestHandler | RequestHandler[] = renderMiddleware();
-
-export { render, logger };
+export { default as render } from './render';
+export { default as logger } from './logger';
+export { default as errorHandler } from './errorHandler';

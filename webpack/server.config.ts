@@ -1,51 +1,42 @@
 import path from 'path';
-import { Configuration } from 'webpack';
-import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
-
+import { Configuration, WebpackPluginInstance } from 'webpack';
+import nodeExternals from 'webpack-node-externals';
+import { merge } from 'webpack-merge';
 import { DIST_DIR, IS_DEV, SRC_DIR } from './env';
-import fileLoader from './loaders/file';
-import cssLoader from './loaders/css';
-import svgLoader from './loaders/svg';
+
 import jsLoader from './loaders/js';
+import commonConfig from './common.config';
 
-const nodeExternals = require('webpack-node-externals');
+import OnFirstBuildDonePlugin from './plugins/OnFirstBuildDonePlugin';
 
-const config: Configuration = {
+const config: Configuration = merge(commonConfig, {
   name: 'server',
   target: 'node',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  node: { __dirname: false },
-  entry: path.join(SRC_DIR, 'server'),
-  module: {
-    rules: [
-      fileLoader.server,
-      cssLoader.server,
-      jsLoader.server,
-      cssLoader.server,
-      svgLoader.server,
-    ],
+  dependencies: ['ssr_client'],
+  entry: path.resolve(SRC_DIR, 'server'),
+  output: {
+    path: path.resolve(DIST_DIR, 'server'),
+    filename: 'index.js',
+    libraryTarget: 'commonjs2',
   },
   externalsPresets: { node: true },
   externals: [nodeExternals()],
-  output: {
-    filename: 'server.js',
-    libraryTarget: 'commonjs2',
-    path: DIST_DIR,
-    publicPath: '/static/',
-  },
   resolve: {
-    plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
-    extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx', '.css'],
-    modules: ['src', 'node_modules'],
+    alias: {
+      // Добавляем алиас для обращения к коду клиента внутри express сервера
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'builded-ssr-client': path.resolve(DIST_DIR, 'server/ssrClient'),
+    },
   },
 
-  devtool: 'source-map',
-
-  performance: {
-    hints: IS_DEV ? false : 'warning',
+  module: {
+    rules: [jsLoader.server],
   },
-
+  plugins: [
+    // Плагин для запуска команды в консоли после удачной первой сборки
+    IS_DEV && new OnFirstBuildDonePlugin({ command: 'npm run dev:server' }),
+  ].filter(Boolean) as WebpackPluginInstance[],
   optimization: { nodeEnv: false },
-};
+});
 
 export default config;
