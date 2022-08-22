@@ -5,6 +5,7 @@ export enum GameObjectType {
   Enemy,
   Swarm,
   Projectile,
+  Star,
   Unknown,
 }
 

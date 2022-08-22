@@ -1,16 +1,17 @@
-import { useCallback, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { Button } from '../../components/Button';
-import { GameEngine, GAME_HEIGHT, GAME_WIDTH, Player, Swarm } from './Engine';
+import { GameEngine, Player, Swarm, Star } from './Engine';
 
 import styles from './GamePage.module.css';
 
-const GAME_AREA = {
-  width: `${GAME_WIDTH}px`,
-  height: `${GAME_HEIGHT}px`,
+const GAME_AREA_STYLE = {
+  aspectRatio: (
+    GameEngine.gameAreaWidth / GameEngine.gameAreaHeight
+  ).toString(),
 };
 
-let gameEngine: GameEngine;
+let gameEngine: GameEngine | null = null;
 
 const enum Status {
   start = 'start',
@@ -20,50 +21,96 @@ const enum Status {
 
 const Game = () => {
   const [gameStatus, setGameStatus] = useState(Status.start);
-
   const [score, setScore] = useState(0);
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gameRef = useRef<HTMLDivElement>(null);
 
   const gameStart = () => {
     setScore(0);
     setGameStatus(Status.run);
+    if (!gameEngine) {
+      throw new Error('Игра еще не инициализирована');
+    }
     gameEngine.start();
   };
 
-  const onCanvasRefChange = useCallback(
-    (canvasNode: HTMLCanvasElement | null) => {
-      if (canvasNode !== null) {
-        const ctx = canvasNode.getContext('2d');
-        if (ctx == null) throw new Error('Could not get 2d context');
+  useEffect(() => {
+    const { current: canvasNode } = canvasRef;
+    const { current: gameNode } = gameRef;
+    if (!canvasNode || !gameNode) {
+      throw new Error('Could not get canvas node');
+    }
 
-        gameEngine = new GameEngine({
-          ctx,
-          width: GAME_WIDTH,
-          height: GAME_HEIGHT,
-          debug: false,
-          onScoreUpdate: setScore,
-          onGameOver(newScore) {
-            setGameStatus(Status.gameOver);
-            setScore(newScore);
-          },
-        });
-        gameEngine.registerObject([Player, Swarm]);
-        gameEngine.init();
+    const ctx = canvasNode.getContext('2d');
+    if (ctx == null) {
+      throw new Error('Could not get 2d context');
+    }
+
+    gameEngine = new GameEngine({
+      ctx,
+      debug: false,
+      onScoreUpdate: setScore,
+      onGameOver(newScore) {
+        setGameStatus(Status.gameOver);
+        setScore(newScore);
+      },
+    });
+    gameEngine.registerObject([Player, Swarm, Star]);
+    gameEngine.init();
+
+    const keyUpHandler: (
+      this: Document,
+      ev: DocumentEventMap['keyup']
+    ) => void = ({ code }) => {
+      if (code === 'KeyF') {
+        if (!document.fullscreenElement) {
+          gameNode.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
       }
-    },
-    []
-  );
+    };
+
+    document.addEventListener('keyup', keyUpHandler);
+
+    return () => {
+      if (gameEngine) {
+        gameEngine.emergencyStop();
+        gameEngine = null;
+      }
+      document.removeEventListener('keyup', keyUpHandler);
+    };
+  }, [canvasRef, gameRef]);
+
+  const className = (...args: string[]) => {
+    return args.join(' ');
+  };
 
   const renderGameOverlay = () => (
     <div className={styles.game_overlay}>
       <h1 className={styles.game_text}>
-        {gameStatus === Status.gameOver
-          ? 'Игра окончена'
-          : 'Управляйте клавишами "a" и "d" или стрелками, стрельба "space"'}
+        {gameStatus === Status.gameOver ? (
+          'Игра окончена'
+        ) : (
+          <>
+            <p>Управляйте клавишами "a" и "d" или стрелками</p>
+            <p>стрельба "space"</p>
+            <p>развернуть в полный экран "f"</p>
+          </>
+        )}
       </h1>
       {gameStatus === Status.gameOver && (
         <h1 className={styles.game_text}>
           Вы набрали:{' '}
-          <span className="text-red-500 font-extrabold">{score}</span>
+          <span
+            className={className(
+              styles['score-text'],
+              styles['score-text__red']
+            )}
+          >
+            {score}
+          </span>
         </h1>
       )}
 
@@ -76,22 +123,14 @@ const Game = () => {
   );
 
   return (
-    <div className={styles.container}>
-      <div className={styles.spacer} />
-      <div className={styles.game}>
-        <div className={styles.spacer} />
-        <div className={styles.game_area} style={GAME_AREA}>
-          <p className={styles.game_score}>{score}</p>
-          <canvas
-            ref={onCanvasRefChange}
-            width={GAME_WIDTH}
-            height={GAME_HEIGHT}
-          />
-          {gameStatus !== Status.run && renderGameOverlay()}
+    <div ref={gameRef} className={styles.game}>
+      <div className={styles.game_area} style={GAME_AREA_STYLE}>
+        <div className={className(styles.game_score, styles['score-text'])}>
+          {score}
         </div>
-        <div className={styles.spacer} />
+        <canvas ref={canvasRef} />
+        {gameStatus !== Status.run && renderGameOverlay()}
       </div>
-      <div className={styles.spacer} />
     </div>
   );
 };
