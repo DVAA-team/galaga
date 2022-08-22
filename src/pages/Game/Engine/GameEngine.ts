@@ -24,7 +24,6 @@ export type TGameEngineOptions = {
   debug?: boolean;
   onScoreUpdate?: (newScore: number) => void;
   onGameOver?: (score: number) => void;
-  onGameStart?: () => void;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function

@@ -28,7 +28,9 @@
           "**/*.test.ts?(x)",
           "**/*.spec.ts?(x)",
           "**/test-utils.ts",
-          "webpack.config.js"
+          "webpack.config.ts",
+          "webpack/**",
+          "src/lib/**"
         ]
       }
     ],
@@ -82,7 +84,8 @@
       },
       {
         "selector": "property",
-        "format": ["camelCase"]
+        "format": ["camelCase"],
+        "leadingUnderscore": "allowSingleOrDouble"
       },
       {
         "selector": "property",
@@ -97,14 +100,22 @@
         "leadingUnderscore": "require"
       }
     ],
-    "@typescript-eslint/no-var-requires": 0
+    "@typescript-eslint/no-var-requires": 0,
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_" }
+    ]
   },
   "settings": {
     "import/extensions": [".ts", ".tsx", ".css"],
     "import/resolver": {
       "alias": {
         "extensions": [".ts", ".tsx", ".js", ".jsx", ".css", ".json"],
-        "map": [["@", "./src"]]
+        "map": [
+          ["@", "./src"],
+          ["builded-ssr-client", "./typings/builded-ssr-client.d.ts"]
+        ]
       }
     }
   }

@@ -1,9 +1,8 @@
 import '../../assets/styles/main.css';
-import './App.css';
+import './SsrApp.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-
+import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -20,7 +19,7 @@ import { NotFound } from '../../pages/NotFound';
 import { Forum } from '../../pages/Forum';
 import { ForumPost } from '../../pages/ForumPost';
 
-const App = () => {
+const SsrApp = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,7 +31,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
+    <>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<SignIn />} />
@@ -48,8 +47,8 @@ const App = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer />
-    </BrowserRouter>
+    </>
   );
 };
 
-export default App;
+export default SsrApp;
