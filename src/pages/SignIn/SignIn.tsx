@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { setUserProfile } from '@/store/slices/userSlice';
 import { schemaSignIn } from '@/utils/validate';
+import { YandexLogin } from '@/components/YandexLogin';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -73,6 +74,9 @@ const SignIn = () => {
           >
             Нет аккаунта?
           </Link>
+        </div>
+        <div className="w-full text-center mt-3">
+          <YandexLogin />
         </div>
       </Form>
     </div>

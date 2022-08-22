@@ -54,3 +54,10 @@ export type TChangeAvatarRequest = {
 export type TBabRequestError = {
   reason: string;
 };
+
+export type TYandexOAuthSingInRequest = {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  code: 'string';
+  redirect_uri: 'string';
+  /* eslint-enable @typescript-eslint/naming-convention */
+};
