@@ -1,4 +1,4 @@
-const STATIC_ASSETS = ['/static/sprite.svg', '/manifest.json'];
+const STATIC_ASSETS = ['/manifest.json'];
 
 const STATIC_CACHE_NAME = 'static-data-v1';
 const DYNAMIC_CACHE_NAME = 'dynamic-data-v1';

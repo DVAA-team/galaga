@@ -4,7 +4,7 @@ import { TProps } from './types';
 
 const Avatar: TProps = ({ ...props }) => {
   const {
-    src = defaultAvatar.url,
+    src = defaultAvatar,
     alt = 'avatar',
     type = 'circle',
     borderType,
