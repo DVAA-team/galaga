@@ -10,7 +10,7 @@
     "prepare": "husky install && git config --local commit.template .husky/.gitcommittemplate",
     "docker-build": "docker build -t galaga .",
     "docker-run": "docker run --init -p 3000:3000 galaga",
-    "start": "cross-env NODE_ENV=production node dist/server/index.ts",
+    "start": "cross-env NODE_ENV=production node dist/server/index.js",
     "test": "jest",
     "dev:server": "nodemon dist/server/index.js --watch dist/server",
     "clear": "rimraf dist"
