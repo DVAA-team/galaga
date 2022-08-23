@@ -6,6 +6,8 @@ import htmlescape from 'htmlescape';
  * Файл генерируется конфигом webpack (см. webpack/ssr-client.config.ts)
  */
 import { Bundle } from 'builded-ssr-client';
+import { store } from '@/store';
+import { renderObject } from '@/utils/renderObject';
 
 type TPageHtmlParams = {
   location: string;
@@ -21,6 +23,8 @@ export default function renderBundle({
   const bundleHtml = renderToString(
     <Bundle location={location} data={serverData} />
   );
+
+  const initialState = renderObject(store.getState());
 
   const html = renderToStaticMarkup(
     <html lang="ru">
@@ -40,6 +44,11 @@ export default function renderBundle({
       <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root" dangerouslySetInnerHTML={{ __html: bundleHtml }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__PRELOADED_STATE__ = ${initialState}`,
+          }}
+        />
         <script src="webClient.js"></script>
         <script
           dangerouslySetInnerHTML={{
