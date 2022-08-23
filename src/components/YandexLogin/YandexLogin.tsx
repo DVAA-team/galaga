@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import yandexOAuthService from '@/services/yandexOAuthService';
-import yandexLogo from '@/assets/images/ico/brands/yandex.svg';
+import yandexLogo from '../../assets/images/ico/brands/yandex.svg';
 import { TProps } from './types';
 import styles from './YandexLogin.module.css';
 
