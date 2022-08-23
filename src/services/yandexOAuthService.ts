@@ -1,16 +1,20 @@
 import axios, { AxiosError } from 'axios';
-import {
-  clientToServerNaming,
-  serverToClientNaming,
-} from '@/utils/convertNaming';
+import { serverToClientNaming } from '@/utils/convertNaming';
 import { notifyError } from '@/utils/notify';
 import { yandexOAuthApi } from '@/api/yandexOAuthApi';
-import { TYandexOAuthSingIn } from './types';
 
 type TServerError = { reason: string };
 
 class YandexOAuthService {
   public lastError: Error | null = null;
+
+  constructor() {
+    try {
+      this._redirectUri = window.location.origin;
+    } catch (e) {
+      this._redirectUri = '';
+    }
+  }
 
   public getServiceId = () =>
     yandexOAuthApi
@@ -20,22 +24,27 @@ class YandexOAuthService {
       })
       .catch(this._errorHandler);
 
-  public signIn = (d: TYandexOAuthSingIn) =>
+  public signIn = (authorizationCode: string) =>
     yandexOAuthApi
-      .signIn(clientToServerNaming(d))
+      .signIn({
+        code: authorizationCode,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: this._redirectUri,
+      })
       .then(({ data }) => serverToClientNaming(data))
       .catch(this._errorHandler);
 
-  public getAuthorizeUrl = () => {
-    return this.getServiceId().then((id) => {
-      if (id) {
-        return `https://oauth.yandex.ru/authorize?response_type=code&client_id=${id}&redirect_uri=${this._redirectUri}`;
+  public getAuthorizeUrl = async () => {
+    if (this._redirectUri) {
+      const serviceId = await this.getServiceId();
+      if (serviceId) {
+        return `https://oauth.yandex.ru/authorize?response_type=code&client_id=${serviceId}&redirect_uri=${this._redirectUri}`;
       }
-      return '';
-    });
+    }
+    return '';
   };
 
-  private _redirectUri = 'http://localhost:3000';
+  private readonly _redirectUri: string = '';
 
   private _errorHandler = (e: AxiosError) => {
     if (axios.isAxiosError(e)) {

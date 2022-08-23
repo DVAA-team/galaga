@@ -68,15 +68,15 @@ const SignIn = () => {
         />
         <Button cls="w-full mt-12" text="Войти" type="submit" />
         <div className="w-full text-center mt-3">
+          <YandexLogin />
+        </div>
+        <div className="w-full text-center mt-3">
           <Link
             className="font-bold underline hover:no-underline"
             to="/sign-up"
           >
             Нет аккаунта?
           </Link>
-        </div>
-        <div className="w-full text-center mt-3">
-          <YandexLogin />
         </div>
       </Form>
     </div>

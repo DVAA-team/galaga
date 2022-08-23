@@ -1,0 +1,7 @@
+.avatar {
+  @apply mr-3;
+
+  width: 1.75rem;
+  height: 100%;
+  display: inline;
+}

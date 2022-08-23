@@ -9,7 +9,7 @@ import yandexOAuthService from '@/services/yandexOAuthService';
 const Home = () => {
   const userData = useAuth();
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -18,23 +18,20 @@ const Home = () => {
     } else {
       const authorizationCode = searchParams.get('code');
       if (authorizationCode) {
-        yandexOAuthService
-          .signIn({
-            code: authorizationCode,
-            redirectUri: 'http://localhost:3000',
-          })
-          .then((data) => {
-            if (data === 'OK') {
-              userService.getUser().then((profile) => {
-                if (profile !== null) {
-                  dispatch(setUserProfile(profile));
-                }
-              });
-            }
-          });
+        yandexOAuthService.signIn(authorizationCode).then((data) => {
+          if (data === 'OK') {
+            userService.getUser().then((profile) => {
+              if (profile !== null) {
+                dispatch(setUserProfile(profile));
+                searchParams.delete('code');
+                setSearchParams(searchParams);
+              }
+            });
+          }
+        });
       }
     }
-  }, [dispatch, searchParams, userData]);
+  }, [dispatch, searchParams, setSearchParams, userData]);
 
   const renderNotAuthLinks = () => (
     <>

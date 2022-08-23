@@ -1,9 +1,10 @@
 import { TYandexOAuthSingInRequest } from '@/api/types';
+import appConstants from '@/config/appConstants';
 import { AbstractHttpClient } from './AbstractHttpClient';
 
 class YandexOAuthApi extends AbstractHttpClient {
   public constructor() {
-    super('https://ya-praktikum.tech/api/v2');
+    super(appConstants.apiBaseURL);
   }
 
   public getServiceId = () => this.instance.get('/oauth/yandex/service-id');
