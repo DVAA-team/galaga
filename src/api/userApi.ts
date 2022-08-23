@@ -10,7 +10,7 @@ import {
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
-    super('https://ya-praktikum.tech/api/v2');
+    super('/yandex-api');
   }
 
   public logOut = () => this.instance.post('/auth/logout', {});

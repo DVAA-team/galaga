@@ -1,9 +1,10 @@
 import express, { Express } from 'express';
-import { healthChecks } from '@/server/routes';
+import { healthChecks, yandexApi } from '@/server/routes';
 import {
   logger,
   render,
   errorHandler,
+  getYandexUser,
   initStoreWithUser,
 } from '@/server/middlewares';
 import path from 'node:path';
@@ -12,11 +13,12 @@ import cookieParser from 'cookie-parser';
 const app: Express = express()
   .disable('x-powered-by')
   .enable('trust proxy')
+  .use(cookieParser())
+  .use(yandexApi)
   .use(logger)
   .use(express.static(path.join(__dirname, '..', 'public')))
   .use('/hc', healthChecks)
-  .use(cookieParser())
-  .get('*', [initStoreWithUser, render])
+  .get('*', [getYandexUser, initStoreWithUser, render])
   .use(errorHandler);
 
 export { app };
