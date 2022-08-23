@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { setUserProfile } from '@/store/slices/userSlice';
 import { schemaSignIn } from '@/utils/validate';
+import { YandexLogin } from '@/components/YandexLogin';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -66,6 +67,9 @@ const SignIn = () => {
           error={errors.password}
         />
         <Button cls="w-full mt-12" text="Войти" type="submit" />
+        <div className="w-full text-center mt-3">
+          <YandexLogin />
+        </div>
         <div className="w-full text-center mt-3">
           <Link
             className="font-bold underline hover:no-underline"

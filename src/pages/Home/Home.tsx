@@ -1,16 +1,37 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useDispatch } from 'react-redux';
+import userService from '@/services/userService';
+import { setUserProfile } from '@/store/slices/userSlice';
+import yandexOAuthService from '@/services/yandexOAuthService';
 
 const Home = () => {
   const userData = useAuth();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (userData !== null) {
       setIsAuthorized(true);
+    } else {
+      const authorizationCode = searchParams.get('code');
+      if (authorizationCode) {
+        yandexOAuthService.signIn(authorizationCode).then((data) => {
+          if (data === 'OK') {
+            userService.getUser().then((profile) => {
+              if (profile !== null) {
+                dispatch(setUserProfile(profile));
+                searchParams.delete('code');
+                setSearchParams(searchParams);
+              }
+            });
+          }
+        });
+      }
     }
-  }, [userData]);
+  }, [dispatch, searchParams, setSearchParams, userData]);
 
   const renderNotAuthLinks = () => (
     <>
