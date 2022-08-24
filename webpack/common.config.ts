@@ -1,9 +1,6 @@
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import { Configuration, DefinePlugin, ProgressPlugin } from 'webpack';
-import dotenv from 'dotenv';
+import { Configuration, ProgressPlugin } from 'webpack';
 import { IS_DEV } from './env';
-
-dotenv.config();
 
 const commonConfig: Configuration = {
   devtool: 'source-map',
@@ -22,10 +19,6 @@ const commonConfig: Configuration = {
       dependencies: true,
       dependenciesCount: 10000,
       percentBy: null,
-    }),
-    new DefinePlugin({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'process.env': JSON.stringify(process.env),
     }),
   ],
   stats: 'minimal',
