@@ -5,18 +5,20 @@ import SsrApp from '@/components/SsrApp/SsrApp';
 import React from 'react';
 import { StaticRouter } from 'react-router-dom/server';
 import { BrowserRouter } from 'react-router-dom';
-import { store } from './store';
+import { initialStore } from './store';
+import type { TRootState } from './store';
 import { registerServiceWorker } from './registerServiceWorker';
 
 type TServerBundleProps = {
   location: string;
+  initialState: TRootState;
   data?: unknown;
 };
 
 export const Bundle: React.FC<TServerBundleProps> = (props) => {
-  const { location } = props;
+  const { location, initialState } = props;
   return (
-    <Provider store={store}>
+    <Provider store={initialStore(initialState)}>
       <StaticRouter location={location}>
         <SsrApp />
       </StaticRouter>
@@ -25,12 +27,12 @@ export const Bundle: React.FC<TServerBundleProps> = (props) => {
 };
 
 // В параметры функции можно добавить принимаемы переменные чтобы инициализировать состояние клиента
-export default () => {
+export default (initialState: TRootState) => {
   const container = document.getElementById('root');
   if (container !== null) {
     hydrateRoot(
       container,
-      <Provider store={store}>
+      <Provider store={initialStore(initialState)}>
         <BrowserRouter>
           <SsrApp />
         </BrowserRouter>

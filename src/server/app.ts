@@ -5,7 +5,6 @@ import {
   render,
   errorHandler,
   getYandexUser,
-  initStoreWithUser,
 } from '@/server/middlewares';
 import path from 'node:path';
 import cookieParser from 'cookie-parser';
@@ -13,12 +12,12 @@ import cookieParser from 'cookie-parser';
 const app: Express = express()
   .disable('x-powered-by')
   .enable('trust proxy')
-  .use(cookieParser())
   .use(yandexApi)
+  .use(cookieParser())
   .use(logger)
   .use(express.static(path.join(__dirname, '..', 'public')))
   .use('/hc', healthChecks)
-  .get('*', [getYandexUser, initStoreWithUser, render])
+  .get('*', [getYandexUser, render])
   .use(errorHandler);
 
 export { app };

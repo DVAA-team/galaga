@@ -15,8 +15,8 @@ router.use(
       '^/yandex-api': '',
       /* eslint-enable @typescript-eslint/naming-convention */
     },
-    logLevel: 'debug',
-    cookieDomainRewrite: 'localhost',
+    logLevel: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+    cookieDomainRewrite: 'localhost', // FIXME Потенциальная проблема при деплое
   })
 );
 

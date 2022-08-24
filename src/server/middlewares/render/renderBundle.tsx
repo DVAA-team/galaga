@@ -6,11 +6,11 @@ import htmlescape from 'htmlescape';
  * Файл генерируется конфигом webpack (см. webpack/ssr-client.config.ts)
  */
 import { Bundle } from 'builded-ssr-client';
-import { store } from '@/store';
-import { renderObject } from '@/utils/renderObject';
+import type { TRootState } from '@/store';
 
 type TPageHtmlParams = {
   location: string;
+  initialState: TRootState;
   serverData?: unknown;
   clientData?: unknown;
 };
@@ -19,12 +19,11 @@ export default function renderBundle({
   serverData = {},
   clientData = {},
   location,
+  initialState,
 }: TPageHtmlParams): string {
   const bundleHtml = renderToString(
-    <Bundle location={location} data={serverData} />
+    <Bundle location={location} data={serverData} initialState={initialState} />
   );
-
-  const initialState = renderObject(store.getState());
 
   const html = renderToStaticMarkup(
     <html lang="ru">
@@ -44,11 +43,6 @@ export default function renderBundle({
       <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root" dangerouslySetInnerHTML={{ __html: bundleHtml }} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.__PRELOADED_STATE__ = ${initialState}`,
-          }}
-        />
         <script src="webClient.js"></script>
         <script
           dangerouslySetInnerHTML={{
@@ -58,7 +52,7 @@ export default function renderBundle({
              * приложение. Вызывая, WebClient.default() мы вызываем hydrateRoot
              * (см. дефолтный экспорт в файле src/ssr-client.tsx
              */
-            __html: `WebClient.default(${htmlescape(
+            __html: `WebClient.default(${htmlescape(initialState)},${htmlescape(
               clientData
             )});delete window.WebClient;`,
           }}

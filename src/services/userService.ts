@@ -30,13 +30,7 @@ class UserService {
   public getUser = () =>
     userApi
       .getUser()
-      .then(({ data }) => {
-        const user = serverToClientNaming(data);
-        document.cookie = `user=${encodeURIComponent(
-          JSON.stringify(user)
-        )}; path=/`;
-        return user;
-      })
+      .then(({ data }) => serverToClientNaming(data))
       .catch(() => null);
 
   public signIn = (d: TSignIn) =>
@@ -52,10 +46,7 @@ class UserService {
   public logOut = () =>
     userApi
       .logOut()
-      .then(() => {
-        document.cookie = `user= ; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        return true;
-      })
+      .then(() => true)
       .catch((error) => {
         this._errorHandler(error);
         return false;
