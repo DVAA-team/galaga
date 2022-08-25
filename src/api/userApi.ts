@@ -1,3 +1,4 @@
+import appConstants from '@/config/appConstants';
 import { AbstractHttpClient } from './AbstractHttpClient';
 import {
   TChangePasswordRequest,
@@ -10,7 +11,7 @@ import {
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
-    super('/yandex-api');
+    super(appConstants.yandexApiBaseURL);
   }
 
   public logOut = () => this.instance.post('/auth/logout', {});

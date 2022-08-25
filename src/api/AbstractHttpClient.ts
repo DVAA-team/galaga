@@ -1,4 +1,7 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import createDebug from '@/utils/debug';
+
+const debug = createDebug.extend('httpClient');
 
 export abstract class AbstractHttpClient {
   protected readonly instance: AxiosInstance;
@@ -17,6 +20,7 @@ export abstract class AbstractHttpClient {
 
     this._initializeResponseInterceptor =
       this._initializeResponseInterceptor.bind(this);
+    this._initializeResponseInterceptor();
   }
 
   private _initializeResponseInterceptor() {
@@ -27,12 +31,27 @@ export abstract class AbstractHttpClient {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private _handleResponse({ data }: AxiosResponse) {
-    return data;
+  private _handleResponse(response: AxiosResponse) {
+    debug(
+      'success %s response: %o',
+      `${response.config.baseURL}${response.config.url}`,
+      response
+    );
+    return response;
   }
 
   // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
   protected _handleError(error: any) {
+    if (error instanceof AxiosError) {
+      debug(
+        'error %s %s response: %o',
+        error.code,
+        `${error.config.baseURL}${error.config.url}`,
+        error.response
+      );
+    } else {
+      debug('unknown error %O', error);
+    }
     return Promise.reject(error);
   }
 }

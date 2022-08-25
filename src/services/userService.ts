@@ -58,9 +58,6 @@ class UserService {
       .then(({ data }) => serverToClientNaming(data))
       .then((user) => {
         notifySuccess('Профиль обновлен');
-        document.cookie = `user=${encodeURIComponent(
-          JSON.stringify(user)
-        )}; path=/`;
         return user;
       })
       .catch(this._errorHandler);

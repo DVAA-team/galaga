@@ -1,13 +1,16 @@
 import { RequestHandler } from 'express';
 import axios from 'axios';
 import { serverToClientNaming } from '@/utils/convertNaming';
+import createDebug from '@/server/utils/debug';
+
+const debug = createDebug.extend('MW:getYandexUser');
 
 const getYandexUser: RequestHandler = async (req, res, next) => {
   const cookie = Object.entries(req.cookies)
     .map(([key, value]) => `${key}=${value}`)
     .join('; ');
   try {
-    req.logger('request Yandex user');
+    debug('request user');
     const { data } = await axios.get(
       'https://ya-praktikum.tech/api/v2/auth/user',
       {
@@ -23,10 +26,12 @@ const getYandexUser: RequestHandler = async (req, res, next) => {
     res.locals.user = null;
   } finally {
     if (!res.locals.user) {
-      req.logger(`Yandex not authorize`);
+      debug(`not authorize`);
     } else {
-      req.logger(
-        `receive Yandex user id:${res.locals.user.id} name:${res.locals.user.firstName}`
+      debug(
+        'receive user id:%d login:%s',
+        res.locals.user.id,
+        res.locals.user.login
       );
     }
     next();
