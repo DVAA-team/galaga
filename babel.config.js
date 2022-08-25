@@ -12,8 +12,7 @@ module.exports = (api) => {
         },
       ],
       ['@babel/preset-react', { runtime: 'automatic' }],
-      ['@babel/preset-typescript', { allowDeclareFields: true }],
+      '@babel/preset-typescript',
     ],
-    plugins: [['@babel/plugin-proposal-decorators', { legacy: true }]],
   };
 };
