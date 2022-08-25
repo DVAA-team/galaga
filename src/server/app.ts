@@ -1,11 +1,13 @@
 import express, { Express } from 'express';
-import { healthChecks, yandexApi } from '@/server/routes';
+
+import { healthChecks, users, yandexApi } from '@/server/routes';
 import {
   logger,
   render,
   errorHandler,
   getYandexUser,
 } from '@/server/middlewares';
+
 import path from 'node:path';
 import cookieParser from 'cookie-parser';
 
@@ -17,6 +19,7 @@ const app: Express = express()
   .use(cookieParser())
   .use(logger)
   .use('/hc', healthChecks)
+  .use('/auth', users)
   .get('*', [getYandexUser, render])
   .use(errorHandler);
 
