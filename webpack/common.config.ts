@@ -1,6 +1,5 @@
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { Configuration, ProgressPlugin } from 'webpack';
-
 import { IS_DEV } from './env';
 
 const commonConfig: Configuration = {

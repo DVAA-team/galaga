@@ -1,13 +1,12 @@
 import { RequestHandler } from 'express';
+import createDebug from '@/server/utils/debug';
 
-const loggerMiddleware: RequestHandler = (req, _res, next) => {
-  req.logger = (message) => {
-    const methodUrl = `${req.method} ${req.url}`;
+const debug = createDebug.extend('request');
 
-    // eslint-disable-next-line no-console
-    console.log(`${methodUrl}${message ? ` - ${message}` : ''}`);
-  };
-  req.logger();
+const loggerMiddleware: RequestHandler = (req, res, next) => {
+  const reqDesc = `${req.method} ${req.url}`;
+  debug(`start %s\ncookies: %O`, reqDesc, req.cookies);
+  res.once('finish', () => debug('end %s', reqDesc));
   next();
 };
 

@@ -8,7 +8,7 @@ import yandexOAuthService from '@/services/yandexOAuthService';
 
 const Home = () => {
   const userData = useAuth();
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(!!userData);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
 
