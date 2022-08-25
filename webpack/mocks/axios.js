@@ -5,7 +5,16 @@ const axios = {
     });
   },
   create() {
-    return {};
+    return {
+      interceptors: {
+        response: {
+          use: () => {},
+        },
+        request: {
+          use: () => {},
+        },
+      },
+    };
   },
 };
 

@@ -1,7 +1,10 @@
 import { ErrorRequestHandler } from 'express';
+import createDebug from '@/utils/debug';
 
-const errorHandler: ErrorRequestHandler = (error, req, res, _next) => {
-  req.logger(`error ${error.message}`);
+const debug = createDebug.extend('MW:errorHandler');
+
+const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+  debug(error);
   res.status(500).end();
 };
 

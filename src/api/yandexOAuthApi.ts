@@ -4,7 +4,7 @@ import { AbstractHttpClient } from './AbstractHttpClient';
 
 class YandexOAuthApi extends AbstractHttpClient {
   public constructor() {
-    super(appConstants.apiBaseURL);
+    super(appConstants.yandexApiBaseURL);
   }
 
   public getServiceId = () => this.instance.get('/oauth/yandex/service-id');

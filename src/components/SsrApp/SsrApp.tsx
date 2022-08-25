@@ -4,10 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setUserProfile } from '@/store/slices/userSlice';
-import userService from '../../services/userService';
 import { Home } from '../../pages/Home';
 import { SignIn } from '../../pages/SignIn';
 import { SignUp } from '../../pages/SignUp';
@@ -20,16 +16,6 @@ import { Forum } from '../../pages/Forum';
 import { ForumPost } from '../../pages/ForumPost';
 
 const SsrApp = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    userService.getUser().then((profile) => {
-      if (profile !== null) {
-        dispatch(setUserProfile(profile));
-      }
-    });
-  }, [dispatch]);
-
   return (
     <>
       <Routes>

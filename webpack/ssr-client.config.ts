@@ -38,6 +38,7 @@ const config: Configuration = merge(commonConfig, {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       AudioContext: path.resolve(__dirname, 'mocks/AudioContext.js'),
       createImageBitmap: path.resolve(__dirname, 'mocks/createImageBitmap.js'),
+      window: path.resolve(__dirname, 'mocks/window.js'),
     }),
   ],
 });
