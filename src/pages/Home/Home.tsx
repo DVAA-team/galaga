@@ -13,11 +13,6 @@ const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    userService.getUserFromDB(2).then((profile) => {
-      // eslint-disable-next-line no-console
-      console.log(profile);
-    });
-
     if (userData !== null) {
       setIsAuthorized(true);
     } else {

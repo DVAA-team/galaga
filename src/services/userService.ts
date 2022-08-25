@@ -1,8 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
 import { userApi } from '@/api/userApi';
-import { userApi as localUserApi } from '@/api/localUserApi';
-
 import {
   clientToServerNaming,
   serverToClientNaming,
@@ -32,13 +30,6 @@ class UserService {
   public getUser = () =>
     userApi
       .getUser()
-      .then(({ data }) => serverToClientNaming(data))
-      .catch(() => null);
-
-  // eslint-disable-next-line class-methods-use-this
-  public getUserFromDB = (id: number) =>
-    localUserApi
-      .getUser(id)
       .then(({ data }) => serverToClientNaming(data))
       .catch(() => null);
 
