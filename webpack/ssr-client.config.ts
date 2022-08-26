@@ -13,9 +13,10 @@ const config: Configuration = merge(commonConfig, {
   target: 'node',
   entry: path.resolve(SRC_DIR, 'ssr-client'),
   output: {
-    path: path.resolve(DIST_DIR, 'server'),
-    filename: 'ssrClient.js',
+    path: path.resolve(DIST_DIR, 'ssr-client'),
+    filename: 'index.js',
     libraryTarget: 'commonjs2',
+    clean: true,
   },
   externalsPresets: { node: true },
   externals: [

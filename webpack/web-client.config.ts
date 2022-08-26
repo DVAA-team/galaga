@@ -18,6 +18,7 @@ const config: Configuration = merge(commonConfig, {
     filename: 'webClient.js',
     libraryTarget: 'var',
     library: 'WebClient',
+    clean: true,
   },
   module: {
     rules: [fileLoader.client, cssLoader.client, jsLoader.client],
