@@ -40,6 +40,24 @@ $ npm run dev
 - `dc:down:dev` - Удалить запущенные контейнеры
 - `dc:logs:dev` - Вывести логи контейнеров
 
+Для корректного запуска необходимо создать файл `.env` в корне проекта со следующим содержимым
+
+```
+NODE_ENV=development
+PORT=3000
+DB_PORT=5432
+DB_HOST=db
+DEBUG="galaga:*"
+POSTGRES_USER=<ЛюбоеИмяПользователя>
+POSTGRES_PASSWORD=<ЛюбойПароль>
+POSTGRES_DB=<НазваниеБД>
+PGADMIN_DEFAULT_EMAIL=<ЛогинВPGAdmin>
+PGADMIN_DEFAULT_PASSWORD=<ПарольВPGAdmin>
+PGADMIN_LISTEN_PORT=80
+```
+
+При этом база `<НазваниеБД>` должна быть создана в ручную, можно через PGAdmin
+
 ## Сборка приложения
 
 ```
