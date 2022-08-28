@@ -6,11 +6,12 @@ import React from 'react';
 import { StaticRouter } from 'react-router-dom/server';
 import { BrowserRouter } from 'react-router-dom';
 import createDebug from '@/utils/debug';
+import { env } from '@/config';
 import { initialStore } from './store';
 import type { TRootState } from './store';
 import { registerServiceWorker } from './registerServiceWorker';
 
-const debug = createDebug.extend('index');
+const debug = createDebug('index');
 
 type TServerBundleProps = {
   location: string;
@@ -44,5 +45,7 @@ export default (initialState: TRootState) => {
       </Provider>
     );
   }
-  registerServiceWorker();
+  if (env.isProd()) {
+    registerServiceWorker();
+  }
 };

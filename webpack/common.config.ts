@@ -1,5 +1,5 @@
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
-import { Configuration, ProgressPlugin } from 'webpack';
+import { Compiler, Configuration } from 'webpack';
 import { IS_DEV } from './env';
 
 const commonConfig: Configuration = {
@@ -10,18 +10,34 @@ const commonConfig: Configuration = {
     modules: ['src', 'node_modules'],
   },
   plugins: [
-    new ProgressPlugin({
-      activeModules: false,
-      entries: true,
-      modules: true,
-      modulesCount: 5000,
-      profile: false,
-      dependencies: true,
-      dependenciesCount: 10000,
-      percentBy: null,
-    }),
+    {
+      apply(compiler: Compiler) {
+        compiler.hooks.beforeRun.tap('statusPrint', () => {
+          // eslint-disable-next-line no-console
+          console.log(`Start compiling ${compiler.name} ....`);
+        });
+        compiler.hooks.watchRun.tap('statusPrint', () => {
+          // eslint-disable-next-line no-console
+          console.log(`Start compiling ${compiler.name} ....`);
+        });
+        compiler.hooks.done.tap('statusPrint', (stats) => {
+          // eslint-disable-next-line no-console
+          console.log(
+            'End compiling',
+            stats.toString({
+              // all: false,
+              assets: false,
+              modules: false,
+              entrypoints: false,
+              logging: 'warn',
+              colors: true,
+            })
+          );
+        });
+      },
+    },
   ],
-  stats: 'minimal',
+  stats: 'none',
   performance: {
     hints: IS_DEV ? false : 'warning',
   },

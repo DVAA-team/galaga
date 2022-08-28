@@ -51,7 +51,7 @@
 
 ```javascript
 // Импорт для клиентского кода
-import createDebug from '@/utils/debug'; // для серверного использовать '@/server/utils/debug'
+import { createDebug } from '@/utils'; // для серверного использовать '@/server/utils'
 
 const debug = createDebug.extend('<NameSpace>');
 
@@ -115,9 +115,9 @@ export abstract class AbstractHttpClient {
 
 ```javascript
 import { RequestHandler } from 'express';
-import createDebug from '@/server/utils/debug';
+import { createDebug } from '@/server/utils';
 
-const debug = createDebug.extend('request');
+const debug = createDebug('request');
 
 const debugMiddleware: RequestHandler = (req, res, next) => {
   const reqDesc = `${req.method} ${req.url}`;

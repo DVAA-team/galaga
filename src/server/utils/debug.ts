@@ -1,5 +1,5 @@
-import createDebug from 'debug';
+import debug from 'debug';
 
-const debug = createDebug('galaga:server');
+debug.enable(process.env.DEBUG ?? '');
 
-export default debug;
+export default (namespace: string) => debug('galaga:server').extend(namespace);

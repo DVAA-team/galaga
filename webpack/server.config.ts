@@ -1,21 +1,40 @@
 import path from 'path';
-import { Configuration, WebpackPluginInstance } from 'webpack';
+import fs from 'node:fs';
+import { Configuration, WebpackPluginInstance, EntryObject } from 'webpack';
 import nodeExternals from 'webpack-node-externals';
 import { merge } from 'webpack-merge';
-import { DIST_DIR, IS_DEV, SRC_DIR } from './env';
+import dotenv from 'dotenv';
+import { DIST_DIR, IS_DEV, SRC_DIR, MIGRATION_DIR } from './env';
 
 import jsLoader from './loaders/js';
 import commonConfig from './common.config';
 
 import StartServerPlugin from './plugins/StartServerPlugin';
 
+dotenv.config();
+
+const migrations = fs
+  .readdirSync(MIGRATION_DIR)
+  .reduce<EntryObject>((acc, fileName) => {
+    acc[path.basename(fileName, '.ts')] = {
+      import: path.join(MIGRATION_DIR, fileName),
+      library: {
+        type: 'commonjs2',
+      },
+      filename: 'migrations/[name].[fullhash].js',
+    };
+    return acc;
+  }, {});
+
 const config: Configuration = merge(commonConfig, {
   name: 'server',
   target: 'node',
   dependencies: ['ssr_client'],
   entry: {
-    server: path.resolve(SRC_DIR, 'server/app'),
-    utils: path.resolve(SRC_DIR, 'server/utils/startApp'),
+    server: {
+      import: path.resolve(SRC_DIR, 'server'),
+    },
+    ...migrations,
   },
   output: {
     path: path.resolve(DIST_DIR, 'server'),
@@ -40,7 +59,7 @@ const config: Configuration = merge(commonConfig, {
     // Плагин для запуска сервера
     IS_DEV && new StartServerPlugin(),
   ].filter(Boolean) as WebpackPluginInstance[],
-  optimization: { nodeEnv: false },
+  // optimization: { nodeEnv: false },
 });
 
 export default config;

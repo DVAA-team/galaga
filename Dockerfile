@@ -1,8 +1,14 @@
-FROM node:16
-WORKDIR /var/www
+# build stage
+FROM node:lts-alpine as production
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
 COPY package*.json ./
-RUN npm ci --ignore-scripts
+RUN npm ci --include=dev --ignore-scripts
+
 COPY . .
+
 RUN npm run build
-EXPOSE 3000
-CMD npm start
+

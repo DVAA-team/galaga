@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
-import UserController from '@/../../backend/database/controllers/userController';
+import { dbUserController } from '@/database/controllers';
 
-export function userDetail(req: Request, res: Response) {
+export default function userDetail(req: Request, res: Response) {
   const { userId } = req.params;
-  UserController.getUserById(Number(userId))
+  dbUserController
+    .getUserById(Number(userId))
     .then((user) => {
       if (user) {
-        res.status(200).json(user);
+        res.status(200).json(user.toJSON());
       } else {
         res.status(404).json({
           reason: `User with id ${userId} was not found`,

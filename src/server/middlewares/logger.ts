@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-import createDebug from '@/server/utils/debug';
+import { createDebug } from '@/server/utils';
 
-const debug = createDebug.extend('request');
+const debug = createDebug('request');
 
 const loggerMiddleware: RequestHandler = (req, res, next) => {
   const reqDesc = `${req.method} ${req.url}`;

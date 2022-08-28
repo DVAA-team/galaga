@@ -1,4 +1,4 @@
-import appConstants from '@/config/appConstants';
+import { appConstants } from '@/config';
 import { AbstractHttpClient } from './AbstractHttpClient';
 import {
   TChangePasswordRequest,

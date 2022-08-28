@@ -1,1 +1,5 @@
-export { default as ping } from './ping';
+import ping from './ping';
+
+export default {
+  ping,
+};

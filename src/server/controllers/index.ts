@@ -1,2 +1,2 @@
-export { ping } from './healthchecks';
-export { userDetail } from './users';
+export { default as healthChecksController } from './healthchecks';
+export { default as userController } from './users';

@@ -1,4 +1,5 @@
-export { default as render } from './render';
-export { default as logger } from './logger';
-export { default as errorHandler } from './errorHandler';
-export { default as getYandexUser } from './getYandexUser';
+export { default as renderMiddleware } from './render';
+export { default as loggerMiddleware } from './logger';
+export { default as errorHandlerMiddleware } from './errorHandler';
+export { default as getYandexUserMiddleware } from './getYandexUser';
+export { default as staticMiddleware } from './static';

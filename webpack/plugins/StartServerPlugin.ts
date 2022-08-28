@@ -1,22 +1,39 @@
-import { Compiler, WebpackPluginInstance } from 'webpack';
-import path from 'node:path';
+import dotenv from 'dotenv';
+import { promises as fs } from 'fs';
 import http from 'http';
+import { Socket } from 'node:net';
+import path from 'node:path';
+import requireFromString from 'require-from-string';
+import { Compiler, WebpackPluginInstance } from 'webpack';
 
 const pluginName = 'StartServerPlugin';
 
 export default class StartServerPlugin implements WebpackPluginInstance {
   private _server: http.Server | null = null;
 
+  private _sockets = new Set<Socket>();
+
   public apply(compiler: Compiler) {
     compiler.hooks.watchRun.tapPromise(pluginName, async () => {
       await this._closeServer();
     });
     compiler.hooks.done.tapPromise(pluginName, async (stats) => {
+      if (stats.hasErrors()) {
+        return;
+      }
       const chunkNames = Array.from(stats.compilation.chunks).map(
         (c) => c.name
       );
-      if (!chunkNames.includes('server') || !chunkNames.includes('utils')) {
-        throw new Error('неправильно сконфигурированна секция entry');
+      let serverChunkName = '';
+
+      if (chunkNames.length === 1) {
+        [serverChunkName] = chunkNames;
+      } else if (chunkNames.length > 1) {
+        if (!chunkNames.includes('server')) {
+          throw new Error('Нет точки входа server');
+        } else {
+          serverChunkName = 'server';
+        }
       }
 
       const { filename: outputFileName, path: outputPath } =
@@ -31,7 +48,6 @@ export default class StartServerPlugin implements WebpackPluginInstance {
       const hashTypes = ['fullhash', 'chunkhash', 'modulehash', 'contenthash'];
 
       let serverFileName = '';
-      let utilsFileName = '';
       const assetInfo = stats.compilation.assetsInfo;
 
       for (const [fileName, info] of assetInfo.entries()) {
@@ -40,39 +56,43 @@ export default class StartServerPlugin implements WebpackPluginInstance {
             !serverFileName &&
             info[hashType] &&
             outputFileName
-              .replace('[name]', 'server')
+              .replace('[name]', serverChunkName)
               .replace(`[${hashType}]`, info[hashType]) === fileName
           ) {
             serverFileName = fileName;
           }
-          if (
-            !utilsFileName &&
-            info[hashType] &&
-            outputFileName
-              .replace('[name]', 'utils')
-              .replace(`[${hashType}]`, info[hashType]) === fileName
-          ) {
-            utilsFileName = fileName;
-          }
         }
-        if (serverFileName && utilsFileName) {
+        if (serverFileName) {
           break;
         }
       }
       if (!serverFileName) {
-        throw new Error('Incorrect output file name');
+        throw new Error(`Incorrect output file name ${serverFileName}`);
       }
 
-      const { startServer } = await import(
-        path.join(outputPath, utilsFileName)
+      const serverCode = await fs
+        .readFile(path.join(outputPath, serverFileName))
+        .then((code) => code.toString());
+
+      // eslint-disable-next-line no-console
+      console.info('Loading new server code ...\n');
+      dotenv.config({ override: true });
+      const { default: server } = requireFromString(
+        serverCode,
+        path.join(outputPath, serverFileName)
       );
-      const { app } = await import(path.join(outputPath, serverFileName));
-
-      if (typeof startServer !== 'function') {
-        throw new Error('Неправильный экспорт из файла utils');
+      if (!(server instanceof http.Server)) {
+        throw new Error(
+          'Дефолтный экспорт из точки входа должен быть типа http.Server'
+        );
       }
-
-      this._server = startServer(app, 3000);
+      this._server = server;
+      this._server.on('connection', (socket) => {
+        this._sockets.add(socket);
+        socket.on('close', () => {
+          this._sockets.delete(socket);
+        });
+      });
     });
   }
 
@@ -82,7 +102,10 @@ export default class StartServerPlugin implements WebpackPluginInstance {
         resolve(true);
       } else {
         // eslint-disable-next-line no-console
-        console.info('Stopping server...');
+        console.info('\nStopping server...\n');
+        for (const socket of this._sockets) {
+          socket.destroy();
+        }
         this._server.close((error) => {
           if (error) {
             reject(error);
