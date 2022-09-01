@@ -43,7 +43,7 @@ export default function renderBundle({
       <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root" dangerouslySetInnerHTML={{ __html: bundleHtml }} />
-        <script src="webClient.js"></script>
+        <script src="/webClient.js"></script>
         <script
           dangerouslySetInnerHTML={{
             /**
