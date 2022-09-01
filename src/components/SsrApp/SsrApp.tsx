@@ -4,6 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { useAuth } from '@/hooks/useAuth';
+import { isUserAuthorized } from '@/utils/guards';
 import { Home } from '../../pages/Home';
 import { SignIn } from '../../pages/SignIn';
 import { SignUp } from '../../pages/SignUp';
@@ -14,15 +16,50 @@ import { Leaderboard } from '../../pages/Leaderboard';
 import { NotFound } from '../../pages/NotFound';
 import { Forum } from '../../pages/Forum';
 import { ForumPost } from '../../pages/ForumPost';
+import { ProtectedRoute } from '../ProtectedRoute';
 
 const SsrApp = () => {
+  const userData = useAuth();
+
+  const guardConditionUserAuth = isUserAuthorized(userData);
+
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route
+          path="/sign-in"
+          element={
+            <ProtectedRoute
+              redirectPath="/profile"
+              isAllowed={!guardConditionUserAuth}
+            >
+              <SignIn />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/sign-up"
+          element={
+            <ProtectedRoute
+              redirectPath="/profile"
+              isAllowed={!guardConditionUserAuth}
+            >
+              <SignUp />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute
+              redirectPath="/sign-in"
+              isAllowed={guardConditionUserAuth}
+            >
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/game" element={<Game />} />
