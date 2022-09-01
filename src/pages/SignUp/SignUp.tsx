@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { setUserProfile } from '@/store/slices/userSlice';
 import { schemaSignUp } from '@/utils/validate';
 import { useAuth } from '@/hooks/useAuth';
+import { Header } from '@/components/Header';
+import { MainLayout } from '@/components/MainLayout';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -57,57 +59,60 @@ const SignUp = () => {
   };
 
   return (
-    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap min-h-full py-5">
-      <Form title="Регистрация" handlerSubmit={handleSubmit(onSubmit)}>
-        <Input
-          placeholder="Email"
-          {...register('email', { required: true })}
-          error={errors.email}
-        />
-        <Input
-          placeholder="Логин"
-          {...register('login', { required: true })}
-          error={errors.login}
-        />
-        <Input
-          placeholder="Имя"
-          {...register('firstName', { required: true })}
-          error={errors.firstName}
-        />
-        <Input
-          placeholder="Фамилия"
-          {...register('secondName', { required: true })}
-          error={errors.secondName}
-        />
-        <Input
-          placeholder="Телефон"
-          {...register('phone', { required: true })}
-          type="tel"
-          error={errors.phone}
-        />
-        <Input
-          placeholder="Пароль"
-          type="password"
-          {...register('password', { required: true })}
-          error={errors.password}
-        />
-        <Input
-          placeholder="Пароль еще раз"
-          type="password"
-          {...register('passwordRepeat', { required: true })}
-          error={errors.passwordRepeat}
-        />
-        <Button cls="w-full mt-12" text="Зарегистрироваться" type="submit" />
-        <div className="w-full text-center mt-3">
-          <Link
-            className="font-bold underline hover:no-underline"
-            to="/sign-in"
-          >
-            Войти
-          </Link>
-        </div>
-      </Form>
-    </div>
+    <>
+      <Header />
+      <MainLayout>
+        <Form title="Регистрация" handlerSubmit={handleSubmit(onSubmit)}>
+          <Input
+            placeholder="Email"
+            {...register('email', { required: true })}
+            error={errors.email}
+          />
+          <Input
+            placeholder="Логин"
+            {...register('login', { required: true })}
+            error={errors.login}
+          />
+          <Input
+            placeholder="Имя"
+            {...register('firstName', { required: true })}
+            error={errors.firstName}
+          />
+          <Input
+            placeholder="Фамилия"
+            {...register('secondName', { required: true })}
+            error={errors.secondName}
+          />
+          <Input
+            placeholder="Телефон"
+            {...register('phone', { required: true })}
+            type="tel"
+            error={errors.phone}
+          />
+          <Input
+            placeholder="Пароль"
+            type="password"
+            {...register('password', { required: true })}
+            error={errors.password}
+          />
+          <Input
+            placeholder="Пароль еще раз"
+            type="password"
+            {...register('passwordRepeat', { required: true })}
+            error={errors.passwordRepeat}
+          />
+          <Button cls="w-full mt-12" text="Зарегистрироваться" type="submit" />
+          <div className="w-full text-center mt-3">
+            <Link
+              className="font-bold underline hover:no-underline"
+              to="/sign-in"
+            >
+              Войти
+            </Link>
+          </div>
+        </Form>
+      </MainLayout>
+    </>
   );
 };
 
