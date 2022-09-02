@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 type TOwnProps = {
   isAllowed: boolean;
@@ -11,9 +11,10 @@ type TProps = FC<TOwnProps>;
 
 const ProtectedRoute: TProps = (props) => {
   const { isAllowed, redirectPath = '/', children } = props;
+  const location = useLocation();
 
   if (!isAllowed) {
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate state={{ from: location }} to={redirectPath} replace />;
   }
 
   return children || <Outlet />;

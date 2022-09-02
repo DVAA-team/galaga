@@ -1,10 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useCallback, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { useAuth } from '@/hooks/useAuth';
 import { setUserProfile } from '@/store/slices/userSlice';
 import { schemaSignIn } from '@/utils/validate';
 import { YandexLogin } from '@/components/YandexLogin';
@@ -14,21 +12,14 @@ import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
 import userService from '../../services/userService';
+import { TLocationProps } from './types';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const userData = useAuth();
   const dispatch = useDispatch();
 
-  const redirectToProfile = useCallback(() => {
-    navigate('/profile', { replace: true });
-  }, [navigate]);
-
-  useEffect(() => {
-    if (userData !== null) {
-      redirectToProfile();
-    }
-  }, [redirectToProfile, userData]);
+  const { state } = useLocation() as TLocationProps;
+  const from = state?.from?.pathname || '/';
 
   const defaultValues = {
     login: '',
@@ -49,7 +40,7 @@ const SignIn = () => {
     userService.signIn(d).then((profile) => {
       if (profile) {
         dispatch(setUserProfile(profile));
-        redirectToProfile();
+        navigate(from, { replace: true });
       }
     });
   };
