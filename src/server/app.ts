@@ -1,23 +1,25 @@
-import express, { Express } from 'express';
-import { healthChecks, yandexApi } from '@/server/routes';
-import {
-  logger,
-  render,
-  errorHandler,
-  getYandexUser,
-} from '@/server/middlewares';
-import path from 'node:path';
 import cookieParser from 'cookie-parser';
+import express, { Express } from 'express';
+
+import {
+  errorHandlerMiddleware,
+  getYandexUserMiddleware,
+  loggerMiddleware,
+  renderMiddleware,
+  staticMiddleware,
+} from '@/server/middlewares';
+import { apiRoute, healthChecksRoute, yandexApiRoute } from '@/server/routes';
 
 const app: Express = express()
   .disable('x-powered-by')
   .enable('trust proxy')
-  .use(yandexApi)
-  .use(express.static(path.join(__dirname, '..', 'public')))
+  .use(staticMiddleware)
   .use(cookieParser())
-  .use(logger)
-  .use('/hc', healthChecks)
-  .get('*', [getYandexUser, render])
-  .use(errorHandler);
+  .use('/yandex-api', yandexApiRoute)
+  .use(loggerMiddleware)
+  .use('/api', apiRoute)
+  .use('/hc', healthChecksRoute)
+  .get('*', [getYandexUserMiddleware, renderMiddleware])
+  .use(errorHandlerMiddleware);
 
 export { app };

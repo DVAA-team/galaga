@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import createDebug from '@/utils/debug';
 
-const debug = createDebug.extend('httpClient');
+const debug = createDebug('httpClient');
 
 export abstract class AbstractHttpClient {
   protected readonly instance: AxiosInstance;

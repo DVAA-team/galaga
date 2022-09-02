@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { ping } from '@/server/controllers';
+import { healthChecksController } from '@/server/controllers';
 
 const router: Router = Router();
 
-router.get('/ping', ping);
+router.get('/ping', healthChecksController.ping);
 
 export default router;

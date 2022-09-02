@@ -2,6 +2,7 @@ import path from 'path';
 import CopyPlugin from 'copy-webpack-plugin';
 import { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
+import DotenvPlugin from 'dotenv-webpack';
 import { DIST_DIR, SRC_DIR } from './env';
 import fileLoader from './loaders/file';
 import cssLoader from './loaders/css';
@@ -18,6 +19,7 @@ const config: Configuration = merge(commonConfig, {
     filename: 'webClient.js',
     libraryTarget: 'var',
     library: 'WebClient',
+    clean: true,
   },
   module: {
     rules: [fileLoader.client, cssLoader.client, jsLoader.client],
@@ -27,6 +29,7 @@ const config: Configuration = merge(commonConfig, {
     new CopyPlugin({
       patterns: ['public'],
     }),
+    new DotenvPlugin(),
   ],
 });
 

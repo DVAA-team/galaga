@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import createDebug from '@/server/utils/debug';
 
-const debug = createDebug.extend('route:YandexAPIProxy');
+import { createDebug } from '@/server/utils';
+import { env } from '@/server/config';
+
+const debug = createDebug('route:YandexAPIProxy');
 
 const router: Router = Router();
 
@@ -16,7 +18,6 @@ const createLogger = (level: string) => (message: string) => {
 };
 
 router.use(
-  '/yandex-api',
   createProxyMiddleware({
     target: `https://${yandexDomain}/api/v2`,
     changeOrigin: true,
@@ -31,7 +32,7 @@ router.use(
       warn: createLogger('warn'),
       error: createLogger('error'),
     }),
-    logLevel: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+    logLevel: env.isDev() ? 'debug' : 'info',
     cookieDomainRewrite: 'localhost', // FIXME Потенциальная проблема при деплое
   })
 );
