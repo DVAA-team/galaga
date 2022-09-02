@@ -55,6 +55,7 @@ const SsrApp = () => {
             <ProtectedRoute
               redirectPath="/sign-in"
               isAllowed={guardConditionUserAuth}
+              notify="Вам нужно авторизоваться!"
             >
               <Profile />
             </ProtectedRoute>
