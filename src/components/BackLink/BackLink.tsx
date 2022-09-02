@@ -6,10 +6,13 @@ const BackLink = () => {
   const location = useLocation();
   const { pathname } = location;
 
+  const isChildrenRoute =
+    pathname.slice(1).replace(/\/+$/, '').split('/').length > 1;
+
   return (
     <button
       className={styles.back}
-      onClick={() => navigate('/')}
+      onClick={() => navigate(isChildrenRoute ? '../' : '/')}
       disabled={pathname === '/'}
     ></button>
   );
