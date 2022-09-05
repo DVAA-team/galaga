@@ -33,7 +33,7 @@ router.use(
       error: createLogger('error'),
     }),
     logLevel: env.isDev() ? 'debug' : 'info',
-    cookieDomainRewrite: 'localhost', // FIXME Потенциальная проблема при деплое
+    cookieDomainRewrite: '',
   })
 );
 
