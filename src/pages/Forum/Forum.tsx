@@ -1,3 +1,5 @@
+import { Header } from '@/components/Header';
+import { MainLayout } from '@/components/MainLayout';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CreatePostForm } from './components/CreatePostForm';
@@ -37,19 +39,21 @@ const Forum = () => {
     ]);
   }, []);
   return (
-    <div className="container mx-auto flex flex-col items-center">
-      <h1 className="mt-3 text-3xl font-bold">Forum</h1>
-      <div className="w-full md:w-10/12 mt-10 flex flex-col items-center">
-        <CreatePostForm />
-        <div className="w-full mt-10">
-          {posts.map((post) => (
-            <Link key={post.id} to={`posts/${post.id}`}>
-              <PostCard {...post} />
-            </Link>
-          ))}
+    <>
+      <Header title="Форум" />
+      <MainLayout>
+        <div className="w-full md:w-10/12 mt-10 flex flex-col items-center">
+          <CreatePostForm />
+          <div className="w-full mt-10">
+            {posts.map((post) => (
+              <Link key={post.id} to={`posts/${post.id}`}>
+                <PostCard {...post} />
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </MainLayout>
+    </>
   );
 };
 export default Forum;

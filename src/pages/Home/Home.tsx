@@ -1,14 +1,16 @@
-import { Link, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { NavLink, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useDispatch } from 'react-redux';
 import userService from '@/services/userService';
 import { setUserProfile } from '@/store/slices/userSlice';
 import yandexOAuthService from '@/services/yandexOAuthService';
+import { MainLayout } from '@/components/MainLayout';
+import { Header } from '@/components/Header';
+import ship from '../../assets/images/ship.png';
 
 const Home = () => {
   const userData = useAuth();
-  const [isAuthorized, setIsAuthorized] = useState(!!userData);
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
 
@@ -18,9 +20,7 @@ const Home = () => {
       console.log(profile);
     });
 
-    if (userData !== null) {
-      setIsAuthorized(true);
-    } else {
+    if (userData === null) {
       const authorizationCode = searchParams.get('code');
       if (authorizationCode) {
         yandexOAuthService.signIn(authorizationCode).then((data) => {
@@ -38,62 +38,31 @@ const Home = () => {
     }
   }, [dispatch, searchParams, setSearchParams, userData]);
 
-  const renderNotAuthLinks = () => (
-    <>
-      <li>
-        <Link className="font-bold underline" to="/sign-in">
-          Sign-in page
-        </Link>
-      </li>
-      <li>
-        <Link className="font-bold underline" to="/sign-up">
-          Sign-up page
-        </Link>
-      </li>
-    </>
-  );
-
-  const renderAuthLinks = () => (
-    <>
-      <li>
-        <Link className="font-bold underline" to="/profile">
-          Profile
-        </Link>
-      </li>
-    </>
-  );
-
   return (
-    <div className="home container mx-auto flex flex-row justify-center content-center items-center flex-wrap h-full">
-      <h1 className="w-full mt-3 mb-3 text-3xl text-center font-bold">
-        Home page
-      </h1>
-      <nav>
-        <ul className="text-center">
-          {isAuthorized ? renderAuthLinks() : renderNotAuthLinks()}
-          <li>
-            <Link className="font-bold underline" to="/game">
-              Game
-            </Link>
-          </li>
-          <li>
-            <Link className="font-bold underline" to="/dashboard">
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link className="font-bold underline" to="/leaderboard">
-              Leaderboard
-            </Link>
-          </li>
-          <li>
-            <Link className="font-bold underline" to="/forum">
-              Forum
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <>
+      <Header />
+      <MainLayout>
+        <div className="home flex w-full">
+          <div className="home__image w-1/2 flex">
+            <div className="w-2/3 m-auto">
+              <img src={ship} alt="" />
+            </div>
+          </div>
+          <div className="home__content w-1/2 text-center flex flex-col justify-center flex-wrap">
+            <h3 className="text-5xl font-bold mb-3">Galaga</h3>
+            <p className="text-2xl">Ретро космический шутер</p>
+            <div className="flex flex-row flex-wrap mt-5 justify-center">
+              <NavLink
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                to="/game"
+              >
+                🚀&#160;&#160;Играть
+              </NavLink>
+            </div>
+          </div>
+        </div>
+      </MainLayout>
+    </>
   );
 };
 

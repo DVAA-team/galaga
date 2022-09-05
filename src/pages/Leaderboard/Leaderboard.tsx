@@ -1,3 +1,5 @@
+import { Header } from '@/components/Header';
+import { MainLayout } from '@/components/MainLayout';
 import { useEffect, useState } from 'react';
 import { ChampionsArenaItem } from './components/ChampionsArenaItem';
 import { Pedestal } from './components/Pedestal';
@@ -25,23 +27,22 @@ const Leaderboard = () => {
   }, []);
 
   return (
-    <div className="container mx-auto flex flex-row justify-center items-center flex-wrap">
-      <h1 className="w-full mt-3 text-3xl text-center font-bold">
-        Leaderboard page
-      </h1>
+    <>
+      <Header title="Лучшие игроки" />
+      <MainLayout>
+        <Pedestal
+          first={champions[0]}
+          second={champions[1]}
+          third={champions[2]}
+        />
 
-      <Pedestal
-        first={champions[0]}
-        second={champions[1]}
-        third={champions[2]}
-      />
-
-      <div className="champions-arena">
-        {users.map((user) => (
-          <ChampionsArenaItem key={user.username} userData={user} />
-        ))}
-      </div>
-    </div>
+        <div className="champions-arena">
+          {users.map((user) => (
+            <ChampionsArenaItem key={user.username} userData={user} />
+          ))}
+        </div>
+      </MainLayout>
+    </>
   );
 };
 

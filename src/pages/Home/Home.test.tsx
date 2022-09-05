@@ -20,6 +20,6 @@ describe('Страница домашняя', () => {
       </Provider>
     );
 
-    expect(getByText('Home page')).toBeInTheDocument();
+    expect(getByText('Ретро космический шутер')).toBeInTheDocument();
   });
 });

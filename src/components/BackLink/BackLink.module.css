@@ -1,0 +1,10 @@
+.back {
+  width: 30px;
+  height: 40px;
+  @apply bg-[url('../../assets/images/ico/back_white.svg')];
+  @apply bg-no-repeat bg-center bg-contain;
+
+  &:disabled {
+    background: transparent;
+  }
+}

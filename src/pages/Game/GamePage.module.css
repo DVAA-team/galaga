@@ -1,7 +1,9 @@
 @import "https://fonts.googleapis.com/css2?family=VT323&display=swap";
 
 .game {
-  @apply fixed inset-4;
+  @apply fixed inset-x-4 bottom-4;
+
+  top: calc(80px + 1rem);
 
   &_overlay {
     @apply absolute flex flex-col

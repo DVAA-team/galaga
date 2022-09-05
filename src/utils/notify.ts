@@ -21,3 +21,14 @@ export const notifySuccess = (text: string) =>
     draggable: true,
     progress: undefined,
   });
+
+export const notifyInfo = (text: string) =>
+  toast.info(text, {
+    position: 'top-center',
+    autoClose: 3000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: false,
+    progress: undefined,
+  });

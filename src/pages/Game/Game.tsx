@@ -1,3 +1,5 @@
+import { Header } from '@/components/Header';
+import { MainLayout } from '@/components/MainLayout';
 import { useEffect, useState, useRef } from 'react';
 
 import { Button } from '../../components/Button';
@@ -123,15 +125,20 @@ const Game = () => {
   );
 
   return (
-    <div ref={gameRef} className={styles.game}>
-      <div className={styles.game_area} style={GAME_AREA_STYLE}>
-        <div className={className(styles.game_score, styles['score-text'])}>
-          {score}
+    <>
+      <Header />
+      <MainLayout>
+        <div ref={gameRef} className={styles.game}>
+          <div className={styles.game_area} style={GAME_AREA_STYLE}>
+            <div className={className(styles.game_score, styles['score-text'])}>
+              {score}
+            </div>
+            <canvas ref={canvasRef} />
+            {gameStatus !== Status.run && renderGameOverlay()}
+          </div>
         </div>
-        <canvas ref={canvasRef} />
-        {gameStatus !== Status.run && renderGameOverlay()}
-      </div>
-    </div>
+      </MainLayout>
+    </>
   );
 };
 

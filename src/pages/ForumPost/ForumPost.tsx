@@ -1,6 +1,8 @@
 import { useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Header } from '@/components/Header';
+import { MainLayout } from '@/components/MainLayout';
 import styles from './ForumPost.module.css';
 import { Message } from './components/Message';
 import { TOwnProps } from './components/Message/types';
@@ -79,20 +81,24 @@ const ForumPost = () => {
   }, [navigate, postId]);
 
   return (
-    <div className="container mx-auto flex flex-col items-center h-screen">
-      {!isPending && (
-        <>
-          <h1 className="mt-3 text-3xl font-bold">Forum</h1>
-          <div className={styles.body}>
-            <h2 className={styles.title}>{title}</h2>
-            {messages.map((item) => (
-              <Message key={item.id} {...item} />
-            ))}
-          </div>
-          <SendMessageForm emitSubmit={sendMessage} />
-        </>
-      )}
-    </div>
+    <>
+      <Header title="Форум" />
+      <MainLayout>
+        <div className="container mx-auto flex flex-col items-center h-screen">
+          {!isPending && (
+            <>
+              <div className={styles.body}>
+                <h2 className={styles.title}>{title}</h2>
+                {messages.map((item) => (
+                  <Message key={item.id} {...item} />
+                ))}
+              </div>
+              <SendMessageForm emitSubmit={sendMessage} />
+            </>
+          )}
+        </div>
+      </MainLayout>
+    </>
   );
 };
 
