@@ -7,7 +7,7 @@ import { setUserProfile } from '@/store/slices/userSlice';
 import yandexOAuthService from '@/services/yandexOAuthService';
 import { MainLayout } from '@/components/MainLayout';
 import { Header } from '@/components/Header';
-import ship from '@/assets/images/ship.png';
+import ship from '../../assets/images/ship.png';
 
 const Home = () => {
   const userData = useAuth();
