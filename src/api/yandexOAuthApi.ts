@@ -1,5 +1,5 @@
 import { TYandexOAuthSingInRequest } from '@/api/types';
-import appConstants from '@/config/appConstants';
+import { appConstants } from '@/config';
 import { AbstractHttpClient } from './AbstractHttpClient';
 
 class YandexOAuthApi extends AbstractHttpClient {

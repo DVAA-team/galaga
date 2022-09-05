@@ -1,9 +1,9 @@
 import { RequestHandler } from 'express';
 import axios from 'axios';
 import { serverToClientNaming } from '@/utils/convertNaming';
-import createDebug from '@/server/utils/debug';
+import { createDebug } from '@/server/utils';
 
-const debug = createDebug.extend('MW:getYandexUser');
+const debug = createDebug('MW:getYandexUser');
 
 const getYandexUser: RequestHandler = async (req, res, next) => {
   const cookie = Object.entries(req.cookies)

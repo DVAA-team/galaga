@@ -1,10 +1,7 @@
+import 'dotenv/config';
+
 import { app } from '@/server/app';
-import normalizePort from '@/server/utils/normalizePort';
-import { startServer } from '@/server/utils/startApp';
-import dotenv from 'dotenv';
+import { port } from '@/server/config';
+import { startServer } from '@/server/utils';
 
-dotenv.config();
-
-const PORT = normalizePort(process.env.PORT || '3000');
-
-startServer(app, PORT);
+export default startServer(app, port);

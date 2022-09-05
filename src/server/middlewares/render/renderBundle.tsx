@@ -37,7 +37,7 @@ export default function renderBundle({
           content="Galaga - Легендарная аркадная игра 80х"
         />
         <link rel="apple-touch-icon" href="logo192.png" />
-        <link rel="manifest" href="manifest.json" />
+        <link rel="manifest" href="/manifest.json" />
         <title>Galaga</title>
       </head>
       <body>
