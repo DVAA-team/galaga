@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, NavLinkProps } from 'react-router-dom';
 import styles from './Navigation.module.css';
 
 const Navigation = () => {
@@ -31,8 +31,7 @@ const Navigation = () => {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  // FIXME Надо разобраться с типом
-  const getLinkClassName = ({ isActive }: any) =>
+  const getLinkClassName: NavLinkProps['className'] = ({ isActive }) =>
     isActive ? `${styles.link} ${styles['link-active']}` : styles.link;
 
   const renderNotAuthLinks = () => {
