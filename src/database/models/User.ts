@@ -27,7 +27,7 @@ export default class User extends Model<
 
   declare email: string;
 
-  declare avatar: CreationOptional<string> | null;
+  declare avatar: CreationOptional<string | null>;
 
   declare phone: string;
 

@@ -6,7 +6,6 @@ import {
 } from '@/utils/convertNaming';
 import { dbUserController } from '@/database/controllers';
 
-// eslint-disable-next-line consistent-return
 const checkYandexUser: RequestHandler = async (_req, res, next) => {
   const { user: yandexUser } = res.locals;
 
@@ -27,7 +26,7 @@ const checkYandexUser: RequestHandler = async (_req, res, next) => {
     });
   }
   res.locals.user = serverToClientNaming(userFromDb.toJSON());
-  next();
+  return next();
 };
 
 export default checkYandexUser;
