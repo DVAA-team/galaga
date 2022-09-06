@@ -22,7 +22,6 @@ const getYandexUser: RequestHandler = async (req, res, next) => {
     );
 
     res.locals.user = serverToClientNaming(data);
-    res.locals.userRaw = data;
   } catch (error) {
     res.locals.user = null;
   } finally {

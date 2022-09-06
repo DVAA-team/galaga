@@ -2,9 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { dbMessageController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
-// FIXME: Это должен быть реальный user id
-const USER_ID = 1;
-
 class MessagesController {
   // eslint-disable-next-line class-methods-use-this,consistent-return
   async getMessage(req: Request, res: Response, next: NextFunction) {
@@ -34,6 +31,9 @@ class MessagesController {
     const { text, commentId } = req.body;
     const { postId } = req.params;
 
+    const { user } = res.locals;
+    const userId = user.id;
+
     if (!text) {
       return next(ApiError.badRequest('Не задан text'));
     }
@@ -46,7 +46,7 @@ class MessagesController {
       const message = await dbMessageController.createMessage({
         text,
         postId: Number(postId),
-        userId: USER_ID,
+        userId,
         commentId,
       });
       if (message) {

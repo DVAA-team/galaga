@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { dbPostController, dbUserController } from '@/database/controllers';
+import { dbPostController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class PostsController {
@@ -23,27 +23,8 @@ class PostsController {
   async createPost(req: Request, res: Response, next: NextFunction) {
     const { title } = req.body;
 
-    const { userRaw: yandexUser } = res.locals;
-
-    if (!yandexUser) {
-      return next(ApiError.forbidden('Пользователь не найден'));
-    }
-
-    const { id: yandexId, ...rest } = yandexUser;
-
-    const userFromDb = await dbUserController.getByYandexId(yandexId);
-
-    let userId;
-
-    if (!userFromDb) {
-      const user = await dbUserController.createUserFromYandexData({
-        ...rest,
-        yandexId,
-      });
-      userId = user.id;
-    } else {
-      userId = userFromDb.id;
-    }
+    const { user } = res.locals;
+    const userId = user.id;
 
     if (!title) {
       return next(ApiError.badRequest('Не задан title'));

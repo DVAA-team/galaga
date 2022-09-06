@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { MessagesController } from '@/server/controllers/messages';
+import { MessagesController } from '@/server/controllers';
 
 const router: Router = Router();
 

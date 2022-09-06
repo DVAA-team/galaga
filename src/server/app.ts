@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import express, { Express } from 'express';
 
 import {
+  checkYandexUserMiddleware,
   errorHandlerMiddleware,
   getYandexUserMiddleware,
   loggerMiddleware,
@@ -19,7 +20,7 @@ const app: Express = express()
   .use(express.urlencoded({ extended: false }))
   .use('/yandex-api', yandexApiRoute)
   .use(loggerMiddleware)
-  .use('/api', [getYandexUserMiddleware, apiRoute])
+  .use('/api', [getYandexUserMiddleware, checkYandexUserMiddleware, apiRoute])
   .use('/hc', healthChecksRoute)
   .get('*', [getYandexUserMiddleware, renderMiddleware])
   .use(errorHandlerMiddleware);
