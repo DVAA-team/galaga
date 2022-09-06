@@ -1,0 +1,52 @@
+.emojis {
+  position: relative;
+}
+
+.button {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 50%;
+  margin-top: -12px;
+  right: 8px;
+  @apply bg-[url('../../assets/images/ico/button-emoji.svg')];
+  @apply bg-no-repeat bg-center bg-contain;
+}
+
+.button-dark {
+  @apply bg-[url('../../assets/images/ico/button-emoji-dark.svg')];
+}
+
+.popup {
+  display: none;
+  flex-wrap: wrap;
+  position: absolute;
+  width: 192px;
+  right: 0;
+  padding: 5px;
+  background: rgb(21 23 41 / 70%);
+  border: 1px solid #d3dce6;
+  box-shadow: 0 0 6px rgb(0 0 0 / 25%);
+  border-radius: 7px;
+}
+
+.popup-bottom {
+  top: 100%;
+  margin-top: 10px;
+}
+
+.popup-top {
+  bottom: 100%;
+  margin-bottom: 10px;
+}
+
+.popup-open {
+  display: flex;
+}
+
+.emoji {
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  cursor: pointer;
+}

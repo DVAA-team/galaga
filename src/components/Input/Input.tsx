@@ -8,6 +8,7 @@ type TOwnProps = {
   name: string;
   cls?: string;
   placeholder?: string;
+  withoutMargin?: boolean;
   withLabel?: boolean;
   labelText?: string;
   required?: boolean;
@@ -24,6 +25,7 @@ const Input: TProps = forwardRef((props, ref) => {
     placeholder = '',
     id,
     name,
+    withoutMargin = false,
     withLabel = false,
     labelText = placeholder,
     required,
@@ -61,7 +63,7 @@ const Input: TProps = forwardRef((props, ref) => {
   );
 
   return (
-    <div className="form__field mb-6 relative">
+    <div className={`form__field relative ${withoutMargin ? '' : 'mb-6'}`}>
       {withLabel ? inputWithLabel() : inputDefault()}
       {error && (
         <div className="form__error absolute top-full text-red-500 text-xs">
