@@ -1,14 +1,16 @@
 import { Router, RequestHandler } from 'express';
 
 import { initializeDB } from '@/database';
-import { User } from '@/database/models';
+import { User, Post, Message } from '@/database/models';
 
 import users from './users';
+import posts from './posts';
+import messages from './messages';
 
 const router: Router = Router();
 
 const dbInstancePromise = initializeDB({
-  models: [User],
+  models: [User, Post, Message],
 });
 
 const checkDBConnection: RequestHandler = async (_req, _res, next) => {
@@ -28,6 +30,6 @@ const checkDBConnection: RequestHandler = async (_req, _res, next) => {
   }
 };
 
-router.use(checkDBConnection).use(users);
+router.use(checkDBConnection).use(users).use(posts).use(messages);
 
 export default router;

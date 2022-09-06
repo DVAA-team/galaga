@@ -27,9 +27,11 @@ export default class User extends Model<
 
   declare email: string;
 
-  declare avatar: CreationOptional<string>;
+  declare avatar: CreationOptional<string | null>;
 
   declare phone: string;
+
+  declare yandexId: CreationOptional<number>;
 
   /* eslint-enable @typescript-eslint/naming-convention */
   static registration = (sequelize: Sequelize) => {
@@ -62,11 +64,14 @@ export default class User extends Model<
         },
         avatar: {
           type: DataTypes.STRING,
-          defaultValue: '',
+          allowNull: true,
         },
         phone: {
           type: DataTypes.STRING,
           defaultValue: '',
+        },
+        yandexId: {
+          type: DataTypes.INTEGER,
         },
       },
       {
@@ -80,6 +85,8 @@ export default class User extends Model<
   };
 }
 
-export const isUserMode = (mode: ModelStatic<Model>): mode is typeof User => {
-  return mode.tableName === User.tableName;
+export const isUserModel = (
+  model: ModelStatic<Model>
+): model is typeof User => {
+  return model.tableName === User.tableName;
 };
