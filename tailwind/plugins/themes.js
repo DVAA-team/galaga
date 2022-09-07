@@ -5,12 +5,12 @@ const plugin = require('tailwindcss/plugin');
 /**
  * @typedef {Object} DefaultColors - Цвета тымы по умолчанию
  * @prop {string} primary - Основной цвет
- * @prop {string} secondary - Основной цвет
- * @prop {string} accent - Основной цвет
- * @prop {string} error - Основной цвет
- * @prop {string} warning - Основной цвет
- * @prop {string} info - Основной цвет
- * @prop {string} success - Основной цвет
+ * @prop {string} secondary - Вторичный цвет
+ * @prop {string} accent - Цвет акцента
+ * @prop {string} error - Цвет ошибки
+ * @prop {string} warning - Цвет предупреждения
+ * @prop {string} info - Цвет информационного сообщения
+ * @prop {string} success - Цвет успешного сообщения
  */
 
 /**
@@ -66,9 +66,9 @@ module.exports = plugin.withOptions(
     };
   },
 
-  (options) => {
+  ({ content }) => {
     return {
-      content: options.content,
+      content,
       darkMode: ['class', '[data-dark-mode="true"]'],
       theme: {
         extend: {
