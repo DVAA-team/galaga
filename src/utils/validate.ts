@@ -81,6 +81,7 @@ export const schemaProfile = object({
   displayName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
+  theme: string().required(errorText.required),
 });
 
 export const schemaChangePassword = object({

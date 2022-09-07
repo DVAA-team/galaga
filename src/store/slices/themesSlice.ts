@@ -1,20 +1,43 @@
+import changeBgClass from '@/utils/changeBgClass';
+import changeTheme from '@/utils/changeTheme';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type TThemeItem = {
+type TColorVars = {
+  primary: string;
+  secondary: string;
+  accent: string;
+  error: string;
+  warning: string;
+  info: string;
+  success: string;
+};
+
+export type TThemeItem = {
   name: string;
-  colorVars: string;
+  colorVars: TColorVars;
   bgClass?: string;
 };
 
 interface IThemeState {
   darkMode: boolean;
-  current: string;
+  current: TThemeItem;
   list: TThemeItem[];
 }
 
 const initialState: IThemeState = {
   darkMode: false,
-  current: '',
+  current: {
+    name: '',
+    colorVars: {
+      accent: '',
+      error: '',
+      info: '',
+      primary: '',
+      secondary: '',
+      success: '',
+      warning: '',
+    },
+  },
   list: [],
 };
 
@@ -25,9 +48,20 @@ const themesSlice = createSlice({
     setDarkMode(state, action: PayloadAction<IThemeState['darkMode']>) {
       state.darkMode = action.payload;
       document.documentElement.dataset.darkMode = String(state.darkMode);
+
+      if (state.darkMode) {
+        changeBgClass(state.current?.bgClass);
+      } else {
+        changeBgClass('');
+      }
     },
-    setTheme(state, action: PayloadAction<IThemeState['current']>) {
-      state.current = action.payload;
+    setTheme(state, action: PayloadAction<string>) {
+      const theme = state.list.find(({ name }) => name === action.payload);
+      if (!theme) {
+        throw new Error('Выбрана несуществующая тема');
+      }
+      state.current = theme;
+      changeTheme(theme, state.darkMode);
     },
   },
 });

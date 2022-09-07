@@ -1,0 +1,26 @@
+.select {
+  @apply bg-[url('../../assets/images/select.svg')] bg-[right_0.75rem_center] bg-[length:16px_12px]
+  appearance-none
+  block
+  w-full
+  px-3
+  py-1.5
+text-gray-700
+bg-white bg-clip-padding bg-no-repeat
+  border border-solid border-gray-300
+  rounded
+  transition
+  ease-in-out
+  m-0
+focus:text-gray-700
+focus:bg-white
+focus:border-blue-600
+focus:outline-none;
+}
+
+/* .select {
+  -moz-padding-start: calc(0.75rem - 3px);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+} */

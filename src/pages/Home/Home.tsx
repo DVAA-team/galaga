@@ -1,7 +1,7 @@
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/hooks/store';
 import userService from '@/services/userService';
 import { setUserProfile } from '@/store/slices/userSlice';
 import yandexOAuthService from '@/services/yandexOAuthService';
@@ -12,7 +12,7 @@ import ship from '../../assets/images/ship.png';
 const Home = () => {
   const userData = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     userService.getUserFromDB(2).then((profile) => {

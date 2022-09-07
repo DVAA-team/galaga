@@ -7,6 +7,7 @@ import { StaticRouter } from 'react-router-dom/server';
 import { BrowserRouter } from 'react-router-dom';
 import createDebug from '@/utils/debug';
 import { env } from '@/config';
+import changeTheme from '@/utils/changeTheme';
 import { initialStore } from './store';
 import type { TRootState } from './store';
 import { registerServiceWorker } from './registerServiceWorker';
@@ -35,6 +36,9 @@ export const Bundle: React.FC<TServerBundleProps> = (props) => {
 export default (initialState: TRootState) => {
   const container = document.getElementById('root');
   debug('hydrate web-client with initialState %O', initialState);
+
+  changeTheme(initialState.themes.current, initialState.themes.darkMode);
+
   if (container !== null) {
     hydrateRoot(
       container,
@@ -45,6 +49,7 @@ export default (initialState: TRootState) => {
       </Provider>
     );
   }
+
   if (env.isProd()) {
     registerServiceWorker();
   }

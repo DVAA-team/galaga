@@ -1,7 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/hooks/store';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { setUserProfile } from '@/store/slices/userSlice';
@@ -17,7 +17,7 @@ import userService from '../../services/userService';
 const SignUp = () => {
   const navigate = useNavigate();
   const userData = useAuth();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const redirectToProfile = useCallback(() => {
     navigate('/profile', { replace: true });

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/hooks/store';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { setUserProfile } from '@/store/slices/userSlice';
@@ -16,7 +16,7 @@ import { TLocationProps } from './types';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { state } = useLocation() as TLocationProps;
   const from = state?.from?.pathname || '/';
