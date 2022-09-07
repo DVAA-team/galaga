@@ -119,6 +119,7 @@ const Game = () => {
       <Button
         text={gameStatus === Status.start ? 'Начать игру' : 'Играть ещё раз'}
         cls="z-10"
+        view="primary"
         onClick={gameStart}
       />
     </div>

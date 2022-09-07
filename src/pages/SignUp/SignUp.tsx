@@ -101,7 +101,12 @@ const SignUp = () => {
             {...register('passwordRepeat', { required: true })}
             error={errors.passwordRepeat}
           />
-          <Button cls="w-full mt-12" text="Зарегистрироваться" type="submit" />
+          <Button
+            cls="w-full mt-12"
+            text="Зарегистрироваться"
+            type="submit"
+            view="primary"
+          />
           <div className="w-full text-center mt-3">
             <Link
               className="font-bold underline hover:no-underline dark:text-white"

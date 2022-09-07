@@ -14,7 +14,12 @@ const CreatePostForm = () => {
           autoComplete="off"
           cls={styles.input}
         />
-        <Button cls={styles.button} text="Create post" type="submit" />
+        <Button
+          cls={styles.button}
+          text="Create post"
+          type="submit"
+          view="primary"
+        />
       </form>
     </div>
   );

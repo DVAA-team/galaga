@@ -1,6 +1,5 @@
 import '../../assets/styles/main.css';
 import './SsrApp.css';
-import 'react-toastify/dist/ReactToastify.css';
 
 import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -70,7 +69,7 @@ const SsrApp = () => {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <ToastContainer />
+      <ToastContainer theme={'colored'} />
     </>
   );
 };

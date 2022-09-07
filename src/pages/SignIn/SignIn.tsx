@@ -61,7 +61,12 @@ const SignIn = () => {
             {...register('password', { required: true })}
             error={errors.password}
           />
-          <Button cls="w-full mt-12" text="Войти" type="submit" />
+          <Button
+            cls="w-full mt-12"
+            text="Войти"
+            type="submit"
+            view="primary"
+          />
           <div className="w-full text-center mt-3">
             <YandexLogin />
           </div>

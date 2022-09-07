@@ -65,9 +65,10 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
             error={errors.newPasswordRepeat}
           />
           <div className="flex justify-between w-full max-w-md ">
-            <Button cls="mx-0" text="Применить" type="submit" />
+            <Button cls="mx-0" text="Применить" type="submit" view="primary" />
             <Button
-              cls="mx-0 bg-error backdrop-brightness-110 hover:backdrop-brightness-150"
+              cls="mx-0"
+              view="error"
               text="Отменить"
               type="submit"
               onClick={onClose}

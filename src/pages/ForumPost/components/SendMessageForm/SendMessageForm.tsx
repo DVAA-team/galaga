@@ -35,7 +35,7 @@ const SendMessageForm: TProps = ({ emitSubmit }) => {
         cls={styles.input}
         onChange={handleChangeInput}
       />
-      <Button cls={styles.button} text="Send" type="submit" />
+      <Button cls={styles.button} text="Send" type="submit" view="primary" />
     </form>
   );
 };

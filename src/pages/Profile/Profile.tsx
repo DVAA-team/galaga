@@ -1,7 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeEventHandler, useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@/hooks/useAuth';
@@ -10,6 +9,10 @@ import { TUser } from '@/services/types';
 import { setUserProfile } from '@/store/slices/userSlice';
 import { MainLayout } from '@/components/MainLayout';
 import { Header } from '@/components/Header';
+import { notifyError, notifySuccess } from '@/utils/notify';
+import Select from '@/components/Select/Select';
+import { useAppSelector, useAppDispatch } from '@/hooks/store';
+import { useTheme } from '@/hooks/useTheme';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -19,12 +22,17 @@ import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
 import styles from './Profile.module.css';
 
-type TProfile = Omit<TUser, 'id' | 'avatar'>;
+type TProfile = Omit<TUser, 'id' | 'avatar'> & {
+  theme: string;
+};
 
 const Profile = () => {
   const navigate = useNavigate();
   const userData = useAuth();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const [currentThemeName, setCurrentTheme] = useTheme();
+
+  const themes = useAppSelector((state) => state.themes.list);
 
   const redirectToHome = useCallback(() => {
     navigate('/', { replace: true });
@@ -37,6 +45,7 @@ const Profile = () => {
     secondName: '',
     displayName: '',
     phone: '',
+    theme: currentThemeName,
   };
 
   const {
@@ -89,6 +98,21 @@ const Profile = () => {
         setOriginAvatar(undefined);
       }
     });
+  };
+
+  const onThemeChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
+    const selectedThemeName = event.currentTarget.value;
+    try {
+      setCurrentTheme(selectedThemeName);
+      notifySuccess('Тема обновлен');
+    } catch (error) {
+      if (error instanceof Error) {
+        notifyError(error.message);
+      } else {
+        notifyError('Неизвестная ошибка');
+      }
+      reset({ theme: '' });
+    }
   };
 
   useEffect(() => {
@@ -159,18 +183,35 @@ const Profile = () => {
                 type="tel"
                 error={errors.phone}
               />
+              <Select
+                {...register('theme', {
+                  required: true,
+                  onChange: onThemeChange,
+                })}
+                list={themes.map(({ name }) => name)}
+                labelText="Тема сайта:"
+                placeholder="Выберите тему"
+                error={errors.theme}
+              />
               <Button
                 text="Сменить пароль"
-                cls="mx-0 bg-gray-500 hover:bg-gray-700 w-full"
+                cls="mx-0 w-full"
+                view="secondary"
                 onClick={() => setShowChangePassword(true)}
               />
               <div className="flex justify-between items-center mt-4">
-                <Button cls="mx-0" text="Сохранить" type="submit" />
+                <Button
+                  cls="mx-0"
+                  text="Сохранить"
+                  type="submit"
+                  view="primary"
+                />
 
                 <Button
                   text="Выйти"
-                  cls="mx-0 bg-red-500 hover:bg-red-700"
+                  cls="mx-0"
                   onClick={onLogout}
+                  view="error"
                 />
               </div>
             </Form>
