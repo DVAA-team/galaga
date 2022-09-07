@@ -15,7 +15,7 @@ const UserOnPedestal: TProps = ({ userData, cls, position }) => {
     }
   };
   return (
-    <div className={cls}>
+    <div className={`text-white ${cls}`}>
       <Avatar
         src={userData.avatarURL}
         className="pedestal-avatar"

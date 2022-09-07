@@ -104,7 +104,7 @@ const SignUp = () => {
           <Button cls="w-full mt-12" text="Зарегистрироваться" type="submit" />
           <div className="w-full text-center mt-3">
             <Link
-              className="font-bold underline hover:no-underline"
+              className="font-bold underline hover:no-underline dark:text-white"
               to="/sign-in"
             >
               Войти

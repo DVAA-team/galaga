@@ -1,3 +1,55 @@
-@import "abstracts/index.css";
-@import "base/index.css";
-@import "vendors/index.css";
+@import "react-toastify/dist/ReactToastify.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+  Здесь можно добавть ствои стили к tialwind Preflight (список всех предуставновленных стилей
+  https://unpkg.com/tailwindcss@3.1.8/src/css/preflight.css)
+  */
+
+  body {
+    @apply w-screen h-screen dark:bg-black;
+  }
+}
+
+@layer components {
+  /*
+  Здесть можно либо добавить свои классы компонентов которые можно будет использовать через
+  @apply либо переопределить классы tailwind например такие как button (класс будет
+  переопределен глобально)
+  */
+  .bg {
+    &-neon {
+      @apply bg-[#0f0335] dark:bg-[#0f0335];
+
+      background-image: url("../images/background-neon-bottom.png"),
+        url("../images/background-neon-top.png");
+      background-repeat: no-repeat;
+      background-position: bottom center, top center;
+      background-size: contain, contain;
+    }
+
+    &-stars {
+      background: #000 url("../images/stars_pattern.png") 50% 0 / 500px auto
+        repeat;
+      animation: scroll-background 20s linear infinite;
+    }
+  }
+
+  @keyframes scroll-background {
+    0% {
+      background-position: 50% 0;
+    }
+
+    100% {
+      background-position: 50% 750px;
+    }
+  }
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.Toastify__toast-container--top-right {
+  top: 6rem;
+}

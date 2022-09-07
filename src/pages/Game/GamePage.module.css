@@ -6,7 +6,7 @@
   top: calc(80px + 1rem);
 
   &_overlay {
-    @apply absolute flex flex-col
+    @apply absolute flex flex-col text-white
       justify-center items-center inset-0;
   }
 
@@ -14,7 +14,7 @@
     @apply relative w-auto h-auto max-w-full max-h-full m-auto;
 
     canvas {
-      @apply w-full h-full;
+      @apply w-full h-full rounded-lg;
     }
   }
 
@@ -28,7 +28,7 @@
     font-family: "VT323", monospace;
 
     &__red {
-      @apply text-red-500;
+      @apply text-error;
     }
   }
 

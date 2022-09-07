@@ -48,7 +48,7 @@ const Home = () => {
               <img src={ship} alt="" />
             </div>
           </div>
-          <div className="home__content w-1/2 text-center flex flex-col justify-center flex-wrap">
+          <div className="home__content w-1/2 text-center flex flex-col justify-center flex-wrap dark:text-white">
             <h3 className="text-5xl font-bold mb-3">Galaga</h3>
             <p className="text-2xl">Ретро космический шутер</p>
             <div className="flex flex-row flex-wrap mt-5 justify-center">

@@ -54,8 +54,10 @@ module.exports = plugin.withOptions(
     };
 
     if (toastify) {
-      cssVars['--toastify-icon-color-success'] =
-        'rgb(var(--color-success) / 100%)';
+      cssVars['--toastify-color-success'] = 'rgb(var(--color-success) / 100%)';
+      cssVars['--toastify-color-warning'] = 'rgb(var(--color-warning) / 100%)';
+      cssVars['--toastify-color-error'] = 'rgb(var(--color-error) / 100%)';
+      cssVars['--toastify-color-info'] = 'rgb(var(--color-info) / 100%)';
     }
     return ({ addBase }) => {
       addBase({

@@ -84,7 +84,7 @@ const ForumPost = () => {
     <>
       <Header title="Форум" />
       <MainLayout>
-        <div className="container mx-auto flex flex-col items-center h-screen">
+        <div className="container mx-auto flex flex-col items-center h-screen text-white">
           {!isPending && (
             <>
               <div className={styles.body}>

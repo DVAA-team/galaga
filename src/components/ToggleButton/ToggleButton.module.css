@@ -6,7 +6,7 @@
   }
 
   .tb-label {
-    @apply cursor-pointer flex justify-between;
+    @apply cursor-pointer flex justify-between dark:text-white;
   }
 
   .tb-toggler {

@@ -14,7 +14,7 @@ const Button: TProps = (props) => {
 
   return (
     <button
-      className={`button bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline block mx-auto ${cls}`}
+      className={`button bg-primary hover:bg-primary/70 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline block mx-auto ${cls}`}
       type={type}
       onClick={onClick}
     >
