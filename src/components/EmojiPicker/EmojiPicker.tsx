@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import { Input } from '../Input';
+import EmojiList from './EmojiList';
 import styles from './EmojiPicker.module.css';
 
 type TOwnProps = {
@@ -18,38 +19,6 @@ type TOwnProps = {
 };
 
 type TProps = FC<TOwnProps>;
-
-const emojiList: string[] = [
-  '🚀',
-  '🧑‍🚀',
-  '🌌',
-  '🪐',
-  '🌦',
-  '🌟',
-  '🌍',
-  '🌎',
-  '🌏',
-  '💫',
-  '✨',
-  '🗺',
-  '🌞',
-  '🌙',
-  '🌕',
-  '🌓',
-  '🌗',
-  '🌖',
-  '🌔',
-  '🌘',
-  '🌑',
-  '⭐',
-  '🗺️',
-  '🌠',
-  '🛸',
-  '🔭',
-  '🛰️',
-  '🌐',
-  '🌃',
-];
 
 const EmojiPicker: TProps = (props) => {
   const {
@@ -89,7 +58,7 @@ const EmojiPicker: TProps = (props) => {
   };
 
   const renderEmojies = () => {
-    return emojiList.map((emoji, index) => {
+    return EmojiList.map((emoji, index) => {
       return (
         <span className={styles.emoji} key={index} onClick={handlerEmojiClick}>
           {emoji}
