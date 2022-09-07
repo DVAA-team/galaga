@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 import { createDebug } from '@/server/utils';
 import { env } from '@/server/config';
@@ -34,6 +34,7 @@ router.use(
     }),
     logLevel: env.isDev() ? 'debug' : 'info',
     cookieDomainRewrite: '',
+    onProxyReq: fixRequestBody,
   })
 );
 
