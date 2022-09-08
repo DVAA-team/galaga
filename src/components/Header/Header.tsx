@@ -1,6 +1,8 @@
 import ToggleButton from '@/components/ToggleButton/ToggleButton';
+import { useAuth } from '@/hooks/useAuth';
 import { useDarkMode } from '@/hooks/useDarkMode';
-import { FC } from 'react';
+import themeService from '@/services/themeService';
+import { ChangeEventHandler, FC } from 'react';
 import { BackLink } from '../BackLink';
 import { Navigation } from '../Navigation';
 import { PageTitle } from '../PageTitle';
@@ -16,6 +18,18 @@ type TProps = FC<TOwnProps>;
 
 const Header: TProps = ({ title, withoutBackLink, cls = '' }) => {
   const [darkMode, setDarkMode] = useDarkMode();
+  const user = useAuth();
+
+  const onChangeDarkMode: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const { checked } = event.currentTarget;
+    setDarkMode(checked);
+    if (user) {
+      themeService.editUserDarkMode({
+        yandexUserId: user.id,
+        darkMode: checked,
+      });
+    }
+  };
 
   return (
     <header className={`${styles.header} ${cls} z-50`}>
@@ -26,7 +40,7 @@ const Header: TProps = ({ title, withoutBackLink, cls = '' }) => {
           <ToggleButton
             name="darkMode"
             checked={darkMode}
-            onChange={() => setDarkMode((state) => !state)}
+            onChange={onChangeDarkMode}
           />
           <Navigation />
         </div>

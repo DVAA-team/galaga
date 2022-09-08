@@ -13,6 +13,7 @@ type TColorVars = {
 };
 
 export type TThemeItem = {
+  id: number;
   name: string;
   colorVars: TColorVars;
   bgClass?: string;
@@ -27,6 +28,7 @@ interface IThemeState {
 const initialState: IThemeState = {
   darkMode: false,
   current: {
+    id: -1,
     name: '',
     colorVars: {
       accent: '',
@@ -55,17 +57,16 @@ const themesSlice = createSlice({
         changeBgClass('');
       }
     },
-    setTheme(state, action: PayloadAction<string>) {
-      const theme = state.list.find(({ name }) => name === action.payload);
-      if (!theme) {
-        throw new Error('Выбрана несуществующая тема');
-      }
-      state.current = theme;
-      changeTheme(theme, state.darkMode);
+    setTheme(state, action: PayloadAction<TThemeItem>) {
+      state.current = action.payload;
+      changeTheme(state.current, state.darkMode);
+    },
+    setThemeList(state, action: PayloadAction<TThemeItem[]>) {
+      state.list = action.payload;
     },
   },
 });
 
-export const { setDarkMode, setTheme } = themesSlice.actions;
+export const { setDarkMode, setTheme, setThemeList } = themesSlice.actions;
 
 export default themesSlice.reducer;

@@ -13,6 +13,8 @@ import { notifyError, notifySuccess } from '@/utils/notify';
 import Select from '@/components/Select/Select';
 import { useAppSelector, useAppDispatch } from '@/hooks/store';
 import { useTheme } from '@/hooks/useTheme';
+import themeService from '@/services/themeService';
+import { setThemeList } from '@/store/slices/themesSlice';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -23,14 +25,14 @@ import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 import styles from './Profile.module.css';
 
 type TProfile = Omit<TUser, 'id' | 'avatar'> & {
-  theme: string;
+  theme: number;
 };
 
 const Profile = () => {
   const navigate = useNavigate();
   const userData = useAuth();
   const dispatch = useAppDispatch();
-  const [currentThemeName, setCurrentTheme] = useTheme();
+  const [currentTheme, setCurrentTheme] = useTheme();
 
   const themes = useAppSelector((state) => state.themes.list);
 
@@ -45,7 +47,7 @@ const Profile = () => {
     secondName: '',
     displayName: '',
     phone: '',
-    theme: currentThemeName,
+    theme: -1,
   };
 
   const {
@@ -65,8 +67,12 @@ const Profile = () => {
 
   const onSubmit: SubmitHandler<TProfile> = (data) => {
     if (isValid) {
-      userService.editUser(data).then((profile) => {
+      const { theme: themeId, ...userProfile } = data;
+
+      userService.editUser(userProfile).then((profile) => {
         if (profile) {
+          const { id: yandexUserId } = profile;
+          themeService.editUserTheme({ themeId, yandexUserId });
           dispatch(setUserProfile(profile));
         }
       });
@@ -101,9 +107,13 @@ const Profile = () => {
   };
 
   const onThemeChange: ChangeEventHandler<HTMLSelectElement> = (event) => {
-    const selectedThemeName = event.currentTarget.value;
+    const selectedThemeId = Number(event.currentTarget.value);
     try {
-      setCurrentTheme(selectedThemeName);
+      const selectedTheme = themes.find(({ id }) => id === selectedThemeId);
+      if (!selectedTheme) {
+        throw new Error('Тема не найдена');
+      }
+      setCurrentTheme(selectedTheme);
       notifySuccess('Тема обновлен');
     } catch (error) {
       if (error instanceof Error) {
@@ -111,7 +121,7 @@ const Profile = () => {
       } else {
         notifyError('Неизвестная ошибка');
       }
-      reset({ theme: '' });
+      reset({ theme: -1 });
     }
   };
 
@@ -129,6 +139,15 @@ const Profile = () => {
       }
     }
   }, [userData, reset]);
+
+  useEffect(() => {
+    themeService.fetchThemes().then((themeList) => {
+      if (themeList) {
+        reset({ theme: currentTheme.id });
+        dispatch(setThemeList(themeList));
+      }
+    });
+  }, [currentTheme.id, dispatch, reset]);
 
   return (
     <>
@@ -188,7 +207,10 @@ const Profile = () => {
                   required: true,
                   onChange: onThemeChange,
                 })}
-                list={themes.map(({ name }) => name)}
+                list={themes}
+                keyName="id"
+                valueName="name"
+                defaultValue={defaultValues.theme}
                 labelText="Тема сайта:"
                 placeholder="Выберите тему"
                 error={errors.theme}

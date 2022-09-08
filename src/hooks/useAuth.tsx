@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react';
 import { useAppSelector } from '@/hooks/store';
 
 import { TUser } from '@/services/types';
-import { TRootState } from '@/store';
 
 export const useAuth = () => {
-  const { user } = useAppSelector((state: TRootState) => state);
-  const [userProfile, setUserProfile] = useState<TUser | null>(user.profile);
+  const profile = useAppSelector((state) => state.user.profile);
+  const [userProfile, setUserProfile] = useState<TUser | null>(profile);
 
   useEffect(() => {
-    if (user) {
-      setUserProfile(user.profile);
+    if (profile) {
+      setUserProfile(profile);
     }
-  }, [user]);
+  }, [profile]);
 
   return userProfile;
 };

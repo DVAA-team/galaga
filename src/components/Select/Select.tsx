@@ -5,9 +5,11 @@ import styles from './Select.module.css';
 
 type TOwnSelectProps = {
   name: string;
-  list: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  list: any[];
   id?: string;
-  defaultValue?: string;
+  keyName: string;
+  valueName: string;
   labelText?: string;
   error?: FieldError;
   placeholder?: string;
@@ -25,8 +27,9 @@ const Select: TSelectProps = forwardRef((props, ref) => {
     labelText,
     list,
     placeholder,
-    defaultValue,
     error,
+    keyName,
+    valueName,
     ...other
   } = props;
   return (
@@ -41,16 +44,15 @@ const Select: TSelectProps = forwardRef((props, ref) => {
           name={name}
           ref={ref}
           className={styles.select}
-          defaultValue={defaultValue}
         >
           {placeholder && (
-            <option value="" disabled>
+            <option value={other.defaultValue} disabled>
               {placeholder}
             </option>
           )}
-          {list.map((value, idx) => (
-            <option key={idx} value={value}>
-              {value}
+          {list.map((value) => (
+            <option key={value[keyName]} value={value[keyName]}>
+              {value[valueName]}
             </option>
           ))}
         </select>

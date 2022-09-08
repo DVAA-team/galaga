@@ -1,12 +1,13 @@
 import { useAppDispatch, useAppSelector } from '@/hooks/store';
+import { TRootState } from '@/store';
 import { setTheme } from '@/store/slices/themesSlice';
 
-type TTheme = string;
+type TTheme = TRootState['themes']['current'];
 
 type TSetThemes = (arg: ((theme: TTheme) => TTheme) | TTheme) => void;
 
 export const useTheme = (): [TTheme, TSetThemes] => {
-  const currentTheme = useAppSelector((state) => state.themes.current.name);
+  const currentTheme = useAppSelector((state) => state.themes.current);
   const dispatch = useAppDispatch();
 
   return [

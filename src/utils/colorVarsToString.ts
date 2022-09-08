@@ -25,9 +25,14 @@ export default function colorVarsToString(colorVars: TColorVars) {
     '--color-warning': hexToRgb(colorVars.warning),
     /* eslint-enable @typescript-eslint/naming-convention */
   };
-  const stringCssVars = `${Object.entries(cssVars)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(';')};`;
+  const stringCssVars = Object.entries(cssVars)
+    .reduce<string[]>((acc, [key, value]) => {
+      if (value) {
+        acc.push(`${key}: ${value}`);
+      }
+      return acc;
+    }, [])
+    .join(';');
 
   return stringCssVars;
 }
