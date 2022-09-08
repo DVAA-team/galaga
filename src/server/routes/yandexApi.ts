@@ -1,5 +1,9 @@
-import { Router } from 'express';
-import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
+import { Request, Router } from 'express';
+import {
+  createProxyMiddleware,
+  fixRequestBody,
+  responseInterceptor,
+} from 'http-proxy-middleware';
 
 import { createDebug } from '@/server/utils';
 import { env } from '@/server/config';
@@ -35,6 +39,26 @@ router.use(
     logLevel: env.isDev() ? 'debug' : 'info',
     cookieDomainRewrite: '',
     onProxyReq: fixRequestBody,
+    selfHandleResponse: true,
+    onProxyRes: responseInterceptor(async (buffer, proxyRes, req, _res) => {
+      const { method, url, cookies, body } = req as unknown as Request;
+      const reqDesc = `${method} ${url}`;
+      let response;
+      if (proxyRes.headers['content-type']?.includes('application/json')) {
+        response = JSON.parse(buffer.toString());
+      } else {
+        response = buffer.toString();
+      }
+      debug(
+        `send %s\nsend cookies: %O\nsend body: %O\nresponse: %O`,
+        reqDesc,
+        cookies,
+        body,
+        response
+      );
+
+      return buffer;
+    }),
   })
 );
 
