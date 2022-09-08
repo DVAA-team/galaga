@@ -1,11 +1,13 @@
-import { User } from '@/database/models';
+import { SiteTheme, User, UserTheme } from '@/database/models';
 import { TUmugMigrationFn } from '@/database/types';
 
 export const up: TUmugMigrationFn = async ({
   context: { sequelize, transaction },
 }) => {
+  SiteTheme.registration(sequelize);
   User.registration(sequelize);
-  await User.create(
+  UserTheme.registration(sequelize);
+  const newUser = await User.create(
     {
       /* eslint-disable @typescript-eslint/naming-convention */
       login: 'Test',
@@ -18,6 +20,18 @@ export const up: TUmugMigrationFn = async ({
     },
     { transaction }
   );
+  const starsTheme = await SiteTheme.findOne({
+    where: { name: 'Stars' },
+    transaction,
+  });
+  if (!starsTheme) {
+    throw new Error('Нет такой темы');
+  }
+  UserTheme.create({
+    darkMode: true,
+    ownerId: newUser.id,
+    themeId: starsTheme.id,
+  });
 };
 
 export const down: TUmugMigrationFn = async ({
