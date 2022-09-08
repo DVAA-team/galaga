@@ -9,7 +9,7 @@ import { TUser } from '@/services/types';
 import { setUserProfile } from '@/store/slices/userSlice';
 import { MainLayout } from '@/components/MainLayout';
 import { Header } from '@/components/Header';
-import { notifyError, notifySuccess } from '@/utils/notify';
+import { notifyError } from '@/utils/notify';
 import Select from '@/components/Select/Select';
 import { useAppSelector, useAppDispatch } from '@/hooks/store';
 import { useTheme } from '@/hooks/useTheme';
@@ -114,7 +114,6 @@ const Profile = () => {
         throw new Error('Тема не найдена');
       }
       setCurrentTheme(selectedTheme);
-      notifySuccess('Тема обновлен');
     } catch (error) {
       if (error instanceof Error) {
         notifyError(error.message);
