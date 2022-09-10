@@ -1,17 +1,12 @@
 import { render } from '@/utils/test-utils';
 import Home from '@/pages/Home/Home';
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '@/store/slices/userSlice';
 import { Provider } from 'react-redux';
 import { MemoryRouter as Router } from 'react-router-dom';
+import { initialStore } from '@/store';
 
 describe('Страница домашняя', () => {
   test('должна корректно рендериться', () => {
-    const mockStore = configureStore({
-      reducer: {
-        user: userReducer,
-      },
-    });
+    const mockStore = initialStore();
     const { getByText } = render(
       <Provider store={mockStore}>
         <Router>

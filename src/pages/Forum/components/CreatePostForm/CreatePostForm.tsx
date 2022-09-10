@@ -13,7 +13,12 @@ const CreatePostForm = () => {
           inputPlaceholder="Let’s share what going on your mind..."
           inputClassName={styles.input}
         />
-        <Button cls={styles.button} text="Create post" type="submit" />
+        <Button
+          cls={styles.button}
+          text="Create post"
+          type="submit"
+          view="primary"
+        />
       </form>
     </div>
   );

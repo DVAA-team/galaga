@@ -40,7 +40,7 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed flex flex-row justify-center items-center w-full h-full backdrop-blur-md top-0 left-0 overflow-scroll py-5 box-border">
+    <div className="fixed flex flex-row justify-center items-center w-full h-full backdrop-blur-md top-0 left-0 overflow-scroll py-5 box-border dark:text-gray-200">
       <div className="m-auto w-full max-w-md">
         <Form title="Смените пароль" handlerSubmit={handleSubmit(onSubmit)}>
           <Input
@@ -65,9 +65,10 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
             error={errors.newPasswordRepeat}
           />
           <div className="flex justify-between w-full max-w-md ">
-            <Button cls="mx-0" text="Применить" type="submit" />
+            <Button cls="mx-0" text="Применить" type="submit" view="primary" />
             <Button
-              cls="mx-0 bg-red-500 hover:bg-red-700"
+              cls="mx-0"
+              view="error"
               text="Отменить"
               type="submit"
               onClick={onClose}

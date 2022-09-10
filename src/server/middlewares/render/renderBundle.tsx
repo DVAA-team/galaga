@@ -26,7 +26,7 @@ export default function renderBundle({
   );
 
   const html = renderToStaticMarkup(
-    <html lang="ru">
+    <html lang="ru" data-dark-mode={initialState.themes.darkMode}>
       <head>
         <meta charSet="utf-8" />
         <link rel="icon" href="favicon.ico" />

@@ -68,6 +68,7 @@ export const schemaProfile = object({
     .required(errorText.required)
     .matches(regEmail, errorText.format),
   phone: string()
+    .nullable()
     .required(errorText.required)
     .min(10, `${errorText.min} 10`)
     .max(15, `${errorText.max} 15`)
@@ -81,6 +82,7 @@ export const schemaProfile = object({
   displayName: string()
     .required(errorText.required)
     .matches(regName, errorText.format),
+  theme: string().required(errorText.required),
 });
 
 export const schemaChangePassword = object({

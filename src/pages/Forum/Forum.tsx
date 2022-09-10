@@ -42,7 +42,7 @@ const Forum = () => {
     <>
       <Header title="Форум" />
       <MainLayout>
-        <div className="w-full md:w-10/12 mt-10 flex flex-col items-center">
+        <div className="w-full md:w-10/12 mt-10 flex flex-col items-center text-white">
           <CreatePostForm />
           <div className="w-full mt-10">
             {posts.map((post) => (

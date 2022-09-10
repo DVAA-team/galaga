@@ -29,7 +29,7 @@ const SendMessageForm: TProps = () => {
         darkButton={true}
         position="top"
       />
-      <Button cls={styles.button} text="Send" type="submit" />
+      <Button cls={styles.button} text="Send" type="submit" view="primary" />
     </form>
   );
 };

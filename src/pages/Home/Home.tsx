@@ -1,18 +1,19 @@
-import { NavLink, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/hooks/store';
 import userService from '@/services/userService';
 import { setUserProfile } from '@/store/slices/userSlice';
 import yandexOAuthService from '@/services/yandexOAuthService';
 import { MainLayout } from '@/components/MainLayout';
 import { Header } from '@/components/Header';
+import { Button } from '@/components/Button';
 import ship from '../../assets/images/ship.png';
 
 const Home = () => {
   const userData = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     userService.getUserFromDB(2).then((profile) => {
@@ -48,16 +49,13 @@ const Home = () => {
               <img src={ship} alt="" />
             </div>
           </div>
-          <div className="home__content w-1/2 text-center flex flex-col justify-center flex-wrap">
+          <div className="home__content w-1/2 text-center flex flex-col justify-center flex-wrap dark:text-white">
             <h3 className="text-5xl font-bold mb-3">Galaga</h3>
             <p className="text-2xl">Ретро космический шутер</p>
             <div className="flex flex-row flex-wrap mt-5 justify-center">
-              <NavLink
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                to="/game"
-              >
-                🚀&#160;&#160;Играть
-              </NavLink>
+              <Link to="/game">
+                <Button text="🚀&#160;&#160;Играть" view="primary" />
+              </Link>
             </div>
           </div>
         </div>

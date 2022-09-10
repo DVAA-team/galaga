@@ -1,0 +1,43 @@
+.tb-wrapper {
+  @apply select-none;
+
+  .tb-input {
+    @apply w-0 h-0 invisible;
+  }
+
+  .tb-label {
+    @apply cursor-pointer flex justify-between dark:text-white;
+  }
+
+  .tb-toggler {
+    @apply w-[51px] bg-info overflow-hidden py-[4px] rounded-full transition-colors;
+
+    &__content {
+      @apply w-[70px] flex;
+
+      .circle,
+      .uncheck-icon,
+      .check-icon {
+        @apply w-[20px] h-[20px] max-h-[20px] max-w-[20px] ml-[4px]
+          flex justify-center items-center overflow-hidden;
+      }
+
+      .circle {
+        @apply bg-white rounded-full;
+      }
+
+      .check-icon {
+        @apply w-0 m-0 transition-all;
+      }
+    }
+  }
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  .tb-input:checked + .tb-toggler .tb-toggler__content .check-icon {
+    @apply w-[20px] ml-[4px];
+  }
+
+  .tb-input:checked + .tb-toggler {
+    @apply bg-success;
+  }
+}
