@@ -33,8 +33,7 @@ const getYandexUser: RequestHandler = async (req, res, next) => {
       debug('Update own user from Yandex user');
       userFromDb = await userFromDb.update({ ...rest, yandexId });
     }
-
-    res.locals.user = serverToClientNaming(yandexUser);
+    res.locals.user = serverToClientNaming(userFromDb.toJSON());
   } catch (error) {
     res.locals.user = null;
   } finally {

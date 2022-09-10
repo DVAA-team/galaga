@@ -9,14 +9,14 @@ import {
   Sequelize,
 } from 'sequelize';
 import User from '@/database/models/User';
-import Post from '@/database/models/Post';
+import Message from '@/database/models/Message';
 
-const modelName = 'Message';
-const tableName = 'Messages';
+const modelName = 'Comment';
+const tableName = 'Comments';
 
-export default class Message extends Model<
-  InferAttributes<Message>,
-  InferCreationAttributes<Message>
+export default class Comment extends Model<
+  InferAttributes<Comment>,
+  InferCreationAttributes<Comment>
 > {
   declare id: CreationOptional<number>;
 
@@ -28,10 +28,10 @@ export default class Message extends Model<
 
   declare userId: ForeignKey<User['id']>;
 
-  declare postId: ForeignKey<Post['id']>;
+  declare messageId: ForeignKey<Message['id']>;
 
   static registration = (sequelize: Sequelize) => {
-    Message.init(
+    Comment.init(
       {
         id: {
           type: DataTypes.INTEGER,
@@ -56,7 +56,7 @@ export default class Message extends Model<
       }
     );
 
-    Message.belongsTo(User, { foreignKey: 'userId' });
-    Message.belongsTo(Post, { foreignKey: 'postId' });
+    Comment.belongsTo(User, { foreignKey: 'userId' });
+    Comment.belongsTo(Message, { foreignKey: 'messageId' });
   };
 }
