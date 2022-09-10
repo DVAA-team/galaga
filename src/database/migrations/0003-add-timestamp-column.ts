@@ -1,75 +1,48 @@
 import { TUmzugMigrationFn } from '@/database/types';
-import { Post, Comment, Message } from '@/database/models';
-import { DataTypes } from 'sequelize';
+import { DataTypes, ModelAttributeColumnOptions } from 'sequelize';
+
+const tables = ['Posts', 'Messages', 'Comments'];
+const columns: { name: string; options: ModelAttributeColumnOptions }[] = [
+  { name: 'createdAt', options: { type: DataTypes.DATE } },
+  {
+    name: 'updatedAt',
+    options: {
+      type: DataTypes.DATE,
+    },
+  },
+];
 
 export const up: TUmzugMigrationFn = async ({
-  context: { sequelize, transaction, queryInterface },
+  context: { transaction, queryInterface },
 }) => {
-  Post.registration(sequelize);
-  Comment.registration(sequelize);
-  Message.registration(sequelize);
-
-  await Promise.all([
-    queryInterface.addColumn(
-      'Posts',
-      'createdAt',
-      {
-        type: DataTypes.DATE,
-      },
-      { transaction }
-    ),
-    queryInterface.addColumn(
-      'Posts',
-      'updatedAt',
-      {
-        type: DataTypes.DATE,
-      },
-      { transaction }
-    ),
-    queryInterface.addColumn(
-      'Messages',
-      'createdAt',
-      {
-        type: DataTypes.DATE,
-      },
-      { transaction }
-    ),
-    queryInterface.addColumn(
-      'Messages',
-      'updatedAt',
-      {
-        type: DataTypes.DATE,
-      },
-      { transaction }
-    ),
-    queryInterface.addColumn(
-      'Comments',
-      'createdAt',
-      {
-        type: DataTypes.DATE,
-      },
-      { transaction }
-    ),
-    queryInterface.addColumn(
-      'Comments',
-      'updatedAt',
-      {
-        type: DataTypes.DATE,
-      },
-      { transaction }
-    ),
-  ]);
+  const promises: Promise<void>[] = [];
+  for await (const tableName of tables) {
+    const tableDefinition = await queryInterface.describeTable(tableName);
+    for (const column of columns) {
+      if (!tableDefinition[column.name]) {
+        promises.push(
+          queryInterface.addColumn(tableName, column.name, column.options, {
+            transaction,
+          })
+        );
+      }
+    }
+  }
+  return Promise.all(promises);
 };
 
 export const down: TUmzugMigrationFn = async ({
   context: { transaction, queryInterface },
 }) => {
-  await Promise.all([
-    queryInterface.removeColumn('Posts', 'createdAt', { transaction }),
-    queryInterface.removeColumn('Posts', 'updatedAt', { transaction }),
-    queryInterface.removeColumn('Messages', 'createdAt', { transaction }),
-    queryInterface.removeColumn('Messages', 'updatedAt', { transaction }),
-    queryInterface.removeColumn('Comments', 'createdAt', { transaction }),
-    queryInterface.removeColumn('Comments', 'updatedAt', { transaction }),
-  ]);
+  const promises: Promise<void>[] = [];
+  for (const tableName of tables) {
+    for (const column of columns) {
+      promises.push(
+        queryInterface.removeColumn(tableName, column.name, {
+          transaction,
+        })
+      );
+    }
+  }
+  return Promise.all(promises);
 };
