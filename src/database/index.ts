@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
 import { Umzug } from 'umzug';
-import { env } from '@/server/config';
 import { waitDB } from '@/database/utils';
 import { logger, sequelize, umzug } from '@/database/config';
 import { TInitializationFn } from './types';
@@ -15,9 +14,7 @@ export const initializeDB: TInitializationFn = async ({ models }) => {
 
   try {
     await waitDB(sequelizeInstance, 5, logger);
-    // TODO: Не стал писать миграции, вначале надо прокатить базу с force, потом можно расскомментировать строку
-    // await sequelizeInstance.sync();
-    await sequelizeInstance.sync({ force: env.isDev() });
+    await sequelizeInstance.sync();
 
     await migrationsManager.up();
     return sequelizeInstance;

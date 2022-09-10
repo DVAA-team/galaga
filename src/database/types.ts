@@ -25,4 +25,4 @@ export type TUmzugContext = {
   sequelize: Sequelize;
 };
 
-export type TUmugMigrationFn = MigrationFn<TUmzugContext>;
+export type TUmzugMigrationFn = MigrationFn<TUmzugContext>;
