@@ -3,7 +3,6 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import forumService from '@/services/forumService';
 import { Input } from '@/components/Input';
 import styles from './CreatePostForm.module.css';
-import { Avatar } from '../../../../components/Avatar';
 import { Button } from '../../../../components/Button';
 import { TProps } from './types';
 
@@ -35,7 +34,6 @@ const CreatePostForm: TProps = ({ addNewPost }) => {
 
   return (
     <div className="flex items-center w-full md:w-10/12">
-      <Avatar className="" />
       <form className={styles.form} onSubmit={onSubmit}>
         <EmojiPicker isNeedClearInput={isNeedClearInput}>
           <Input
