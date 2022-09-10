@@ -61,3 +61,17 @@ export type TYandexOAuthSingInRequest = {
   redirect_uri: string;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
+
+export type TForumPost = {
+  id: number;
+  title: string;
+  userId: number;
+};
+
+export type TForumMessage = {
+  id: number;
+  text: string;
+  userId: number;
+  postId: number;
+  commentId?: number | null;
+};

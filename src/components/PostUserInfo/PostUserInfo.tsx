@@ -1,14 +1,15 @@
 import { Avatar } from '../Avatar';
 import { TProps } from './types';
 import styles from './PostUserInfo.module.css';
+import defaultAvatar from '../../assets/images/ico/avatar.svg';
 
 const PostUserInfo: TProps = ({ name, date, avatarURL }) => {
   return (
     <div className="flex items-center">
-      <Avatar src={avatarURL} className="mr-4" />
+      <Avatar src={avatarURL || defaultAvatar} className="mr-4" />
       <div>
         <div className={styles.username}>{name}</div>
-        <span className={styles.date}>{date}</span>
+        {date && <span className={styles.date}>{date}</span>}
       </div>
     </div>
   );

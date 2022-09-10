@@ -1,8 +1,10 @@
 import { FC } from 'react';
 
 type TOwnProps = {
-  userDisplayName: string;
-  userAvatarURL?: string;
+  id: number;
+  userId: number;
+  postId: number;
+  commentId?: number | null;
   date?: string;
   text?: string;
   commentsNumber?: number;

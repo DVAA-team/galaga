@@ -1,55 +1,37 @@
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import forumService from '@/services/forumService';
+import { TForumPost } from '@/api/types';
 import { CreatePostForm } from './components/CreatePostForm';
 import { PostCard } from './components/PostCard';
-import { TOwnProps as TPostProps } from './components/PostCard/types';
 
 const Forum = () => {
-  type TPostData = TPostProps & { id: string };
-  const [posts, setPosts] = useState<TPostData[]>([]);
+  const [posts, setPosts] = useState<TForumPost[]>([]);
 
   useEffect(() => {
-    setPosts([
-      {
-        id: '1',
-        title: 'The 4-step SEO framework that led to a 1000% increase in!',
-        userDisplayName: 'Pavel Born',
-        date: '01.01.2001',
-        messagesNumber: 321,
-        membersNumber: 45,
-      },
-      {
-        id: '2',
-        title: 'The 4-step SEO framework that led to a 1000% increase in!',
-        userDisplayName: 'Pavel Born',
-        date: '01.01.2001',
-        messagesNumber: 321,
-        membersNumber: 45,
-      },
-      {
-        id: '3',
-        title: 'The 4-step SEO framework that led to a 1000% increase in!',
-        userDisplayName: 'Pavel Born',
-        date: '01.01.2001',
-        messagesNumber: 321,
-        membersNumber: 45,
-      },
-    ]);
+    forumService.getAllPosts().then((r) => setPosts(r.reverse()));
   }, []);
+
+  const addNewPost = (post: TForumPost) => {
+    setPosts((prev) => [post, ...prev]);
+  };
+
   return (
     <>
       <Header title="Форум" />
       <MainLayout>
         <div className="w-full md:w-10/12 mt-10 flex flex-col items-center">
-          <CreatePostForm />
+          <CreatePostForm addNewPost={addNewPost} />
           <div className="w-full mt-10">
-            {posts.map((post) => (
-              <Link key={post.id} to={`posts/${post.id}`}>
-                <PostCard {...post} />
-              </Link>
-            ))}
+            {posts.length ? (
+              posts.map((post) => <PostCard key={post.id} {...post} />)
+            ) : (
+              <div className="text-center">
+                Сообщений пока что нет. Напиши что-нибудь, чтобы форум не скучал
+                ;(
+              </div>
+            )}
           </div>
         </div>
       </MainLayout>

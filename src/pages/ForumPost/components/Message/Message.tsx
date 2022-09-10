@@ -1,34 +1,43 @@
 import React, { useEffect, useState } from 'react';
+import userService from '@/services/userService';
+
+import { TUser } from '@/services/types';
 import styles from './Message.module.css';
 import { TProps } from './types';
 import { PostUserInfo } from '../../../../components/PostUserInfo';
 import { Comment } from '../Comment';
+
 import { TOwnProps as TCommentProps } from '../Comment/types';
 
 type TCommentData = TCommentProps & {
   id: number;
 };
 
-const Message: TProps = ({
-  userDisplayName,
-  userAvatarURL,
-  date = '',
-  text = '',
-  commentsNumber = 0,
-  isMine = false,
-}) => {
+const Message: TProps = ({ userId, date = '', text = '', isMine = false }) => {
   const [isActive, setIsActive] = useState(false);
+
+  const [author, setAuthor] = useState<TUser | null>(null);
+  const [avatar, setAvatar] = useState<Blob>();
+
   const [comments, setComments] = useState<TCommentData[]>([]);
 
-  const handleClick = () => {
-    setIsActive((prev) => !prev);
-  };
+  useEffect(() => {
+    userService.getUserFromDB(userId).then((profile) => {
+      if (profile !== null) {
+        setAuthor(profile);
 
-  const getBodyClasses = () => {
-    return `${styles.body} ${isMine ? styles.mine : ''} ${
-      isActive ? styles.active : ''
-    }`;
-  };
+        const { avatar: userAvatar } = profile;
+
+        if (userAvatar) {
+          userService.getAvatar(userAvatar).then((res) => {
+            if (res) {
+              setAvatar(res);
+            }
+          });
+        }
+      }
+    });
+  }, [userId]);
 
   useEffect(() => {
     setComments([
@@ -53,18 +62,30 @@ const Message: TProps = ({
     ]);
   }, []);
 
+  const handleClick = () => {
+    setIsActive((prev) => !prev);
+  };
+
+  const getBodyClasses = () => {
+    return `${styles.body} ${isMine ? styles.mine : ''} ${
+      isActive ? styles.active : ''
+    }`;
+  };
+
   return (
     <div className="mb-8" onClick={handleClick}>
-      <PostUserInfo
-        name={userDisplayName}
-        avatarURL={userAvatarURL}
-        date={date}
-      />
+      {author && (
+        <PostUserInfo
+          name={author.displayName || author.login}
+          avatarURL={avatar ? URL.createObjectURL(avatar) : null}
+          date={date}
+        />
+      )}
 
       <div className={getBodyClasses()}>{text}</div>
 
       <div className={styles.footer}>
-        <span>{commentsNumber} comments</span>
+        <span>{comments.length} комментариев</span>
       </div>
 
       {isActive && (

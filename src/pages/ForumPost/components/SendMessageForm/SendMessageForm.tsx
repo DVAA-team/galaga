@@ -1,34 +1,61 @@
-import React, { useRef } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { EmojiPicker } from '@/components/EmojiPicker';
+import { Input } from '@/components/Input';
+import forumService from '@/services/forumService';
 import styles from './SendMessageForm.module.css';
 import { Button } from '../../../../components/Button';
 import { TProps } from './types';
 
-const SendMessageForm: TProps = () => {
-  const formRef = useRef<HTMLFormElement>(null);
+const SendMessageForm: TProps = ({
+  postId,
+  commentId = null,
+  sendCallback,
+}) => {
+  const [isNeedClearInput, setIsNeedClearInput] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
-    const { current: form } = formRef;
+    const target = e.target as HTMLFormElement;
+    const formData = new FormData(target);
+    const text = formData.get('text')?.toString();
 
-    if (form) {
-      const data = new FormData(form);
-
-      // eslint-disable-next-line no-console
-      console.log(data);
+    if (!text) {
+      return;
     }
+
+    forumService
+      .createMessageForPost({ postId, commentId, text })
+      .then((post) => {
+        if (sendCallback) {
+          sendCallback(post);
+        }
+        setIsNeedClearInput(true);
+      });
   };
 
+  useEffect(() => {
+    if (isNeedClearInput) {
+      setIsNeedClearInput(false);
+    }
+  }, [isNeedClearInput]);
+
   return (
-    <form className={styles.form} onSubmit={handleSubmit} ref={formRef}>
+    <form className={styles.form} onSubmit={onSubmit}>
       <EmojiPicker
-        inputName="postTitle"
-        inputPlaceholder="Type your message"
-        inputClassName={styles.input}
+        isNeedClearInput={isNeedClearInput}
         darkButton={true}
         position="top"
-      />
+      >
+        <Input
+          name="text"
+          placeholder="Type your message"
+          autoComplete="off"
+          cls={styles.input}
+          withoutMargin={true}
+          withLabel={false}
+        />
+      </EmojiPicker>
       <Button cls={styles.button} text="Send" type="submit" />
     </form>
   );
