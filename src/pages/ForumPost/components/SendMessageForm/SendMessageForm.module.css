@@ -3,7 +3,7 @@
 .form {
   @apply w-full flex items-center my-8;
 
-  div {
+  & > div {
     @apply w-full mb-0 mr-5;
   }
 }

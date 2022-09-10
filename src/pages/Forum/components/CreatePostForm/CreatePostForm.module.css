@@ -3,11 +3,12 @@
 .form {
   @apply flex w-full justify-between;
 
-  div {
+  & > div {
     @apply w-full mx-5 mb-0;
   }
 
   .input {
+    height: 40px;
     background-color: $glob-color-dark-90;
     border: none;
     border-radius: 5px;
