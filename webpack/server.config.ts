@@ -21,7 +21,7 @@ const migrations = fs
       library: {
         type: 'commonjs2',
       },
-      filename: 'migrations/[name].[fullhash].js',
+      filename: 'migrations/[name].js',
     };
     return acc;
   }, {});

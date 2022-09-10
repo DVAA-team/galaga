@@ -2,7 +2,6 @@ import { Sequelize } from 'sequelize';
 import { Umzug } from 'umzug';
 
 import { waitDB } from '@/database/utils';
-import { env } from '@/server/config';
 import { logger, sequelize, umzug } from '@/database/config';
 import { TInitializationFn } from './types';
 
@@ -16,7 +15,7 @@ export const initializeDB: TInitializationFn = async ({ models }) => {
 
   try {
     await waitDB(sequelizeInstance, 5, logger);
-    await sequelizeInstance.sync({ force: env.isDev() });
+    await sequelizeInstance.sync();
 
     await migrationsManager.up();
     return sequelizeInstance;
