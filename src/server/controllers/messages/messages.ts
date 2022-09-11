@@ -6,11 +6,14 @@ class MessagesController {
   // eslint-disable-next-line class-methods-use-this,consistent-return
   async getMessage(req: Request, res: Response, next: NextFunction) {
     const { messageId, postId } = req.params;
+    const { user } = res.locals;
+    const { yandexId } = user;
 
     try {
       const message = await dbMessageController.getMessageByPostIdAndId(
         Number(postId),
-        Number(messageId)
+        Number(messageId),
+        Number(yandexId)
       );
       if (message) {
         res.status(200).json(message.toJSON());
@@ -28,7 +31,7 @@ class MessagesController {
 
   // eslint-disable-next-line class-methods-use-this,consistent-return
   async createMessage(req: Request, res: Response, next: NextFunction) {
-    const { text, commentId } = req.body;
+    const { text } = req.body;
     const { postId } = req.params;
 
     const { user } = res.locals;
@@ -47,7 +50,6 @@ class MessagesController {
         text,
         postId: Number(postId),
         userId,
-        commentId,
       });
       if (message) {
         res.status(201).json(message.toJSON());
@@ -63,6 +65,8 @@ class MessagesController {
   async updateMessage(req: Request, res: Response, next: NextFunction) {
     const { text } = req.body;
     const { messageId, postId } = req.params;
+    const { user } = res.locals;
+    const { yandexId } = user;
 
     if (!text) {
       return next(ApiError.badRequest('Не задан text'));
@@ -81,6 +85,7 @@ class MessagesController {
         text,
         postId: Number(postId),
         messageId: Number(messageId),
+        yandexId: Number(yandexId),
       });
       if (message) {
         res.status(200).json(message.toJSON());
@@ -114,6 +119,8 @@ class MessagesController {
   // eslint-disable-next-line class-methods-use-this,consistent-return
   async getMessages(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
+    const { user } = res.locals;
+    const { yandexId } = user;
 
     if (!postId) {
       return next(ApiError.badRequest('Не задан post id'));
@@ -121,6 +128,7 @@ class MessagesController {
 
     const messages = await dbMessageController.getMessages({
       postId: Number(postId),
+      yandexId: Number(yandexId),
     });
     res.status(200).json(messages.map((message) => message.toJSON()));
   }

@@ -1,6 +1,5 @@
 import { Sequelize } from 'sequelize';
 import { Umzug } from 'umzug';
-
 import { waitDB } from '@/database/utils';
 import { logger, sequelize, umzug } from '@/database/config';
 import { TInitializationFn } from './types';

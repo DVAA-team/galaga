@@ -1,7 +1,7 @@
 import { SiteTheme, User, UserTheme } from '@/database/models';
-import { TUmugMigrationFn } from '@/database/types';
+import { TUmzugMigrationFn } from '@/database/types';
 
-export const up: TUmugMigrationFn = async ({
+export const up: TUmzugMigrationFn = async ({
   context: { sequelize, transaction },
 }) => {
   SiteTheme.registration(sequelize);
@@ -34,7 +34,7 @@ export const up: TUmugMigrationFn = async ({
   });
 };
 
-export const down: TUmugMigrationFn = async ({
+export const down: TUmzugMigrationFn = async ({
   context: { sequelize, transaction },
 }) => {
   User.registration(sequelize);

@@ -6,9 +6,14 @@ class PostsController {
   // eslint-disable-next-line class-methods-use-this,consistent-return
   async getPost(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
+    const { user } = res.locals;
+    const { yandexId } = user;
 
     try {
-      const post = await dbPostController.getPostById(Number(postId));
+      const post = await dbPostController.getPostById(
+        Number(postId),
+        Number(yandexId)
+      );
       if (post) {
         res.status(200).json(post.toJSON());
       } else {
@@ -49,6 +54,8 @@ class PostsController {
   async updatePost(req: Request, res: Response, next: NextFunction) {
     const { title } = req.body;
     const { postId } = req.params;
+    const { user } = res.locals;
+    const { yandexId } = user;
 
     if (!title) {
       return next(ApiError.badRequest('Не задан title'));
@@ -62,6 +69,7 @@ class PostsController {
       const post = await dbPostController.updatePost({
         title,
         postId: Number(postId),
+        yandexId: Number(yandexId),
       });
       if (post) {
         res.status(200).json(post.toJSON());
@@ -93,7 +101,9 @@ class PostsController {
 
   // eslint-disable-next-line class-methods-use-this
   async getPosts(_req: Request, res: Response) {
-    const posts = await dbPostController.getPosts();
+    const { user } = res.locals;
+    const { yandexId } = user;
+    const posts = await dbPostController.getPosts(yandexId);
     res.status(200).json(posts.map((post) => post.toJSON()));
   }
 }
