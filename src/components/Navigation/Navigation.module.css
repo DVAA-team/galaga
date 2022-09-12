@@ -1,5 +1,5 @@
 .navigation {
-  position: relative;
+  @apply flex relative;
 }
 
 .toogler {
@@ -11,16 +11,14 @@
 
 .list {
   position: absolute;
-  width: 220px;
   right: 0;
   top: 100%;
   margin-top: 26px;
   padding: 10px;
-  background: rgb(21 23 41 / 70%);
   border: 1px solid #d3dce6;
-  box-shadow: 0 0 6px rgb(0 0 0 / 25%);
   border-radius: 7px;
   display: none;
+  @apply bg-sky-600/70 dark:bg-stone-800/70 shadow shadow-black/20 backdrop-blur;
 }
 
 .list-open {
@@ -28,16 +26,20 @@
 }
 
 .link {
+  @apply text-black dark:text-white;
+
   display: block;
   padding: 10px;
   border-radius: 4px;
 
   &:hover {
-    background: #212529;
+    @apply bg-slate-800/50 dark:bg-slate-500/50;
   }
 }
 
 .link-active {
-  color: #666;
+  @apply text-slate-500 dark:text-slate-600;
+
+  /* color: rgb(102, 102, 102); */
   pointer-events: none;
 }

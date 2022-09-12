@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '@/hooks/store';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { setUserProfile } from '@/store/slices/userSlice';
@@ -16,7 +16,7 @@ import { TLocationProps } from './types';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const { state } = useLocation() as TLocationProps;
   const from = state?.from?.pathname || '/';
@@ -61,13 +61,18 @@ const SignIn = () => {
             {...register('password', { required: true })}
             error={errors.password}
           />
-          <Button cls="w-full mt-12" text="Войти" type="submit" />
+          <Button
+            cls="w-full mt-12"
+            text="Войти"
+            type="submit"
+            view="primary"
+          />
           <div className="w-full text-center mt-3">
             <YandexLogin />
           </div>
           <div className="w-full text-center mt-3">
             <Link
-              className="font-bold underline hover:no-underline"
+              className="font-bold underline hover:no-underline dark:text-white"
               to="/sign-up"
             >
               Нет аккаунта?

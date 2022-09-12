@@ -21,6 +21,10 @@ export default class Post extends Model<
 
   declare title: string;
 
+  declare createdAt?: string;
+
+  declare updatedAt?: string;
+
   declare userId: ForeignKey<User['id']>;
 
   static registration = (sequelize: Sequelize) => {
@@ -34,12 +38,18 @@ export default class Post extends Model<
         title: {
           type: DataTypes.STRING,
         },
+        createdAt: {
+          type: 'TIMESTAMP',
+        },
+        updatedAt: {
+          type: 'TIMESTAMP',
+        },
       },
       {
         sequelize,
         modelName,
         tableName,
-        timestamps: false,
+        timestamps: true,
       }
     );
 

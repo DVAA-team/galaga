@@ -5,7 +5,7 @@ const debug = createDebug('request');
 
 const loggerMiddleware: RequestHandler = (req, res, next) => {
   const reqDesc = `${req.method} ${req.url}`;
-  debug(`start %s\ncookies: %O`, reqDesc, req.cookies);
+  debug(`start %s\ncookies: %O\nbody: %O`, reqDesc, req.cookies, req.body);
   res.once('finish', () => debug('end %s', reqDesc));
   next();
 };

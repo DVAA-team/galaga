@@ -22,11 +22,13 @@ export default class Message extends Model<
 
   declare text: string;
 
+  declare createdAt?: string;
+
+  declare updatedAt?: string;
+
   declare userId: ForeignKey<User['id']>;
 
   declare postId: ForeignKey<Post['id']>;
-
-  declare commentId?: number;
 
   static registration = (sequelize: Sequelize) => {
     Message.init(
@@ -39,15 +41,18 @@ export default class Message extends Model<
         text: {
           type: DataTypes.STRING,
         },
-        commentId: {
-          type: DataTypes.INTEGER,
+        createdAt: {
+          type: 'TIMESTAMP',
+        },
+        updatedAt: {
+          type: 'TIMESTAMP',
         },
       },
       {
         sequelize,
         modelName,
         tableName,
-        timestamps: false,
+        timestamps: true,
       }
     );
 

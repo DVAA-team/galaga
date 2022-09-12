@@ -170,7 +170,12 @@ const CropAvatar: FC<TCropAvatarProps> = ({ image, border, size, onSave }) => {
         <p className="text-gray-500 text-sm text-center m-auto">
           Используйте колесико мышии чтобы изменить масштаб.
         </p>
-        <Button text="Применить" cls="mt-4" onClick={saveHandler} />
+        <Button
+          text="Применить"
+          cls="mt-4"
+          view="primary"
+          onClick={saveHandler}
+        />
       </div>
     </div>
   );

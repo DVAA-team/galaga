@@ -36,7 +36,7 @@ const Leaderboard = () => {
           third={champions[2]}
         />
 
-        <div className="champions-arena">
+        <div className="champions-arena text-white">
           {users.map((user) => (
             <ChampionsArenaItem key={user.username} userData={user} />
           ))}

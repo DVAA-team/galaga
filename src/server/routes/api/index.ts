@@ -1,16 +1,26 @@
 import { Router, RequestHandler } from 'express';
 
 import { initializeDB } from '@/database';
-import { User, Post, Message } from '@/database/models';
+import {
+  User,
+  Post,
+  Message,
+  UserTheme,
+  SiteTheme,
+  Comment,
+} from '@/database/models';
 
+import checkUser from '@/server/middlewares/checkUser';
 import users from './users';
 import posts from './posts';
 import messages from './messages';
+import comments from './comments';
+import themes from './themes';
 
 const router: Router = Router();
 
 const dbInstancePromise = initializeDB({
-  models: [User, Post, Message],
+  models: [User, Post, Message, SiteTheme, UserTheme, Comment],
 });
 
 const checkDBConnection: RequestHandler = async (_req, _res, next) => {
@@ -30,6 +40,12 @@ const checkDBConnection: RequestHandler = async (_req, _res, next) => {
   }
 };
 
-router.use(checkDBConnection).use(users).use(posts).use(messages);
+router
+  .use([checkUser], checkDBConnection)
+  .use(users)
+  .use(posts)
+  .use(messages)
+  .use(comments)
+  .use(themes);
 
 export default router;
