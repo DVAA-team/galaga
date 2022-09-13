@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import userService from '@/services/userService';
 
-import { TUser } from '@/services/types';
+import { TForumUser } from '@/services/types';
+import { serverToClientNaming } from '@/utils/convertNaming';
+import { useAppDispatch } from '@/hooks/store';
+import { addUserAvatarToMessage } from '@/store/slices/forumSlice';
+import { useAuth } from '@/hooks/useAuth';
+import convertNumWords from '@/utils/convertNumWords';
 import styles from './Message.module.css';
 import { TProps } from './types';
 import { PostUserInfo } from '../../../../components/PostUserInfo';
@@ -13,31 +18,46 @@ type TCommentData = TCommentProps & {
   id: number;
 };
 
-const Message: TProps = ({ userId, date = '', text = '', isMine = false }) => {
+const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
   const [isActive, setIsActive] = useState(false);
-
-  const [author, setAuthor] = useState<TUser | null>(null);
+  const currentUser = useAuth();
+  const [author] = useState<TForumUser>(serverToClientNaming(user));
   const [avatar, setAvatar] = useState<Blob>();
-
+  const [currentUserId, setCurrentUserId] = useState(0);
   const [comments, setComments] = useState<TCommentData[]>([]);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    userService.getUserFromDB(userId).then((profile) => {
-      if (profile !== null) {
-        setAuthor(profile);
+    if (currentUser) {
+      const { id: userId } = currentUser;
+      setCurrentUserId(userId);
+    }
+  }, [currentUser]);
 
-        const { avatar: userAvatar } = profile;
+  useEffect(() => {
+    if (author) {
+      const { avatar: userAvatar, avatarUrl } = author;
 
-        if (userAvatar) {
-          userService.getAvatar(userAvatar).then((res) => {
-            if (res) {
-              setAvatar(res);
-            }
-          });
-        }
+      if (avatarUrl) {
+        return;
       }
-    });
-  }, [userId]);
+
+      if (userAvatar) {
+        userService.getAvatar(userAvatar).then((res) => {
+          if (res) {
+            setAvatar(res);
+            dispatch(
+              addUserAvatarToMessage({
+                id,
+                postId,
+                avatarUrl: URL.createObjectURL(res),
+              })
+            );
+          }
+        });
+      }
+    }
+  }, [author, dispatch, id, postId]);
 
   useEffect(() => {
     setComments([
@@ -67,9 +87,19 @@ const Message: TProps = ({ userId, date = '', text = '', isMine = false }) => {
   };
 
   const getBodyClasses = () => {
-    return `${styles.body} ${isMine ? styles.mine : ''} ${
+    return `${styles.body} ${currentUserId === author.id ? styles.mine : ''} ${
       isActive ? styles.active : ''
     }`;
+  };
+
+  const getAvatarUrl = () => {
+    const { avatarUrl } = author;
+
+    if (avatarUrl) {
+      return avatarUrl;
+    }
+
+    return avatar ? URL.createObjectURL(avatar) : null;
   };
 
   return (
@@ -77,15 +107,22 @@ const Message: TProps = ({ userId, date = '', text = '', isMine = false }) => {
       {author && (
         <PostUserInfo
           name={author.displayName || author.login}
-          avatarURL={avatar ? URL.createObjectURL(avatar) : null}
-          date={date}
+          avatarURL={getAvatarUrl()}
+          date={createdAt || ''}
         />
       )}
 
       <div className={getBodyClasses()}>{text}</div>
 
       <div className={styles.footer}>
-        <span>{comments.length} комментариев</span>
+        <span>
+          {comments.length}{' '}
+          {convertNumWords(comments.length, [
+            'комментарий',
+            'комментария',
+            'комментариев',
+          ])}
+        </span>
       </div>
 
       {isActive && (

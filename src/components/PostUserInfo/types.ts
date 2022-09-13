@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 type TOwnProps = {
   name: string;
-  avatarURL: string | null;
+  avatarURL?: string | null;
   date?: string;
 };
 

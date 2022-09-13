@@ -1,8 +1,10 @@
-import { TForumPost } from '@/api/types';
+import { TForumMessage, TForumPost } from '@/api/types';
 import { FC } from 'react';
 
-type TOwnProps = TForumPost;
+type TOwnProps = TForumPost & {
+  messages?: TForumMessage[];
+};
 
-type TProps = FC<TForumPost>;
+type TProps = FC<TOwnProps>;
 
 export { TOwnProps, TProps };

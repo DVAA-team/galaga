@@ -1,10 +1,9 @@
-import { appConstants } from '@/config';
 import { AbstractHttpClient } from './AbstractHttpClient';
 import { TUserResponse } from './types';
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
-    super(appConstants.localApiBaseURL);
+    super('/');
   }
 
   public getUser = (id: number) =>

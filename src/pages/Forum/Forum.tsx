@@ -1,31 +1,42 @@
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import forumService from '@/services/forumService';
-import { TForumPost } from '@/api/types';
-import { CreatePostForm } from './components/CreatePostForm';
+import { useForum } from '@/hooks/useForum';
+import { useAppDispatch } from '@/hooks/store';
+import { addCurrentPost, addPosts, TPost } from '@/store/slices/forumSlice';
 import { PostCard } from './components/PostCard';
+import { CreatePostForm } from './components/CreatePostForm';
 
 const Forum = () => {
-  const [posts, setPosts] = useState<TForumPost[]>([]);
+  const posts = useForum();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    forumService.getAllPosts().then((r) => setPosts(r.reverse()));
-  }, []);
-
-  const addNewPost = (post: TForumPost) => {
-    setPosts((prev) => [post, ...prev]);
-  };
+    if (posts === null) {
+      forumService.getAllPosts().then((r) => {
+        if (r.length) {
+          r.forEach((post: TPost) => {
+            dispatch(addPosts(post));
+          });
+        }
+      });
+    } else {
+      dispatch(addCurrentPost(null));
+    }
+  }, [dispatch, posts]);
 
   return (
     <>
       <Header title="Форум" />
       <MainLayout>
-        <div className="w-full md:w-10/12 mt-10 flex flex-col items-center">
-          <CreatePostForm addNewPost={addNewPost} />
+        <div className="w-full md:w-10/12 mt-10 flex flex-col items-center text-white">
+          <CreatePostForm />
           <div className="w-full mt-10">
-            {posts.length ? (
-              posts.map((post) => <PostCard key={post.id} {...post} />)
+            {posts && posts.length > 0 ? (
+              posts.map((post) => {
+                return <PostCard key={post.id} {...post} />;
+              })
             ) : (
               <div className="text-center">
                 Сообщений пока что нет. Напиши что-нибудь, чтобы форум не скучал

@@ -27,7 +27,7 @@ class ForumApi extends AbstractHttpClient {
     this.instance.get(`/posts/${data}/messages`);
 
   public createMessageForPost = (
-    data: Omit<TForumMessage, 'id' | 'userId'>
+    data: Omit<TForumMessage, 'messageId' | 'user' | 'id' | 'userId'>
   ) => {
     const { postId, ...rest } = data;
     return this.instance.post(`/posts/${postId}/messages`, rest);

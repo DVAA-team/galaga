@@ -1,37 +1,44 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { Input } from '@/components/Input';
 import forumService from '@/services/forumService';
+import { useAppDispatch } from '@/hooks/store';
+import { addMessageToPost } from '@/store/slices/forumSlice';
+import { useAuth } from '@/hooks/useAuth';
 import styles from './SendMessageForm.module.css';
 import { Button } from '../../../../components/Button';
 import { TProps } from './types';
 
-const SendMessageForm: TProps = ({
-  postId,
-  commentId = null,
-  sendCallback,
-}) => {
+const SendMessageForm: TProps = ({ postId }) => {
   const [isNeedClearInput, setIsNeedClearInput] = useState(false);
+  const dispatch = useAppDispatch();
+  const user = useAuth();
 
-  const onSubmit = (e: SyntheticEvent) => {
+  const onSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const target = e.target as HTMLFormElement;
-    const formData = new FormData(target);
-    const text = formData.get('text')?.toString();
 
-    if (!text) {
-      return;
+    if (target) {
+      const formData = new FormData(target);
+      const text = formData.get('text')?.toString();
+
+      if (!text) {
+        return;
+      }
+
+      forumService
+        .createMessageForPost({
+          postId,
+          text,
+        })
+        .then((post) => {
+          if (user) {
+            dispatch(addMessageToPost({ ...post, user }));
+            setIsNeedClearInput(true);
+          }
+        });
     }
-
-    forumService
-      .createMessageForPost({ postId, commentId, text })
-      .then((post) => {
-        if (sendCallback) {
-          sendCallback(post);
-        }
-        setIsNeedClearInput(true);
-      });
   };
 
   useEffect(() => {
@@ -49,14 +56,14 @@ const SendMessageForm: TProps = ({
       >
         <Input
           name="text"
-          placeholder="Type your message"
+          placeholder="Ваш комментарий..."
           autoComplete="off"
           cls={styles.input}
           withoutMargin={true}
           withLabel={false}
         />
       </EmojiPicker>
-      <Button cls={styles.button} text="Send" type="submit" />
+      <Button cls={styles.button} text="Отправить" type="submit" />
     </form>
   );
 };

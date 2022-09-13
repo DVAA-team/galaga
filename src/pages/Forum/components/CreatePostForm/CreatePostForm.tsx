@@ -2,12 +2,16 @@ import { EmojiPicker } from '@/components/EmojiPicker';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import forumService from '@/services/forumService';
 import { Input } from '@/components/Input';
+import { useAppDispatch } from '@/hooks/store';
+import { addPosts } from '@/store/slices/forumSlice';
+import { useAuth } from '@/hooks/useAuth';
 import styles from './CreatePostForm.module.css';
 import { Button } from '../../../../components/Button';
-import { TProps } from './types';
 
-const CreatePostForm: TProps = ({ addNewPost }) => {
+const CreatePostForm = () => {
   const [isNeedClearInput, setIsNeedClearInput] = useState(false);
+  const dispatch = useAppDispatch();
+  const user = useAuth();
 
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -21,7 +25,7 @@ const CreatePostForm: TProps = ({ addNewPost }) => {
     }
 
     forumService.createPost({ title }).then((post) => {
-      addNewPost(post);
+      dispatch(addPosts({ ...post, user }));
       setIsNeedClearInput(true);
     });
   };
@@ -38,14 +42,14 @@ const CreatePostForm: TProps = ({ addNewPost }) => {
         <EmojiPicker isNeedClearInput={isNeedClearInput}>
           <Input
             name="title"
-            placeholder="Let’s share what going on your mind..."
+            placeholder="Напишите что-нибудь, пожалуйста..."
             autoComplete="off"
             cls={styles.input}
             withoutMargin={true}
             withLabel={false}
           />
         </EmojiPicker>
-        <Button cls={styles.button} text="Create post" type="submit" />
+        <Button cls={styles.button} text="Создать пост" type="submit" />
       </form>
     </div>
   );

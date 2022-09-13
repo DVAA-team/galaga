@@ -1,40 +1,63 @@
 import { useEffect, useState } from 'react';
 import userService from '@/services/userService';
-import { TUser } from '@/services/types';
 import forumService from '@/services/forumService';
 import { PostUserInfo } from '@/components/PostUserInfo';
 import { Link } from 'react-router-dom';
+import { serverToClientNaming } from '@/utils/convertNaming';
+import { TForumUser } from '@/services/types';
+import { useAppDispatch } from '@/hooks/store';
+import { addAllMessagesToPost, addUserAvatar } from '@/store/slices/forumSlice';
+import convertNumWords from '@/utils/convertNumWords';
 import styles from './PostCard.module.css';
 import { TProps } from './types';
 
-const PostCard: TProps = ({ id, title, userId }) => {
-  const [author, setAuthor] = useState<TUser | null>(null);
+const PostCard: TProps = ({ id, title, user, createdAt, messages }) => {
+  const [author] = useState<TForumUser>(serverToClientNaming(user));
   const [avatar, setAvatar] = useState<Blob>();
-  const [commentsCount, setCommentsCount] = useState(0);
+  const [messagesCount, setMessagesCount] = useState(0);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    userService.getUserFromDB(userId).then((profile) => {
-      if (profile !== null) {
-        setAuthor(profile);
+    if (author) {
+      const { avatar: userAvatar, avatarUrl } = author;
 
-        const { avatar: userAvatar } = profile;
-
-        if (userAvatar) {
-          userService.getAvatar(userAvatar).then((res) => {
-            if (res) {
-              setAvatar(res);
-            }
-          });
-        }
+      if (avatarUrl) {
+        return;
       }
-    });
-  }, [userId]);
+
+      if (userAvatar) {
+        userService.getAvatar(userAvatar).then((res) => {
+          if (res) {
+            setAvatar(res);
+            dispatch(
+              addUserAvatar({ id, avatarUrl: URL.createObjectURL(res) })
+            );
+          }
+        });
+      }
+    }
+  }, [author, dispatch, id]);
 
   useEffect(() => {
-    forumService.getMessagesForPost(id).then((comments) => {
-      setCommentsCount(comments.length);
-    });
-  }, [id]);
+    if (messages) {
+      setMessagesCount(messages.length);
+    } else {
+      forumService.getMessagesForPost(id).then((res) => {
+        setMessagesCount(res.length);
+        dispatch(addAllMessagesToPost({ messages: res, postId: id }));
+      });
+    }
+  }, [messages, dispatch, id]);
+
+  const getAvatarUrl = () => {
+    const { avatarUrl } = author;
+
+    if (avatarUrl) {
+      return avatarUrl;
+    }
+
+    return avatar ? URL.createObjectURL(avatar) : null;
+  };
 
   const renderCard = () => (
     <div className={styles.card}>
@@ -43,11 +66,17 @@ const PostCard: TProps = ({ id, title, userId }) => {
         <div className={styles.card_body}>
           <PostUserInfo
             name={author.displayName || author.login}
-            avatarURL={avatar ? URL.createObjectURL(avatar) : null}
+            avatarURL={getAvatarUrl()}
+            date={createdAt || ''}
           />
           <div className="flex flex-wrap justify-end items-center">
             <span className={styles.card_infotext}>
-              {commentsCount} комментариев
+              {messagesCount}{' '}
+              {convertNumWords(messagesCount, [
+                'комментарий',
+                'комментария',
+                'комментариев',
+              ])}
             </span>
           </div>
         </div>

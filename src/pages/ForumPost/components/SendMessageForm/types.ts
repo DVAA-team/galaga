@@ -1,10 +1,8 @@
-import { TForumMessage } from '@/api/types';
 import { FC } from 'react';
 
 type TOwnProps = {
   postId: number;
-  commentId?: number | null;
-  sendCallback?: (r: TForumMessage) => void;
+  messageId?: number | null;
 };
 
 type TProps = FC<TOwnProps>;
