@@ -82,5 +82,18 @@ export type TForumMessage = {
   userId: number;
   postId: number;
   messageId?: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  user: TForumUserResponse;
+};
+
+export type TForumComment = {
+  id: number;
+  text: string;
+  userId: number;
+  postId: number;
+  messageId: number;
+  createdAt: string | null;
+  updatedAt: string | null;
   user: TForumUserResponse;
 };

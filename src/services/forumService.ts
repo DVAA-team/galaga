@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { forumApi } from '@/api/forumApi';
 
 import { notifyError, notifySuccess } from '@/utils/notify';
-import { TForumMessage, TForumPost } from '@/api/types';
+import { TForumComment, TForumMessage, TForumPost } from '@/api/types';
 
 type TServerError = { reason: string };
 
@@ -58,6 +58,26 @@ class ForumService {
   ) =>
     forumApi
       .createMessageForPost(d)
+      .then(({ data }) => {
+        notifySuccess('Комментарий добавлен!');
+        return data;
+      })
+      .catch(this._errorHandler);
+
+  // eslint-disable-next-line class-methods-use-this
+  public getCommentsForMessage = (
+    d: Pick<TForumComment, 'messageId' | 'postId'>
+  ) =>
+    forumApi
+      .getCommentsForMessage(d)
+      .then(({ data }) => data)
+      .catch(() => []);
+
+  public createCommentForMessage = (
+    d: Pick<TForumComment, 'messageId' | 'postId' | 'text'>
+  ) =>
+    forumApi
+      .createCommentForMessage(d)
       .then(({ data }) => {
         notifySuccess('Комментарий добавлен!');
         return data;

@@ -7,16 +7,13 @@ import { useAppDispatch } from '@/hooks/store';
 import { addUserAvatarToMessage } from '@/store/slices/forumSlice';
 import { useAuth } from '@/hooks/useAuth';
 import convertNumWords from '@/utils/convertNumWords';
+import forumService from '@/services/forumService';
+import { TForumComment } from '@/api/types';
 import styles from './Message.module.css';
 import { TProps } from './types';
 import { PostUserInfo } from '../../../../components/PostUserInfo';
 import { Comment } from '../Comment';
-
-import { TOwnProps as TCommentProps } from '../Comment/types';
-
-type TCommentData = TCommentProps & {
-  id: number;
-};
+import SendCommentForm from '../SendCommentForm/SendCommentForm';
 
 const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
   const [isActive, setIsActive] = useState(false);
@@ -24,7 +21,7 @@ const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
   const [author] = useState<TForumUser>(serverToClientNaming(user));
   const [avatar, setAvatar] = useState<Blob>();
   const [currentUserId, setCurrentUserId] = useState(0);
-  const [comments, setComments] = useState<TCommentData[]>([]);
+  const [comments, setComments] = useState<TForumComment[]>([]);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -60,27 +57,10 @@ const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
   }, [author, dispatch, id, postId]);
 
   useEffect(() => {
-    setComments([
-      {
-        id: 1,
-        userDisplayName: 'Bob',
-        date: '01.01.2001',
-        text: 'Коммент какого-то юзера',
-      },
-      {
-        id: 2,
-        userDisplayName: 'Alice',
-        date: '01.01.2001',
-        text: 'Прикольно',
-      },
-      {
-        id: 3,
-        userDisplayName: 'Pol',
-        date: '01.01.2001',
-        text: 'Я поддерживаю!',
-      },
-    ]);
-  }, []);
+    forumService.getCommentsForMessage({ messageId: id, postId }).then((r) => {
+      setComments(r);
+    });
+  }, [id, postId]);
 
   const handleClick = () => {
     setIsActive((prev) => !prev);
@@ -102,8 +82,12 @@ const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
     return avatar ? URL.createObjectURL(avatar) : null;
   };
 
+  const addNewComment = (comment: TForumComment) => {
+    setComments((prev) => [...prev, comment]);
+  };
+
   return (
-    <div className="mb-8" onClick={handleClick}>
+    <div className="mb-8">
       {author && (
         <PostUserInfo
           name={author.displayName || author.login}
@@ -112,7 +96,9 @@ const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
         />
       )}
 
-      <div className={getBodyClasses()}>{text}</div>
+      <div className={getBodyClasses()} onClick={handleClick}>
+        {text}
+      </div>
 
       <div className={styles.footer}>
         <span>
@@ -126,11 +112,22 @@ const Message: TProps = ({ id, postId, createdAt, text = '', user }) => {
       </div>
 
       {isActive && (
-        <div className="flex flex-col items-end mt-4">
-          {comments.map((item) => (
-            <Comment key={item.id} {...item} />
-          ))}
-        </div>
+        <>
+          <div className="flex flex-col items-end mt-4">
+            {comments.length ? (
+              comments.map((item) => <Comment key={item.id} {...item} />)
+            ) : (
+              <div className="text-center">
+                Пока что никто не ответил, будь первым 💪🏻
+              </div>
+            )}
+          </div>
+          <SendCommentForm
+            postId={postId}
+            messageId={id}
+            addNewComment={addNewComment}
+          />
+        </>
       )}
     </div>
   );

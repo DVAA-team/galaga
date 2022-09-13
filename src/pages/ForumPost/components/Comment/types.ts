@@ -1,12 +1,13 @@
+import { TForumComment } from '@/api/types';
+import { TForumUser } from '@/services/types';
 import { FC } from 'react';
 
 type TOwnProps = {
-  userDisplayName: string;
-  userAvatarURL?: string;
-  date?: string;
+  user: TForumUser;
+  createdAt?: string | null;
   text?: string;
 };
 
-type TProps = FC<TOwnProps>;
+type TProps = FC<TForumComment>;
 
 export { TOwnProps, TProps };

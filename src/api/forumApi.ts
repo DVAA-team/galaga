@@ -1,6 +1,6 @@
 import { appConstants } from '@/config';
 import { AbstractHttpClient } from './AbstractHttpClient';
-import { TForumMessage, TForumPost } from './types';
+import { TForumComment, TForumMessage, TForumPost } from './types';
 
 class ForumApi extends AbstractHttpClient {
   public constructor() {
@@ -32,6 +32,22 @@ class ForumApi extends AbstractHttpClient {
     const { postId, ...rest } = data;
     return this.instance.post(`/posts/${postId}/messages`, rest);
   };
+
+  public getCommentsForMessage = ({
+    postId,
+    messageId,
+  }: Pick<TForumComment, 'messageId' | 'postId'>) =>
+    this.instance.get(`/posts/${postId}/messages/${messageId}/comments`);
+
+  public createCommentForMessage = ({
+    postId,
+    messageId,
+    text,
+  }: Pick<TForumComment, 'messageId' | 'postId' | 'text'>) =>
+    this.instance.post(`/posts/${postId}/messages/${messageId}/comments`, {
+      messageId,
+      text,
+    });
 }
 
 export const forumApi = new ForumApi();
