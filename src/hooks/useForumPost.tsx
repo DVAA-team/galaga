@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { TRootState } from '@/store';
 import { TPost } from '@/store/slices/forumSlice';
 import { useAppSelector } from './store';
 
 export const useForumPost = (postId: number) => {
-  const { forum } = useAppSelector((state: TRootState) => state);
-  const [post, setPost] = useState<TPost | undefined>(
-    forum?.posts?.find((p) => p.id === postId)
-  );
+  const forum = useAppSelector((state) => state.forum);
+  const [post, setPost] = useState<TPost | null | undefined>(null);
 
   useEffect(() => {
     if (forum) {
@@ -19,8 +16,8 @@ export const useForumPost = (postId: number) => {
       } else if (forum.posts?.length) {
         const { posts } = forum;
 
-        const findedPost = posts.find((p) => p.id === postId);
-        setPost(findedPost);
+        const founddPost = posts.find((p) => p.id === postId);
+        setPost(founddPost);
       }
     }
   }, [forum, postId]);

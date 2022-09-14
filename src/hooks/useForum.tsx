@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { TRootState } from '@/store';
 import { TPost } from '@/store/slices/forumSlice';
 import { useAppSelector } from './store';
 
 export const useForum = () => {
-  const { forum } = useAppSelector((state: TRootState) => state);
+  const forum = useAppSelector((state) => state.forum);
   const [forumPosts, setForumPosts] = useState<TPost[] | null>(forum.posts);
 
   useEffect(() => {

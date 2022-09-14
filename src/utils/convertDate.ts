@@ -1,4 +1,4 @@
-export default function converDate(dateString: string) {
+export default function convertDate(dateString: string) {
   const date = new Date(dateString);
 
   return `${date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`}.${

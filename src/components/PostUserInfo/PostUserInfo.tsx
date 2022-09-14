@@ -1,4 +1,4 @@
-import converDate from '@/utils/convertDate';
+import convertDate from '@/utils/convertDate';
 import { Avatar } from '../Avatar';
 import { TProps } from './types';
 import styles from './PostUserInfo.module.css';
@@ -10,7 +10,7 @@ const PostUserInfo: TProps = ({ name, date, avatarURL }) => {
       <Avatar src={avatarURL || defaultAvatar} className="mr-4" />
       <div>
         <div className={styles.username}>{name}</div>
-        {date && <span className={styles.date}>{converDate(date)}</span>}
+        {date && <span className={styles.date}>{convertDate(date)}</span>}
       </div>
     </div>
   );
