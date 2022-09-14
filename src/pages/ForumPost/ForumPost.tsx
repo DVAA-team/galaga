@@ -12,6 +12,8 @@ import {
   addCurrentPost,
   TPostMessage,
 } from '@/store/slices/forumSlice';
+import { useAuth } from '@/hooks/useAuth';
+import { NeedLogin } from '@/components/NeedLogin';
 import styles from './ForumPost.module.css';
 import { Message } from './components/Message';
 import { SendMessageForm } from './components/SendMessageForm';
@@ -25,24 +27,21 @@ const ForumPost = () => {
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const user = useAuth();
 
   useEffect(() => {
     if (!post) {
-      forumService
-        .getPost(postId)
-        .then((r) => {
-          if (r === null) {
-            navigate('/404');
-            return;
-          }
-          dispatch(addCurrentPost(r));
-          forumService.getMessagesForPost(postId).then((m) => {
-            m.forEach((message: TPostMessage) => {
-              dispatch(addMessageToPost(message));
-            });
+      forumService.getPost(postId).then((r) => {
+        if (r === null) {
+          return;
+        }
+        dispatch(addCurrentPost(r));
+        forumService.getMessagesForPost(postId).then((m) => {
+          m.forEach((message: TPostMessage) => {
+            dispatch(addMessageToPost(message));
           });
-        })
-        .catch(() => navigate('/404'));
+        });
+      });
     }
   }, [dispatch, navigate, post, postId]);
 
@@ -54,19 +53,25 @@ const ForumPost = () => {
     <>
       <Header title="Форум" />
       <MainLayout>
-        <div className="container mx-auto flex flex-col items-center h-screen text-white">
-          <div className={styles.body}>
-            <h2 className={styles.title}>{post?.title}</h2>
-            {messages && messages.length ? (
-              messages.map((item) => <Message key={item.id} {...item} />)
-            ) : (
-              <div className="text-center">
-                Комментариев пока что нет, будь первым 💪🏻
-              </div>
-            )}
+        {user ? (
+          <div className="container mx-auto flex flex-col items-center h-screen text-white">
+            <div className={styles.body}>
+              <h2 className={styles.title}>{post?.title}</h2>
+              {messages && messages.length ? (
+                messages.map((item) => <Message key={item.id} {...item} />)
+              ) : (
+                <div className="text-center">
+                  Комментариев пока что нет, будь первым 💪🏻
+                </div>
+              )}
+            </div>
+            <SendMessageForm postId={postId} />
           </div>
-          <SendMessageForm postId={postId} />
-        </div>
+        ) : (
+          <div className="container mx-auto flex flex-col justify-center items-center text-white">
+            <NeedLogin text="Чтобы комментировать или просматривать посты на форуме" />
+          </div>
+        )}
       </MainLayout>
     </>
   );
