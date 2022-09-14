@@ -33,7 +33,7 @@ const checkYandexUser: RequestHandler = async (_req, res, next) => {
 
   res.locals.user = { ...serverToClientNaming(userFromDb.toJSON()), yandexId };
   debug(
-    'Onw userId:%d; Yandex userId:%d',
+    'Own userId:%d; Yandex userId:%d',
     res.locals.user.id,
     res.locals.user.yandexId
   );

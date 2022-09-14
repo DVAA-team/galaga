@@ -16,10 +16,7 @@ export async function setUserTheme(req: Request, res: Response) {
 }
 
 export async function setUserDarkMode(req: Request, res: Response) {
-  const { userYandexId, darkMode } = req.body;
-  const save = await dbThemeController.setDarkModeByYandexUser(
-    userYandexId,
-    darkMode
-  );
+  const { userId, darkMode } = req.body;
+  const save = await dbThemeController.setDarkModeByUser(userId, darkMode);
   res.status(200).json({ save });
 }

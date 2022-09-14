@@ -14,9 +14,9 @@ class ThemeApi extends AbstractHttpClient {
       themeId,
     });
 
-  public setUserDarkMode = (userYandexId: number, darkMode: boolean) =>
+  public setUserDarkMode = (userId: number, darkMode: boolean) =>
     this.instance.patch('/user/darkMode', {
-      userYandexId,
+      userId,
       darkMode,
     });
 }

@@ -39,13 +39,12 @@ class ThemeService {
   }) => themeApi.setUserTheme(yandexUserId, themeId).catch(this._errorHandler);
 
   public editUserDarkMode = async ({
-    yandexUserId,
+    userId,
     darkMode,
   }: {
     darkMode: boolean;
-    yandexUserId: number;
-  }) =>
-    themeApi.setUserDarkMode(yandexUserId, darkMode).catch(this._errorHandler);
+    userId: number;
+  }) => themeApi.setUserDarkMode(userId, darkMode).catch(this._errorHandler);
 }
 
 export default new ThemeService();
