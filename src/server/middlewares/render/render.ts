@@ -38,8 +38,10 @@ const renderMiddleware: RequestHandler = async (req, res) => {
     current = userTheme?.current ?? starsTheme;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { yandexId, ...profile } = user;
   const initialState: TRootState = {
-    user: { profile: user },
+    user: { profile },
     themes: {
       darkMode,
       current,
