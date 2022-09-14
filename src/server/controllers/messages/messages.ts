@@ -3,7 +3,7 @@ import { dbMessageController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class MessagesController {
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async getMessage(req: Request, res: Response, next: NextFunction) {
     const { messageId, postId } = req.params;
     const { user } = res.locals;
@@ -29,7 +29,7 @@ class MessagesController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async createMessage(req: Request, res: Response, next: NextFunction) {
     const { text } = req.body;
     const { postId } = req.params;
@@ -61,7 +61,7 @@ class MessagesController {
     }
   }
 
-  // eslint-disable-next-line consistent-return,class-methods-use-this
+  // eslint-disable-next-line consistent-return
   async updateMessage(req: Request, res: Response, next: NextFunction) {
     const { text } = req.body;
     const { messageId, postId } = req.params;
@@ -97,7 +97,7 @@ class MessagesController {
     }
   }
 
-  // eslint-disable-next-line consistent-return,class-methods-use-this
+  // eslint-disable-next-line consistent-return
   async deleteMessage(req: Request, res: Response, next: NextFunction) {
     const { messageId, postId } = req.params;
 
@@ -116,7 +116,7 @@ class MessagesController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async getMessages(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
     const { user } = res.locals;

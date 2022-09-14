@@ -28,14 +28,12 @@ class UserService {
     return null;
   };
 
-  // eslint-disable-next-line class-methods-use-this
   public getUser = () =>
     userApi
       .getUser()
       .then(({ data }) => serverToClientNaming(data))
       .catch(() => null);
 
-  // eslint-disable-next-line class-methods-use-this
   public getUserFromDB = (id: number) =>
     localUserApi
       .getUser(id)

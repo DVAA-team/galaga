@@ -3,7 +3,7 @@ import { dbPostController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class PostsController {
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async getPost(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
     const { user } = res.locals;
@@ -24,7 +24,7 @@ class PostsController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async createPost(req: Request, res: Response, next: NextFunction) {
     const { title } = req.body;
 
@@ -50,7 +50,7 @@ class PostsController {
     }
   }
 
-  // eslint-disable-next-line consistent-return,class-methods-use-this
+  // eslint-disable-next-line consistent-return
   async updatePost(req: Request, res: Response, next: NextFunction) {
     const { title } = req.body;
     const { postId } = req.params;
@@ -81,7 +81,7 @@ class PostsController {
     }
   }
 
-  // eslint-disable-next-line consistent-return,class-methods-use-this
+  // eslint-disable-next-line consistent-return
   async deletePost(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
 
@@ -99,7 +99,6 @@ class PostsController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getPosts(_req: Request, res: Response) {
     const { user } = res.locals;
     const { yandexId } = user;

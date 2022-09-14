@@ -30,7 +30,6 @@ export abstract class AbstractHttpClient {
     );
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private _handleResponse(response: AxiosResponse) {
     debug(
       'success %s response: %o',
@@ -40,7 +39,7 @@ export abstract class AbstractHttpClient {
     return response;
   }
 
-  // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected _handleError(error: any) {
     if (error instanceof AxiosError) {
       debug(
