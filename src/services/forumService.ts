@@ -53,9 +53,7 @@ class ForumService {
       })
       .catch(this._errorHandler);
 
-  public createMessageForPost = (
-    d: Omit<TForumMessage, 'messageId' | 'user' | 'id' | 'userId'>
-  ) =>
+  public createMessageForPost = (d: Pick<TForumMessage, 'postId' | 'text'>) =>
     forumApi
       .createMessageForPost(d)
       .then(({ data }) => {
