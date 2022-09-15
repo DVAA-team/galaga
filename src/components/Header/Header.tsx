@@ -25,7 +25,7 @@ const Header: TProps = ({ title, withoutBackLink, cls = '' }) => {
     setDarkMode(checked);
     if (user) {
       themeService.editUserDarkMode({
-        yandexUserId: user.id,
+        userId: user.id,
         darkMode: checked,
       });
     }

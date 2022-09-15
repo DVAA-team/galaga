@@ -5,7 +5,7 @@ import { RequestHandler } from 'express';
 import renderBundle from './renderBundle';
 
 const renderMiddleware: RequestHandler = async (req, res) => {
-  const yandexUser = res.locals.user;
+  const { user } = res.locals;
 
   let starsTheme;
   let darkMode = true;
@@ -32,16 +32,16 @@ const renderMiddleware: RequestHandler = async (req, res) => {
   }
 
   current = starsTheme;
-  if (yandexUser) {
-    const userTheme = await dbThemeController.getThemeByYandexUser(
-      yandexUser.id
-    );
+  if (user) {
+    const userTheme = await dbThemeController.getThemeByUser(user.id);
     darkMode = userTheme?.darkMode ?? true;
     current = userTheme?.current ?? starsTheme;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { yandexId, ...profile } = user;
   const initialState: TRootState = {
-    user: { profile: yandexUser },
+    user: { profile },
     themes: {
       darkMode,
       current,

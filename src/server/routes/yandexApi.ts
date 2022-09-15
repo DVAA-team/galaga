@@ -46,7 +46,7 @@ router.use(
       let response;
       if (proxyRes.headers['content-type']?.includes('application/json')) {
         response = JSON.parse(buffer.toString());
-      } else {
+      } else if (proxyRes.headers['content-type']?.includes('text/plain')) {
         response = buffer.toString();
       }
       debug(
