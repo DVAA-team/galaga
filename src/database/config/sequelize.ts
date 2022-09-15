@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Options, Sequelize } from 'sequelize';
 import { env } from '@/config';
 import { isDebugger } from '@/database/types';
 
@@ -17,8 +17,19 @@ export const getInstance = (logger: (message: string) => void): Sequelize => {
       ? logger.extend('sequelize')(`%s ${timing ? '~ %d ms' : ''}`, sql, timing)
       : logger(`${sql} ~ ${timing}ms`);
 
-  return new Sequelize(dbUri, {
+  const options: Options = {
     benchmark: env.isDev(),
     logging,
-  });
+  };
+
+  if (env.isProd()) {
+    options.dialectOptions = {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // Для устранения ошибки SequelizeConnectionError: self signed certificate
+      },
+    };
+  }
+
+  return new Sequelize(dbUri, options);
 };
