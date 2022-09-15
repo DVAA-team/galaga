@@ -3,7 +3,6 @@ class AudioContext {
     this.isMock = true;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   decodeAudioData(_, cb) {
     cb();
   }

@@ -21,7 +21,6 @@ class ThemeService {
     return null;
   };
 
-  // eslint-disable-next-line class-methods-use-this
   public fetchThemes = async () =>
     themeApi
       .getThemes()

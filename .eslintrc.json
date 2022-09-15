@@ -114,7 +114,8 @@
         "importNames": ["useSelector", "useDispatch"],
         "message": "Use typed hooks `useAppDispatch` and `useAppSelector` instead."
       }
-    ]
+    ],
+    "class-methods-use-this": "off"
   },
   "settings": {
     "import/extensions": [".ts", ".tsx", ".css"],

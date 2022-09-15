@@ -460,7 +460,6 @@ export class GameEngine {
    * @param height - Высота проверяемого объекта
    * @returns Возражает true если объект находится за границами игрового поля
    */
-  // eslint-disable-next-line class-methods-use-this
   private _outOfBoundary(position: Vector, width: number, height: number) {
     if (position.y + height <= 0 || position.y >= GameEngine.gameAreaHeight) {
       return true;

@@ -33,8 +33,6 @@ export class Projectile extends AbstractGameObject {
     this._sprite = sprite;
   }
 
-  // При использовании убрать eslint-disable-next-line
-  // eslint-disable-next-line class-methods-use-this
   public async init(): Promise<boolean> {
     return true;
   }

@@ -3,7 +3,7 @@ import { dbCommentController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class CommentsController {
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async getComment(req: Request, res: Response, next: NextFunction) {
     const { commentId, messageId } = req.params;
     const { user } = res.locals;
@@ -29,7 +29,7 @@ class CommentsController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async createComment(req: Request, res: Response, next: NextFunction) {
     const { text } = req.body;
     const { messageId } = req.params;
@@ -61,7 +61,7 @@ class CommentsController {
     }
   }
 
-  // eslint-disable-next-line consistent-return,class-methods-use-this
+  // eslint-disable-next-line consistent-return
   async updateComment(req: Request, res: Response, next: NextFunction) {
     const { text } = req.body;
     const { commentId, messageId } = req.params;
@@ -97,7 +97,7 @@ class CommentsController {
     }
   }
 
-  // eslint-disable-next-line consistent-return,class-methods-use-this
+  // eslint-disable-next-line consistent-return
   async deleteComment(req: Request, res: Response, next: NextFunction) {
     const { commentId, messageId } = req.params;
 
@@ -116,7 +116,7 @@ class CommentsController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this,consistent-return
+  // eslint-disable-next-line consistent-return
   async getComments(req: Request, res: Response, next: NextFunction) {
     const { messageId } = req.params;
     const { user } = res.locals;
