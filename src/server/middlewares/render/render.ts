@@ -47,6 +47,10 @@ const renderMiddleware: RequestHandler = async (req, res) => {
       current,
       list: [],
     },
+    forum: {
+      posts: [],
+      currentPost: null,
+    },
   };
   const html = renderBundle({
     location: req.url,
