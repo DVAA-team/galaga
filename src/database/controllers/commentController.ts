@@ -7,7 +7,7 @@ const getCommentByMessageIdAndId = (
 ): Promise<Comment | null> => {
   return Comment.findOne({
     where: { id, messageId },
-    include: { model: User, where: { yandexId } },
+    include: { model: User, where: { yandexId }, as: 'user' },
   });
 };
 
@@ -57,7 +57,7 @@ const getComments = ({
 }): Promise<Comment[]> => {
   return Comment.findAll({
     where: { messageId },
-    include: { model: User, where: { yandexId } },
+    include: { model: User, where: { yandexId }, as: 'user' },
   });
 };
 

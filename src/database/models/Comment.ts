@@ -56,7 +56,7 @@ export default class Comment extends Model<
       }
     );
 
-    Comment.belongsTo(User, { foreignKey: 'userId' });
+    Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
     Comment.belongsTo(Message, { foreignKey: 'messageId' });
   };
 }

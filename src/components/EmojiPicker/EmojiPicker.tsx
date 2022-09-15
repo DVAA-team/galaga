@@ -1,33 +1,26 @@
 import {
   ChangeEvent,
+  cloneElement,
   FC,
   MouseEvent,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import { Input } from '../Input';
 import EmojiList from './EmojiList';
 import styles from './EmojiPicker.module.css';
 
 type TOwnProps = {
-  inputName: string;
-  inputPlaceholder?: string;
-  inputClassName?: string;
   darkButton?: boolean;
   position?: string;
+  children: JSX.Element;
+  isNeedClearInput?: boolean;
 };
 
 type TProps = FC<TOwnProps>;
 
 const EmojiPicker: TProps = (props) => {
-  const {
-    inputName,
-    inputPlaceholder,
-    inputClassName,
-    darkButton,
-    position = 'bottom',
-  } = props;
+  const { darkButton, position = 'bottom', children, isNeedClearInput } = props;
   const [value, setValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const emojisEl = useRef<HTMLButtonElement>(null);
@@ -67,24 +60,28 @@ const EmojiPicker: TProps = (props) => {
     });
   };
 
+  const renderChildren = () =>
+    cloneElement(children, {
+      value,
+      onChange: handlerChangeInput,
+    });
+
+  useEffect(() => {
+    if (isNeedClearInput) {
+      setValue('');
+    }
+  }, [isNeedClearInput]);
+
   return (
     <div className={styles.emojis}>
-      <Input
-        name={inputName}
-        placeholder={inputPlaceholder}
-        autoComplete="off"
-        cls={inputClassName}
-        withoutMargin={true}
-        withLabel={false}
-        value={value}
-        onChange={handlerChangeInput}
-      />
+      {renderChildren()}
       <button
         className={`${styles.button} ${
           darkButton ? styles['button-dark'] : ''
         }`}
         onClick={(e) => handlerButtonClick(e)}
         ref={emojisEl}
+        type="button"
       ></button>
       <div
         className={`${styles.popup} ${isOpen ? styles['popup-open'] : ''} ${

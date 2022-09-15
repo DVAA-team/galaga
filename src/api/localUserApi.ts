@@ -7,7 +7,7 @@ class UserApi extends AbstractHttpClient {
   }
 
   public getUser = (id: number) =>
-    this.instance.get<TUserResponse>(`/auth/user/${id}`);
+    this.instance.get<TUserResponse>(`/users/${id}`);
 }
 
 export const userApi = new UserApi();

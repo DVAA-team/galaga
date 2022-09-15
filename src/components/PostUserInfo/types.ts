@@ -2,8 +2,8 @@ import { FC } from 'react';
 
 type TOwnProps = {
   name: string;
-  avatarURL?: string;
-  date: string;
+  avatarURL?: string | null;
+  date?: string;
 };
 
 type TProps = FC<TOwnProps>;

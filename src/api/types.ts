@@ -61,3 +61,39 @@ export type TYandexOAuthSingInRequest = {
   redirect_uri: string;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
+
+export type TForumUserResponse = TUserResponse & {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  avatar_url: string | null;
+};
+
+export type TForumPost = {
+  id: number;
+  title: string;
+  userId: number;
+  createdAt: string | null;
+  updatedAt: string | null;
+  user: TForumUserResponse;
+};
+
+export type TForumMessage = {
+  id: number;
+  text: string;
+  userId: number;
+  postId: number;
+  messageId?: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  user: TForumUserResponse;
+};
+
+export type TForumComment = {
+  id: number;
+  text: string;
+  userId: number;
+  postId: number;
+  messageId: number;
+  createdAt: string | null;
+  updatedAt: string | null;
+  user: TForumUserResponse;
+};

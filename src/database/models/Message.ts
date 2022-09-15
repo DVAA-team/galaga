@@ -56,7 +56,7 @@ export default class Message extends Model<
       }
     );
 
-    Message.belongsTo(User, { foreignKey: 'userId' });
+    Message.belongsTo(User, { foreignKey: 'userId', as: 'user' });
     Message.belongsTo(Post, { foreignKey: 'postId' });
   };
 }

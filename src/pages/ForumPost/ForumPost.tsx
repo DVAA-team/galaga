@@ -3,100 +3,75 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
+import forumService from '@/services/forumService';
+import { TForumMessage } from '@/api/types';
+import { useForumPost } from '@/hooks/useForumPost';
+import { useAppDispatch } from '@/hooks/store';
+import {
+  addMessageToPost,
+  addCurrentPost,
+  TPostMessage,
+} from '@/store/slices/forumSlice';
+import { useAuth } from '@/hooks/useAuth';
+import { NeedLogin } from '@/components/NeedLogin';
 import styles from './ForumPost.module.css';
 import { Message } from './components/Message';
-import { TOwnProps } from './components/Message/types';
 import { SendMessageForm } from './components/SendMessageForm';
 
-type TMessageData = TOwnProps & {
-  id: number;
-};
-
-const fakeFetch = (postId?: string) => {
-  return new Promise((resolve) => {
-    if (postId !== '0') {
-      setTimeout(() => {
-        resolve('ok');
-      }, 500);
-    } else {
-      throw new Error('error');
-    }
-  });
-};
-
 const ForumPost = () => {
-  const { postId } = useParams();
-  const [isPending, setIsPending] = useState(true);
-  const [title, setTitle] = useState('');
-  const [messages, setMessages] = useState<TMessageData[]>([]);
+  const routeParams = useParams();
+  const postId = Number(routeParams.postId);
+  const post = useForumPost(postId);
+  const [messages, setMessages] = useState<TForumMessage[] | undefined>(
+    post?.messages
+  );
   const navigate = useNavigate();
-
-  const sendMessage = (text: string) => {
-    setMessages([
-      ...messages,
-      {
-        id: messages.length + 1,
-        userDisplayName: 'Pavel Born',
-        date: '01.01.2022',
-        text,
-        commentsNumber: 10,
-      },
-    ]);
-  };
+  const dispatch = useAppDispatch();
+  const user = useAuth();
 
   useEffect(() => {
-    fakeFetch(postId)
-      .then(() => {
-        setTitle('The 4-step SEO framework that led to a 1000% increase in!');
-        setMessages([
-          {
-            id: 1,
-            userDisplayName: 'Pavel Born',
-            date: '01.01.2022',
-            text: 'Привет, всем! Давайте обсудим эту важную тему :)',
-            commentsNumber: 10,
-          },
-          {
-            id: 2,
-            userDisplayName: 'I am',
-            date: '01.01.2022',
-            text: 'Я думаю вот так!',
-            commentsNumber: 11,
-            isMine: true,
-          },
-          {
-            id: 3,
-            userDisplayName: 'Olya Born',
-            date: '01.01.2022',
-            text: 'Я со всеми согласна)',
-            commentsNumber: 12,
-          },
-        ]);
-        setIsPending(false);
-      })
-      .catch(() => {
-        // eslint-disable-next-line no-console
-        navigate('/404');
+    if (!post) {
+      forumService.getPost(postId).then((r) => {
+        if (r === null) {
+          return;
+        }
+        dispatch(addCurrentPost(r));
+        forumService.getMessagesForPost(postId).then((m) => {
+          m.forEach((message: TPostMessage) => {
+            dispatch(addMessageToPost(message));
+          });
+        });
       });
-  }, [navigate, postId]);
+    }
+  }, [dispatch, navigate, post, postId]);
+
+  useEffect(() => {
+    setMessages(post?.messages);
+  }, [post, messages]);
 
   return (
     <>
       <Header title="Форум" />
       <MainLayout>
-        <div className="container mx-auto flex flex-col items-center h-screen text-white">
-          {!isPending && (
-            <>
-              <div className={styles.body}>
-                <h2 className={styles.title}>{title}</h2>
-                {messages.map((item) => (
-                  <Message key={item.id} {...item} />
-                ))}
-              </div>
-              <SendMessageForm emitSubmit={sendMessage} />
-            </>
-          )}
-        </div>
+        {user ? (
+          <div className="container mx-auto flex flex-col items-center h-screen text-white">
+            <div className={styles.body}>
+              <h2 className={styles.title}>{post?.title}</h2>
+              {messages && messages.length ? (
+                messages.map((item) => <Message key={item.id} {...item} />)
+              ) : (
+                <div className="text-center">
+                  Комментариев пока что нет, будь первым 💪🏻
+                </div>
+              )}
+            </div>
+            <SendMessageForm postId={postId} />
+          </div>
+        ) : (
+          <div className="container mx-auto flex flex-col justify-center items-center text-white">
+            <NeedLogin text="Чтобы комментировать или просматривать посты на форуме" />
+          </div>
+        )}
       </MainLayout>
     </>
   );

@@ -1,12 +1,8 @@
+import { TForumMessage, TForumPost } from '@/api/types';
 import { FC } from 'react';
 
-type TOwnProps = {
-  title: string;
-  userDisplayName: string;
-  userAvatarURL?: string;
-  date: string;
-  messagesNumber: number;
-  membersNumber: number;
+type TOwnProps = TForumPost & {
+  messages?: TForumMessage[];
 };
 
 type TProps = FC<TOwnProps>;

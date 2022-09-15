@@ -1,12 +1,15 @@
 import { FC } from 'react';
+import { TForumUserResponse } from '../../../../api/types';
 
 type TOwnProps = {
-  userDisplayName: string;
-  userAvatarURL?: string;
-  date?: string;
+  id: number;
+  userId: number;
+  postId: number;
+  messageId?: number | null;
+  createdAt?: string | null;
   text?: string;
-  commentsNumber?: number;
-  isMine?: boolean;
+  messagesNumber?: number;
+  user: TForumUserResponse;
 };
 
 type TProps = FC<TOwnProps>;

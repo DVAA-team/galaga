@@ -2,16 +2,13 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import { EmojiPicker } from '@/components/EmojiPicker';
 import { Input } from '@/components/Input';
 import forumService from '@/services/forumService';
-import { useAppDispatch } from '@/hooks/store';
-import { addMessageToPost } from '@/store/slices/forumSlice';
 import { useAuth } from '@/hooks/useAuth';
-import styles from './SendMessageForm.module.css';
+import styles from './SendCommentForm.module.css';
 import { Button } from '../../../../components/Button';
 import { TProps } from './types';
 
-const SendMessageForm: TProps = ({ postId }) => {
+const SendCommentForm: TProps = ({ postId, messageId, addNewComment }) => {
   const [isNeedClearInput, setIsNeedClearInput] = useState(false);
-  const dispatch = useAppDispatch();
   const user = useAuth();
 
   const onSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
@@ -28,15 +25,14 @@ const SendMessageForm: TProps = ({ postId }) => {
       }
 
       forumService
-        .createMessageForPost({
+        .createCommentForMessage({
           postId,
+          messageId,
           text,
         })
-        .then((post) => {
-          if (user) {
-            dispatch(addMessageToPost({ ...post, user }));
-            setIsNeedClearInput(true);
-          }
+        .then((comment) => {
+          addNewComment({ ...comment, user });
+          setIsNeedClearInput(true);
         });
     }
   };
@@ -56,7 +52,7 @@ const SendMessageForm: TProps = ({ postId }) => {
       >
         <Input
           name="text"
-          placeholder="Ваш комментарий..."
+          placeholder="Ваш ответ на комментарий..."
           autoComplete="off"
           cls={styles.input}
           withoutMargin={true}
@@ -68,4 +64,4 @@ const SendMessageForm: TProps = ({ postId }) => {
   );
 };
 
-export default SendMessageForm;
+export default SendCommentForm;

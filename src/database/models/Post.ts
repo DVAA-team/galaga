@@ -53,6 +53,6 @@ export default class Post extends Model<
       }
     );
 
-    Post.belongsTo(User, { foreignKey: 'userId' });
+    Post.belongsTo(User, { foreignKey: 'userId', as: 'user' });
   };
 }
