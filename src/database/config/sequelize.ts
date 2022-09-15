@@ -2,9 +2,12 @@ import { Sequelize } from 'sequelize';
 import { env } from '@/config';
 import { isDebugger } from '@/database/types';
 
+const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, DB_HOST, DB_PORT } =
+  process.env;
+
 const dbUri =
   process.env.DATABASE_URL ??
-  'postgres://postgres:example@localhost:5432/galaga';
+  `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/${POSTGRES_DB}`;
 
 // postgres://<userName>:<userPassword>@<host>:<port>/<databaseName>
 
