@@ -1,45 +1,35 @@
-import type { Options } from 'sequelize';
-
+import { Options, Sequelize } from 'sequelize';
 import { env } from '@/config';
-import { normalizePort } from '@/server/utils';
 import { isDebugger } from '@/database/types';
 
-const DIALECT = 'postgres';
+const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, DB_HOST, DB_PORT } =
+  process.env;
 
-const BASE_CONFIG: Options = {
-  username: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DB,
-  host: process.env.DB_HOST,
-  port: normalizePort(process.env.DB_PORT || '5432'),
-  dialect: DIALECT,
+const dbUri =
+  process.env.DATABASE_URL ??
+  `postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/${POSTGRES_DB}`;
 
-  benchmark: env.isDev(),
-};
+// postgres://<userName>:<userPassword>@<host>:<port>/<databaseName>
 
-const getConfig = (logger: (message: string) => void): Options => {
+export const getInstance = (logger: (message: string) => void): Sequelize => {
   const logging = (sql: string, timing?: number) =>
     isDebugger(logger)
       ? logger.extend('sequelize')(`%s ${timing ? '~ %d ms' : ''}`, sql, timing)
       : logger(`${sql} ~ ${timing}ms`);
-  switch (env.contextName) {
-    case 'test':
-      return {
-        ...BASE_CONFIG,
-        database: `${BASE_CONFIG.database}_test`,
-        logging,
-      };
-    case 'production':
-      return { ...BASE_CONFIG, logging };
-    default:
-      return {
-        ...BASE_CONFIG,
-        database: `${BASE_CONFIG.database}_dev`,
-        logging,
-      };
-  }
-};
 
-export default {
-  getConfig,
+  const options: Options = {
+    benchmark: env.isDev(),
+    logging,
+  };
+
+  if (env.isProd()) {
+    options.dialectOptions = {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // Для устранения ошибки SequelizeConnectionError: self signed certificate
+      },
+    };
+  }
+
+  return new Sequelize(dbUri, options);
 };

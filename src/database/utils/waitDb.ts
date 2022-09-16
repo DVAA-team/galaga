@@ -14,10 +14,11 @@ const waitDB = async (
   logger = defaultLogger
 ): Promise<Error | null> => {
   logger(
-    `waiting connection [${sequelize.config.username}@${sequelize.config.host}:${sequelize.config.port}?db=${sequelize.config.database}] ....`
+    `waiting connection [postgres://${sequelize.config.username}@${sequelize.config.host}:${sequelize.config.port}/${sequelize.config.database}] ....`
   );
   try {
     await sequelize.authenticate();
+    logger('connection success');
     return null;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
