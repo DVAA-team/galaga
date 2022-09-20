@@ -1,7 +1,27 @@
+import userService from '@/services/userService';
+import { useEffect, useState } from 'react';
 import { TProps } from './types';
 import { Avatar } from '../../../../components/Avatar';
 
 const UserOnPedestal: TProps = ({ userData, cls, position }) => {
+  const [avatar, setAvatar] = useState<Blob>();
+
+  useEffect(() => {
+    const { avatar: userAvatar } = userData;
+
+    if (userAvatar) {
+      userService.getAvatar(userAvatar).then((res) => {
+        if (res) {
+          setAvatar(res);
+        }
+      });
+    }
+  }, [userData]);
+
+  const getAvatarUrl = () => {
+    return avatar ? URL.createObjectURL(avatar) : undefined;
+  };
+
   const getBorderType = () => {
     switch (position) {
       case 1:
@@ -17,7 +37,7 @@ const UserOnPedestal: TProps = ({ userData, cls, position }) => {
   return (
     <div className={`text-white ${cls}`}>
       <Avatar
-        src={userData.avatarURL}
+        src={getAvatarUrl()}
         className="pedestal-avatar"
         alt={userData.username}
         borderType={getBorderType()}

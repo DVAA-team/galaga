@@ -1,6 +1,8 @@
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
 import { useEffect, useState } from 'react';
+import leaderboardService from '@/services/leaderboardService';
+import { TLeaderboardData } from '@/api/types';
 import { ChampionsArenaItem } from './components/ChampionsArenaItem';
 import { Pedestal } from './components/Pedestal';
 import './Leaderboard.css';
@@ -11,19 +13,31 @@ const Leaderboard = () => {
   const [users, setUsers] = useState<IUserData[]>([]);
 
   useEffect(() => {
-    setChampions([
-      { username: 'fu1000', displayName: 'First user', score: 3000 },
-      { username: 'fu2000', displayName: 'Second user', score: 2000 },
-      { username: 'fu3000', displayName: 'Third user', score: 1000 },
-    ]);
-
-    setUsers([
-      { username: 'usr1', displayName: 'User 1', score: 500 },
-      { username: 'usr2', displayName: 'User 2', score: 400 },
-      { username: 'usr3', displayName: 'User 3', score: 300 },
-      { username: 'usr4', displayName: 'User 4', score: 200 },
-      { username: 'usr5', displayName: 'User 5', score: 100 },
-    ]);
+    leaderboardService.getAllLeaders().then((leaders) => {
+      if (leaders && leaders.length) {
+        const firstThreeLeaders = leaders.splice(0, 3);
+        setChampions(
+          firstThreeLeaders.map((item: TLeaderboardData) => {
+            return {
+              username: item.user.login,
+              displayName: item.user.display_name,
+              score: item.score,
+              avatar: item.user.avatar,
+            };
+          })
+        );
+        setUsers(
+          leaders.map((item: TLeaderboardData) => {
+            return {
+              username: item.user.login,
+              displayName: item.user.display_name,
+              score: item.score,
+              avatar: item.user.avatar,
+            };
+          })
+        );
+      }
+    });
   }, []);
 
   return (
