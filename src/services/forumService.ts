@@ -23,21 +23,18 @@ class ForumService {
     return null;
   };
 
-  // eslint-disable-next-line class-methods-use-this
   public getAllPosts = () =>
     forumApi
       .getAllPosts()
       .then(({ data }) => data)
       .catch(() => []);
 
-  // eslint-disable-next-line class-methods-use-this
   public getPost = (id: number) =>
     forumApi
       .getPost(id)
       .then(({ data }) => data)
       .catch(() => null);
 
-  // eslint-disable-next-line class-methods-use-this
   public getMessagesForPost = (id: number) =>
     forumApi
       .getMessagesForPost(id)
@@ -62,7 +59,6 @@ class ForumService {
       })
       .catch(this._errorHandler);
 
-  // eslint-disable-next-line class-methods-use-this
   public getCommentsForMessage = (
     d: Pick<TForumComment, 'messageId' | 'postId'>
   ) =>
