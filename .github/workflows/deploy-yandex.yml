@@ -1,0 +1,64 @@
+name: Deploy Yandex
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CR_REGISTRY: crpu5r4ijfhs6279o54u
+      CR_REPO: galaga
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Yandex Cloud CR "Login" Action for GitHub Actions
+        uses: yc-actions/yc-cr-login@v0.1-alpha
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+
+      - name: Build, tag, and push image to Yandex Cloud Container Registry
+        run: |
+          docker build -t cr.yandex/$CR_REGISTRY/$CR_REPO:$IMAGE_TAG .
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPO:$IMAGE_TAG
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_USER: ${{ secrets.PROD_SSH_USER }}
+      SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+      SSH_HOST: ${{ secrets.PROD_SSH_HOST }}
+      YANDEX_CLOUD_SECRET: ${{ secrets.YANDEX_CLOUD_SECRET }}
+      IMAGE_TAG: ${{ github.sha }}
+      CR_REGISTRY: crpu5r4ijfhs6279o54u
+      CR_REPO: galaga
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/prod.key
+          chmod 600 ~/.ssh/prod.key
+          cat >>~/.ssh/config <<END
+          Host prod
+           HostName $SSH_HOST
+           User $SSH_USER
+           IdentityFile ~/.ssh/prod.key
+           StrictHostKeyChecking no
+          END
+      - name: Login docker
+        run: ssh prod "docker login --username oauth --password $YANDEX_CLOUD_SECRET cr.yandex"
+
+      - name: Upload script
+        run: |
+          scp ./scripts/run-docker.sh prod:~/run-docker.sh
+          ssh prod "chmod +x run-docker.sh"
+
+      - name: Run docker
+        run: ssh prod "~/run-docker.sh $CR_REGISTRY $CR_REPO $IMAGE_TAG"
