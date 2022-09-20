@@ -10,6 +10,9 @@ RUN npm ci --include=dev --ignore-scripts
 
 COPY . .
 
-RUN npm run build
+RUN mkdir -p ~/.postgresql && \
+wget "https://storage.yandexcloud.net/cloud-certs/CA.pem" -O ~/.postgresql/root.crt && \
+chmod 0600 ~/.postgresql/root.crt && \
+npm run build
 
 CMD npm start
