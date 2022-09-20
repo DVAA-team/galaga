@@ -1,7 +1,6 @@
 import { Options, Sequelize } from 'sequelize';
 import { env } from '@/config';
 import { isDebugger } from '@/database/types';
-import fs from 'node:fs';
 
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, DB_HOST, DB_PORT } =
   process.env;
@@ -28,7 +27,6 @@ export const getInstance = (logger: (message: string) => void): Sequelize => {
       ssl: {
         require: true,
         rejectUnauthorized: false, // Для устранения ошибки SequelizeConnectionError: self signed certificate
-        ca: fs.readFileSync('/app/.postgresql/root.crt').toString(),
       },
     };
   }
