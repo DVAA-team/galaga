@@ -109,6 +109,7 @@
     "debug": "4.3.4",
     "dotenv": "16.0.1",
     "express": "4.18.1",
+    "helmet": "6.0.0",
     "htmlescape": "1.1.1",
     "http-proxy-middleware": "2.0.6",
     "pg": "8.7.3",
