@@ -24,10 +24,10 @@ const updateLeader = async ({
   score: number;
 }): Promise<Leader | null> => {
   let leader = await getLeaderByUserId(userId);
-  if (leader) {
-    await Leader.update({ score }, { where: { id: leader.id } });
-  } else {
+  if (!leader) {
     leader = await addLeader({ userId, score });
+  } else if (leader.score < score) {
+    await Leader.update({ score }, { where: { id: leader.id } });
   }
   return leader;
 };

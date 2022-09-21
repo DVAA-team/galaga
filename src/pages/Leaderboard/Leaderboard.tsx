@@ -51,9 +51,13 @@ const Leaderboard = () => {
         />
 
         <div className="champions-arena text-white">
-          {users.map((user) => (
-            <ChampionsArenaItem key={user.username} userData={user} />
-          ))}
+          {users && users.length > 0 ? (
+            users.map((user) => (
+              <ChampionsArenaItem key={user.username} userData={user} />
+            ))
+          ) : (
+            <div className="text-center">Здесь пока никого нет</div>
+          )}
         </div>
       </MainLayout>
     </>

@@ -13,14 +13,16 @@ class LeaderboardController {
     }
 
     try {
+      let leaders = await dbLeaderboardController.getLeaders();
+      const prePosition = leaders.findIndex((item) => item.userId === userId);
       const leader = await dbLeaderboardController.updateLeader({
         userId: Number(userId),
         score,
       });
       if (leader) {
-        const leaders = await dbLeaderboardController.getLeaders();
+        leaders = await dbLeaderboardController.getLeaders();
         const position = leaders.findIndex((item) => item.userId === userId);
-        res.status(201).json({ position, ...leader.toJSON() });
+        res.status(201).json({ prePosition, position, ...leader.toJSON() });
       } else {
         return next(ApiError.badRequest('Не получилось добавить лидера'));
       }
