@@ -55,7 +55,9 @@ export default class Comment extends Model<
         timestamps: true,
       }
     );
+  };
 
+  static applyAssociations = () => {
     Comment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
     Comment.belongsTo(Message, { foreignKey: 'messageId' });
   };

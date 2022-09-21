@@ -83,6 +83,10 @@ export default class User extends Model<
       /* eslint-enable @typescript-eslint/naming-convention */
     );
   };
+
+  static applyAssociations = () => {
+    // Добавить связи при необходимости
+  };
 }
 
 export const isUserModel = (

@@ -62,4 +62,8 @@ export default class SiteTheme extends Model<
       }
     );
   };
+
+  static applyAssociations = () => {
+    // Добавить связи при необходимости
+  };
 }

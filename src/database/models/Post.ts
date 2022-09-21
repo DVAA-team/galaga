@@ -52,7 +52,9 @@ export default class Post extends Model<
         timestamps: true,
       }
     );
+  };
 
+  static applyAssociations = () => {
     Post.belongsTo(User, { foreignKey: 'userId', as: 'user' });
   };
 }
