@@ -1,39 +1,10 @@
-import { Link, useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { useAppDispatch } from '@/hooks/store';
-import userService from '@/services/userService';
-import { setUserProfile } from '@/store/slices/userSlice';
-import yandexOAuthService from '@/services/yandexOAuthService';
+import { Link } from 'react-router-dom';
 import { MainLayout } from '@/components/MainLayout';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/Button';
 import ship from '../../assets/images/ship.png';
 
 const Home = () => {
-  const userData = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (userData === null) {
-      const authorizationCode = searchParams.get('code');
-      if (authorizationCode) {
-        yandexOAuthService.signIn(authorizationCode).then((data) => {
-          if (data === 'OK') {
-            userService.getUser().then((profile) => {
-              if (profile !== null) {
-                dispatch(setUserProfile(profile));
-                searchParams.delete('code');
-                setSearchParams(searchParams);
-              }
-            });
-          }
-        });
-      }
-    }
-  }, [dispatch, searchParams, setSearchParams, userData]);
-
   return (
     <>
       <Header />
