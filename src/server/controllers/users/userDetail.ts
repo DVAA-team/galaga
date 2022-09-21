@@ -7,7 +7,7 @@ export default function userDetail(req: Request, res: Response) {
     .getUserById(Number(userId))
     .then((user) => {
       if (user) {
-        res.status(200).json(user.toJSON());
+        res.status(200).json(user);
       } else {
         res.status(404).json({
           reason: `User with id ${userId} was not found`,

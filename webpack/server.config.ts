@@ -32,7 +32,7 @@ const config: Configuration = merge(commonConfig, {
   dependencies: ['ssr_client'],
   entry: {
     server: {
-      import: path.resolve(SRC_DIR, 'server'),
+      import: path.resolve(SRC_DIR, IS_DEV ? 'server/app.ts' : 'server'),
     },
     ...migrations,
   },

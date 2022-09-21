@@ -6,6 +6,8 @@ import path from 'node:path';
 import requireFromString from 'require-from-string';
 import { Compiler, WebpackPluginInstance } from 'webpack';
 
+import { startServer } from '../../src/server/utils';
+
 const pluginName = 'StartServerPlugin';
 
 export default class StartServerPlugin implements WebpackPluginInstance {
@@ -77,16 +79,17 @@ export default class StartServerPlugin implements WebpackPluginInstance {
       // eslint-disable-next-line no-console
       console.info('Loading new server code ...\n');
       dotenv.config({ override: true });
-      const { default: server } = requireFromString(
+      const { createApp } = requireFromString(
         serverCode,
         path.join(outputPath, serverFileName)
       );
-      if (!(server instanceof http.Server)) {
-        throw new Error(
-          'Дефолтный экспорт из точки входа должен быть типа http.Server'
-        );
+      if (!createApp || typeof createApp !== 'function') {
+        throw new Error('Точка входа должна экспортировать функцию createApp');
       }
-      this._server = server;
+
+      const app = await createApp();
+
+      this._server = startServer(app, 3000);
       this._server.on('connection', (socket) => {
         this._sockets.add(socket);
         socket.on('close', () => {
