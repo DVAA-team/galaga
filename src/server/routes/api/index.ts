@@ -1,13 +1,14 @@
-import { Router, RequestHandler } from 'express';
+import { RequestHandler, Router } from 'express';
 
 import { initializeDB } from '@/database';
 import {
-  User,
-  Post,
-  Message,
-  UserTheme,
-  SiteTheme,
   Comment,
+  Leader,
+  Message,
+  Post,
+  SiteTheme,
+  User,
+  UserTheme,
 } from '@/database/models';
 
 import checkUser from '@/server/middlewares/checkUser';
@@ -16,11 +17,12 @@ import posts from './posts';
 import messages from './messages';
 import comments from './comments';
 import themes from './themes';
+import leaderboard from './leaderboard';
 
 const router: Router = Router();
 
 const dbInstancePromise = initializeDB({
-  models: [User, Post, Message, SiteTheme, UserTheme, Comment],
+  models: [User, Post, Message, SiteTheme, UserTheme, Comment, Leader],
 });
 
 const checkDBConnection: RequestHandler = async (_req, _res, next) => {
@@ -46,6 +48,7 @@ router
   .use(posts)
   .use(messages)
   .use(comments)
-  .use(themes);
+  .use(themes)
+  .use(leaderboard);
 
 export default router;

@@ -1,10 +1,9 @@
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
-import { useEffect, useState, useRef } from 'react';
-
+import leaderboardService from '@/services/leaderboardService';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../components/Button';
-import { GameEngine, Player, Swarm, Star } from './Engine';
-
+import { GameEngine, Player, Star, Swarm } from './Engine';
 import styles from './GamePage.module.css';
 
 const GAME_AREA_STYLE = {
@@ -56,6 +55,7 @@ const Game = () => {
       onGameOver(newScore) {
         setGameStatus(Status.gameOver);
         setScore(newScore);
+        leaderboardService.addToLeaderboard({ score: newScore });
       },
     });
     gameEngine.registerObject([Player, Swarm, Star]);

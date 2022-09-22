@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { IUserData } from '../../types';
 
 type TOwnProps = {
-  userData: IUserData;
+  userData?: IUserData;
   cls: string;
   position: number;
 };
