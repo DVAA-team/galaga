@@ -1,10 +1,12 @@
 import '../../assets/styles/main.css';
 import './SsrApp.css';
 
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useAuth } from '@/hooks/useAuth';
 import { isUserAuthorized } from '@/utils/guards';
+import ym from 'react-yandex-metrika';
+import { useEffect } from 'react';
 import { Home } from '../../pages/Home';
 import { SignIn } from '../../pages/SignIn';
 import { SignUp } from '../../pages/SignUp';
@@ -19,7 +21,11 @@ import { ProtectedRoute } from '../ProtectedRoute';
 
 const SsrApp = () => {
   const userData = useAuth();
+  const location = useLocation();
 
+  useEffect(() => {
+    ym('hit', location.pathname);
+  }, [location]);
   const guardConditionUserAuth = isUserAuthorized(userData);
 
   return (
