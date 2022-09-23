@@ -14,26 +14,21 @@ class UserApi extends AbstractHttpClient {
     super(appConstants.yandexApiBaseURL);
   }
 
-  public logOut = () =>
-    this.getCSRFToken().then(() => this.instance.post('/auth/logout', {}));
+  public logOut = () => this.instance.post('/auth/logout', {});
 
   public signIn = (data: TSingInRequest) =>
-    this.getCSRFToken().then(() => this.instance.post('/auth/signin', data));
+    this.instance.post('/auth/signin', data);
 
   public signUp = (data: TSingUpRequest) =>
-    this.getCSRFToken().then(() =>
-      this.instance.post<TSignUpResponse>('/auth/signup', data)
-    );
+    this.instance.post<TSignUpResponse>('/auth/signup', data);
 
   public getUser = () => this.instance.get<TUserResponse>('/auth/user');
 
   public editUser = (data: TUserUpdateRequest) =>
-    this.getCSRFToken().then(() =>
-      this.instance.put<TUserResponse>('/user/profile', data)
-    );
+    this.instance.put<TUserResponse>('/user/profile', data);
 
   public editPassword = (data: TChangePasswordRequest) =>
-    this.getCSRFToken().then(() => this.instance.put('/user/password', data));
+    this.instance.put('/user/password', data);
 
   public getAvatar = (url: string) =>
     this.instance.get<Blob>(`/resources/${url}`, { responseType: 'blob' });
@@ -42,15 +37,13 @@ class UserApi extends AbstractHttpClient {
     const data = new FormData();
     data.append('avatar', avatar);
 
-    return this.getCSRFToken().then(() =>
-      this.instance.put<TUserResponse>('/user/profile/avatar', data, {
-        headers: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          'Content-Type': 'multipart/form-data',
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      })
-    );
+    return this.instance.put<TUserResponse>('/user/profile/avatar', data, {
+      headers: {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        'Content-Type': 'multipart/form-data',
+        /* eslint-enable @typescript-eslint/naming-convention */
+      },
+    });
   };
 }
 

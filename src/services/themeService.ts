@@ -21,6 +21,8 @@ class ThemeService {
     return null;
   };
 
+  public setCSRFToken = (token: string) => themeApi.setCSRFToken(token);
+
   public fetchThemes = async () =>
     themeApi
       .getThemes()

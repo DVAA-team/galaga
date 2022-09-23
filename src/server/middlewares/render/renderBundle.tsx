@@ -54,7 +54,7 @@ export default function renderBundle({
              */
             __html: `WebClient.default(${htmlescape(initialState)},${htmlescape(
               clientData
-            )});delete window.WebClient;`,
+            )});`,
           }}
         />
       </body>

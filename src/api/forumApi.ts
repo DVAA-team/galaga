@@ -10,16 +10,14 @@ class ForumApi extends AbstractHttpClient {
   public getAllPosts = () => this.instance.get('/posts');
 
   public createPost = (data: Pick<TForumPost, 'title'>) =>
-    this.getCSRFToken().then(() => this.instance.post('/posts', data));
+    this.instance.post('/posts', data);
 
   public getPost = (data: TForumPost['id']) =>
     this.instance.get(`/posts/${data}`);
 
   public updatePost = (data: TForumPost) => {
     const { id, ...rest } = data;
-    return this.getCSRFToken().then(() =>
-      this.instance.put(`/posts/${id}`, rest)
-    );
+    return this.instance.put(`/posts/${id}`, rest);
   };
 
   public deletePost = (data: TForumPost['id']) =>
@@ -32,9 +30,7 @@ class ForumApi extends AbstractHttpClient {
     data: Pick<TForumMessage, 'postId' | 'text'>
   ) => {
     const { postId, ...rest } = data;
-    return this.getCSRFToken().then(() =>
-      this.instance.post(`/posts/${postId}/messages`, rest)
-    );
+    return this.instance.post(`/posts/${postId}/messages`, rest);
   };
 
   public getCommentsForMessage = ({
@@ -48,12 +44,10 @@ class ForumApi extends AbstractHttpClient {
     messageId,
     text,
   }: Pick<TForumComment, 'messageId' | 'postId' | 'text'>) =>
-    this.getCSRFToken().then(() =>
-      this.instance.post(`/posts/${postId}/messages/${messageId}/comments`, {
-        messageId,
-        text,
-      })
-    );
+    this.instance.post(`/posts/${postId}/messages/${messageId}/comments`, {
+      messageId,
+      text,
+    });
 }
 
 export const forumApi = new ForumApi();

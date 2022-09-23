@@ -10,12 +10,7 @@ import {
   renderMiddleware,
   staticMiddleware,
 } from '@/server/middlewares';
-import {
-  apiRoute,
-  getCSRFToken,
-  healthChecksRoute,
-  yandexApiRoute,
-} from '@/server/routes';
+import { apiRoute, healthChecksRoute, yandexApiRoute } from '@/server/routes';
 
 const app: Express = express()
   .disable('x-powered-by')
@@ -26,7 +21,6 @@ const app: Express = express()
   .use(csurfMiddleware)
   .use(express.json())
   .use(express.urlencoded({ extended: false }))
-  .get('/getCSRFToken', getCSRFToken)
   .use('/yandex-api', yandexApiRoute)
   .use(loggerMiddleware)
   .use('/hc', healthChecksRoute)

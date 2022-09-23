@@ -9,6 +9,7 @@ import { schemaSignUp } from '@/utils/validate';
 import { useAuth } from '@/hooks/useAuth';
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -18,6 +19,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const userData = useAuth();
   const dispatch = useAppDispatch();
+  const token = useCSRFToken();
 
   const redirectToProfile = useCallback(() => {
     navigate('/profile', { replace: true });
@@ -50,6 +52,8 @@ const SignUp = () => {
   });
 
   const onSubmit: SubmitHandler<typeof defaultValues> = (d) => {
+    userService.setCSRFToken(token);
+
     userService.signUp(d).then((res) => {
       if (res) {
         navigate('/profile', { replace: true });

@@ -54,9 +54,7 @@ export abstract class AbstractHttpClient {
     return Promise.reject(error);
   }
 
-  protected getCSRFToken = async () => {
-    const response = await axios.get('/getCSRFToken');
-    this.instance.defaults.headers.common['X-CSRF-Token'] =
-      response.data.csrfToken;
+  public setCSRFToken = (token: string) => {
+    this.instance.defaults.headers.common['X-CSRF-Token'] = token;
   };
 }
