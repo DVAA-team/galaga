@@ -1,5 +1,7 @@
 import { userApi } from '@/api/userApi';
+import { initialStore } from '@/store';
 import { render, screen } from '@/utils/test-utils';
+import { Provider } from 'react-redux';
 import ChangePassword from './ChangePassword';
 
 jest.mock('../../../api/userApi');
@@ -11,6 +13,7 @@ const MOCKED_DATA = {
   oldPassword: 'As1234567890',
   newPasswordRepeat: 'As1234567891',
 };
+
 const MOCKED_AXIOS_RESPONSE = {
   data: '',
   status: 200,
@@ -19,9 +22,15 @@ const MOCKED_AXIOS_RESPONSE = {
   config: {},
 };
 
+const MOCKED_STORE = initialStore();
+
 describe('Смена пароля', () => {
   test('должна корректно рендериться', async () => {
-    render(<ChangePassword onClose={jest.fn()} />);
+    render(
+      <Provider store={MOCKED_STORE}>
+        <ChangePassword onClose={jest.fn()} />
+      </Provider>
+    );
 
     const t = screen.getAllByPlaceholderText<HTMLInputElement>(
       /^Старый пароль$|^Новый пароль$|^Новый пароль \(еще раз\)$/
@@ -31,7 +40,11 @@ describe('Смена пароля', () => {
 
   test('должна выводить ошибки при не заполненных инпутах', async () => {
     const onClose = jest.fn();
-    const { user } = render(<ChangePassword onClose={onClose} />);
+    const { user } = render(
+      <Provider store={MOCKED_STORE}>
+        <ChangePassword onClose={onClose} />
+      </Provider>
+    );
 
     user.click(screen.getByRole('button', { name: /Применить/i }));
 
@@ -44,7 +57,11 @@ describe('Смена пароля', () => {
     mockedUserApi.editPassword.mockResolvedValue(MOCKED_AXIOS_RESPONSE);
 
     const onClose = jest.fn();
-    const { user } = render(<ChangePassword onClose={onClose} />);
+    const { user } = render(
+      <Provider store={MOCKED_STORE}>
+        <ChangePassword onClose={onClose} />
+      </Provider>
+    );
 
     await user.type(
       screen.getByPlaceholderText(/^Старый пароль$/),
@@ -66,7 +83,11 @@ describe('Смена пароля', () => {
 
   test('должна вызывать onClose()', async () => {
     const onClose = jest.fn();
-    const { user } = render(<ChangePassword onClose={onClose} />);
+    const { user } = render(
+      <Provider store={MOCKED_STORE}>
+        <ChangePassword onClose={onClose} />
+      </Provider>
+    );
 
     await user.click(screen.getByRole('button', { name: /Отменить/i }));
 
@@ -75,7 +96,11 @@ describe('Смена пароля', () => {
 
   test('не должна вызывать onClose(), если не заполнены инпуты', async () => {
     const onClose = jest.fn();
-    const { user } = render(<ChangePassword onClose={onClose} />);
+    const { user } = render(
+      <Provider store={MOCKED_STORE}>
+        <ChangePassword onClose={onClose} />
+      </Provider>
+    );
 
     await user.click(screen.getByRole('button', { name: /Применить/i }));
 
@@ -86,7 +111,11 @@ describe('Смена пароля', () => {
     mockedUserApi.editPassword.mockResolvedValue(MOCKED_AXIOS_RESPONSE);
 
     const onClose = jest.fn();
-    const { user } = render(<ChangePassword onClose={onClose} />);
+    const { user } = render(
+      <Provider store={MOCKED_STORE}>
+        <ChangePassword onClose={onClose} />
+      </Provider>
+    );
 
     await user.type(
       screen.getByPlaceholderText(/^Старый пароль$/),
