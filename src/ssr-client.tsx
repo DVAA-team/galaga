@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import createDebug from '@/utils/debug';
 import { env } from '@/config';
 import changeTheme from '@/utils/changeTheme';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { initialStore } from './store';
 import type { TRootState } from './store';
 import { registerServiceWorker } from './registerServiceWorker';
@@ -24,11 +25,13 @@ export const Bundle: React.FC<TServerBundleProps> = (props) => {
   const { location, initialState } = props;
   debug('render ssr-bundle with props %j', props);
   return (
-    <Provider store={initialStore(initialState)}>
-      <StaticRouter location={location}>
-        <SsrApp />
-      </StaticRouter>
-    </Provider>
+    <ErrorBoundary>
+      <Provider store={initialStore(initialState)}>
+        <StaticRouter location={location}>
+          <SsrApp />
+        </StaticRouter>
+      </Provider>
+    </ErrorBoundary>
   );
 };
 
@@ -42,11 +45,13 @@ export default (initialState: TRootState) => {
   if (container !== null) {
     hydrateRoot(
       container,
-      <Provider store={initialStore(initialState)}>
-        <BrowserRouter>
-          <SsrApp />
-        </BrowserRouter>
-      </Provider>
+      <ErrorBoundary>
+        <Provider store={initialStore(initialState)}>
+          <BrowserRouter>
+            <SsrApp />
+          </BrowserRouter>
+        </Provider>
+      </ErrorBoundary>
     );
   }
 
