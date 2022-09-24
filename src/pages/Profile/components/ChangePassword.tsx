@@ -1,3 +1,4 @@
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FC } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -19,6 +20,8 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
     newPasswordRepeat: '',
   };
 
+  const token = useCSRFToken();
+
   const {
     register,
     handleSubmit,
@@ -31,6 +34,8 @@ const ChangePassword: FC<TChangePasswordProps> = ({ onClose }) => {
 
   const onSubmit: SubmitHandler<typeof defaultValues> = (data) => {
     if (isValid) {
+      userService.setCSRFToken(token);
+
       userService.editPassword(data).then((res) => {
         if (res) {
           onClose();

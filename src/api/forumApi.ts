@@ -17,7 +17,7 @@ class ForumApi extends AbstractHttpClient {
 
   public updatePost = (data: TForumPost) => {
     const { id, ...rest } = data;
-    this.instance.put(`/posts/${id}`, rest);
+    return this.instance.put(`/posts/${id}`, rest);
   };
 
   public deletePost = (data: TForumPost['id']) =>

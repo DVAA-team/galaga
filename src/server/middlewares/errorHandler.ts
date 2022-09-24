@@ -9,6 +9,9 @@ const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof ApiError) {
     return res.status(error.status).json({ message: error.message });
   }
+  if (error.status === 403) {
+    return res.status(403).json({ message: error.message });
+  }
   return res.status(500).json({ message: 'Непредвиденная ошибка' });
 };
 

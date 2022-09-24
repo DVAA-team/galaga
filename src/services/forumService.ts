@@ -23,6 +23,9 @@ class ForumService {
     return null;
   };
 
+  public setCSRFToken = (token: string) => forumApi.setCSRFToken(token);
+
+  // eslint-disable-next-line class-methods-use-this
   public getAllPosts = () =>
     forumApi
       .getAllPosts()

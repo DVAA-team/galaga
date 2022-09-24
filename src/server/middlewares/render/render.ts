@@ -6,6 +6,7 @@ import renderBundle from './renderBundle';
 
 const renderMiddleware: RequestHandler = async (req, res) => {
   const { user } = res.locals;
+  const csfrToken = req.csrfToken();
 
   let starsTheme;
   let darkMode = true;
@@ -49,6 +50,9 @@ const renderMiddleware: RequestHandler = async (req, res) => {
       darkMode,
       current,
       list: [],
+    },
+    csfr: {
+      token: csfrToken,
     },
     forum: {
       posts: [],

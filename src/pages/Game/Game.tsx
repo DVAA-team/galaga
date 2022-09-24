@@ -1,5 +1,6 @@
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import leaderboardService from '@/services/leaderboardService';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../components/Button';
@@ -23,6 +24,7 @@ const enum Status {
 const Game = () => {
   const [gameStatus, setGameStatus] = useState(Status.start);
   const [score, setScore] = useState(0);
+  const token = useCSRFToken();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<HTMLDivElement>(null);
@@ -55,6 +57,7 @@ const Game = () => {
       onGameOver(newScore) {
         setGameStatus(Status.gameOver);
         setScore(newScore);
+        leaderboardService.setCSRFToken(token);
         leaderboardService.addToLeaderboard({ score: newScore });
       },
     });

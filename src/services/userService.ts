@@ -28,6 +28,8 @@ class UserService {
     return null;
   };
 
+  public setCSRFToken = (token: string) => userApi.setCSRFToken(token);
+
   public getUser = () =>
     userApi
       .getUser()

@@ -8,6 +8,7 @@ import { schemaSignIn } from '@/utils/validate';
 import { YandexLogin } from '@/components/YandexLogin';
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -17,6 +18,7 @@ import { TLocationProps } from './types';
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const token = useCSRFToken();
 
   const { state } = useLocation() as TLocationProps;
   const from = state?.from?.pathname || '/';
@@ -37,6 +39,8 @@ const SignIn = () => {
   });
 
   const onSubmit: SubmitHandler<typeof defaultValues> = (d) => {
+    userService.setCSRFToken(token);
+
     userService.signIn(d).then((profile) => {
       if (profile) {
         dispatch(setUserProfile(profile));
