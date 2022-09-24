@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    if: github.repository_owner == 'DVAA-team'
     runs-on: ubuntu-latest
     env:
       CR_REGISTRY: crpu5r4ijfhs6279o54u
