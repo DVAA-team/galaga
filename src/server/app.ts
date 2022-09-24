@@ -2,8 +2,10 @@ import cookieParser from 'cookie-parser';
 import express, { Express } from 'express';
 
 import {
+  csurfMiddleware,
   errorHandlerMiddleware,
   getYandexUserMiddleware,
+  helmetMiddleware,
   loggerMiddleware,
   renderMiddleware,
   staticMiddleware,
@@ -14,7 +16,9 @@ const app: Express = express()
   .disable('x-powered-by')
   .enable('trust proxy')
   .use(staticMiddleware)
+  .use(helmetMiddleware)
   .use(cookieParser())
+  .use(csurfMiddleware)
   .use(express.json())
   .use(express.urlencoded({ extended: false }))
   .use('/yandex-api', yandexApiRoute)

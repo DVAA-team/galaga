@@ -22,6 +22,8 @@ class LeaderboardService {
     return null;
   };
 
+  public setCSRFToken = (token: string) => leaderboardApi.setCSRFToken(token);
+
   public addToLeaderboard = (d: TLeaderboardRequest) =>
     leaderboardApi
       .addToLeaderboard(d)
