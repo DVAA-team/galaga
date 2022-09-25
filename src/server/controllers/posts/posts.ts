@@ -6,14 +6,9 @@ class PostsController {
   // eslint-disable-next-line consistent-return
   async getPost(req: Request, res: Response, next: NextFunction) {
     const { postId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     try {
-      const post = await dbPostController.getPostById(
-        Number(postId),
-        Number(yandexId)
-      );
+      const post = await dbPostController.getPostById(Number(postId));
       if (post) {
         res.status(200).json(post.toJSON());
       } else {
@@ -24,15 +19,20 @@ class PostsController {
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async createPost(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { title } = req.body;
 
-    const { user } = res.locals;
+    const { user } = req;
     const userId = user.id;
 
     if (!title) {
-      return next(ApiError.badRequest('Не задан title'));
+      next(ApiError.badRequest('Не задан title'));
+      return;
     }
 
     try {
@@ -43,50 +43,58 @@ class PostsController {
       if (post) {
         res.status(201).json(post.toJSON());
       } else {
-        return next(ApiError.badRequest('Не получилось создать пост'));
+        next(ApiError.badRequest('Не получилось создать пост'));
       }
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось создать пост'));
+      next(ApiError.badRequest('Не получилось создать пост'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async updatePost(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { title } = req.body;
     const { postId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     if (!title) {
-      return next(ApiError.badRequest('Не задан title'));
+      next(ApiError.badRequest('Не задан title'));
+      return;
     }
 
     if (!postId) {
-      return next(ApiError.badRequest('Не задан post id'));
+      next(ApiError.badRequest('Не задан post id'));
+      return;
     }
 
     try {
       const post = await dbPostController.updatePost({
         title,
         postId: Number(postId),
-        yandexId: Number(yandexId),
       });
       if (post) {
         res.status(200).json(post.toJSON());
       } else {
-        return next(ApiError.badRequest('Не получилось обновить пост'));
+        next(ApiError.badRequest('Не получилось обновить пост'));
       }
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось обновить пост'));
+      next(ApiError.badRequest('Не получилось обновить пост'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async deletePost(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { postId } = req.params;
 
     if (!postId) {
-      return next(ApiError.badRequest('Не задан post id'));
+      next(ApiError.badRequest('Не задан post id'));
+      return;
     }
 
     try {
@@ -95,14 +103,17 @@ class PostsController {
       });
       res.status(204).end();
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось удалить пост'));
+      next(ApiError.badRequest('Не получилось удалить пост'));
     }
   }
 
-  async getPosts(_req: Request, res: Response) {
-    const { user } = res.locals;
-    const { yandexId } = user;
-    const posts = await dbPostController.getPosts(yandexId);
+  async getPosts(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
+    const posts = await dbPostController.getPosts();
     res.status(200).json(posts.map((post) => post.toJSON()));
   }
 }

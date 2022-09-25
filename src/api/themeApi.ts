@@ -8,9 +8,8 @@ class ThemeApi extends AbstractHttpClient {
 
   public getThemes = () => this.instance.get<SiteTheme[]>('');
 
-  public setUserTheme = (userYandexId: number, themeId: number) =>
+  public setUserTheme = (themeId: number) =>
     this.instance.patch('/user', {
-      userYandexId,
       themeId,
     });
 

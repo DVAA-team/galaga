@@ -29,13 +29,8 @@ class ThemeService {
       )
       .catch(this._errorHandler);
 
-  public editUserTheme = async ({
-    themeId,
-    yandexUserId,
-  }: {
-    themeId: number;
-    yandexUserId: number;
-  }) => themeApi.setUserTheme(yandexUserId, themeId).catch(this._errorHandler);
+  public editUserTheme = async (themeId: number) =>
+    themeApi.setUserTheme(themeId).catch(this._errorHandler);
 
   public editUserDarkMode = async ({
     userId,

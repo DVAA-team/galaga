@@ -4,7 +4,12 @@ import { RequestHandler } from 'express';
 
 import renderBundle from './renderBundle';
 
-const renderMiddleware: RequestHandler = async (req, res) => {
+const renderMiddleware: RequestHandler = async (req, res, next) => {
+  if (!req.header('Accept')?.includes('application')) {
+    next();
+    return;
+  }
+
   const { user } = req;
 
   let starsTheme;
@@ -49,7 +54,7 @@ const renderMiddleware: RequestHandler = async (req, res) => {
       list: [],
     },
     forum: {
-      posts: [],
+      posts: null,
       currentPost: null,
     },
   };

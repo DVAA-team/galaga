@@ -71,8 +71,7 @@ const Profile = () => {
 
       userService.editUser(userProfile).then((profile) => {
         if (profile) {
-          const { id: yandexUserId } = profile;
-          themeService.editUserTheme({ themeId, yandexUserId });
+          themeService.editUserTheme(themeId);
           dispatch(setUserProfile(profile));
         }
       });

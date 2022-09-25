@@ -11,6 +11,7 @@ import {
   TVerifyFunction,
 } from '@/server/controllers/auth/yandex/YandexOAuth2Strategy';
 import { Request, RequestHandler, Response } from 'express';
+import { serverToClientNaming } from '@/utils/convertNaming';
 
 const findOrCreateUser: TVerifyFunction = (
   accessToken,
@@ -51,7 +52,7 @@ const findOrCreateUser: TVerifyFunction = (
     })
     .then((user) => {
       if (user) {
-        verified(null, user);
+        verified(null, serverToClientNaming(user));
       } else {
         verified(null);
       }

@@ -3,46 +3,49 @@ import { dbCommentController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class CommentsController {
-  // eslint-disable-next-line consistent-return
   async getComment(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { commentId, messageId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     try {
       const comment = await dbCommentController.getCommentByMessageIdAndId(
         Number(messageId),
-        Number(commentId),
-        Number(yandexId)
+        Number(commentId)
       );
       if (comment) {
         res.status(200).json(comment.toJSON());
       } else {
-        return next(
-          ApiError.badRequest(`Комментарий с id ${commentId} не найдено`)
-        );
+        next(ApiError.badRequest(`Комментарий с id ${commentId} не найдено`));
       }
     } catch (err) {
-      return next(
-        ApiError.badRequest(`Комментарий с id ${commentId} не найдено`)
-      );
+      next(ApiError.badRequest(`Комментарий с id ${commentId} не найдено`));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async createComment(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { text } = req.body;
     const { messageId } = req.params;
 
-    const { user } = res.locals;
+    const { user } = req;
     const userId = user.id;
 
     if (!text) {
-      return next(ApiError.badRequest('Не задан text'));
+      next(ApiError.badRequest('Не задан text'));
+      return;
     }
 
     if (!messageId) {
-      return next(ApiError.badRequest('Не задан message id'));
+      next(ApiError.badRequest('Не задан message id'));
+      return;
     }
 
     try {
@@ -54,30 +57,35 @@ class CommentsController {
       if (comment) {
         res.status(201).json(comment.toJSON());
       } else {
-        return next(ApiError.badRequest('Не получилось создать сообщение'));
+        next(ApiError.badRequest('Не получилось создать сообщение'));
       }
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось создать сообщение'));
+      next(ApiError.badRequest('Не получилось создать сообщение'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async updateComment(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { text } = req.body;
     const { commentId, messageId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     if (!text) {
-      return next(ApiError.badRequest('Не задан text'));
+      next(ApiError.badRequest('Не задан text'));
+      return;
     }
 
     if (!commentId) {
-      return next(ApiError.badRequest('Не задан comment id'));
+      next(ApiError.badRequest('Не задан comment id'));
+      return;
     }
 
     if (!messageId) {
-      return next(ApiError.badRequest('Не задан message id'));
+      next(ApiError.badRequest('Не задан message id'));
+      return;
     }
 
     try {
@@ -85,24 +93,28 @@ class CommentsController {
         text,
         messageId: Number(messageId),
         commentId: Number(commentId),
-        yandexId: Number(yandexId),
       });
       if (comment) {
         res.status(200).json(comment.toJSON());
       } else {
-        return next(ApiError.badRequest('Не получилось обновить пост'));
+        next(ApiError.badRequest('Не получилось обновить пост'));
       }
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось обновить пост'));
+      next(ApiError.badRequest('Не получилось обновить пост'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async deleteComment(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { commentId, messageId } = req.params;
 
     if (!messageId) {
-      return next(ApiError.badRequest('Не задан message id'));
+      next(ApiError.badRequest('Не задан message id'));
+      return;
     }
 
     try {
@@ -112,23 +124,25 @@ class CommentsController {
       });
       res.status(204).end();
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось удалить пост'));
+      next(ApiError.badRequest('Не получилось удалить пост'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async getComments(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { messageId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     if (!messageId) {
-      return next(ApiError.badRequest('Не задан message id'));
+      next(ApiError.badRequest('Не задан message id'));
+      return;
     }
 
     const comments = await dbCommentController.getComments({
       messageId: Number(messageId),
-      yandexId: Number(yandexId),
     });
     res.status(200).json(comments.map((comment) => comment.toJSON()));
   }

@@ -5,7 +5,7 @@ import {
 } from 'sequelize';
 
 import { SiteTheme, User, UserTheme } from '@/database/models';
-import { TUserResponse } from '@/api/types';
+import { TUserUpdateRequest } from '@/api/types';
 import { debug as dbDebug } from '@/database/config';
 import { hashingPassword, verifyingPassword } from '@/database/utils';
 
@@ -32,24 +32,6 @@ export const getUserById = async (id: number) => {
     debug('%O', error);
     return null;
   }
-};
-
-export const createUserFromYandexData = async (
-  data: TUserResponse
-): Promise<User> => {
-  const newUser = await User.create(data);
-  const starsTheme = await SiteTheme.findOne({
-    where: { name: 'Stars' },
-  });
-  if (!starsTheme) {
-    throw new Error('Нет такой темы');
-  }
-  await UserTheme.create({
-    darkMode: true,
-    ownerId: newUser.id,
-    themeId: starsTheme.id,
-  });
-  return newUser;
 };
 
 export const getThemeById = async (id: User['id']) => {
@@ -155,11 +137,9 @@ export const verifiedPassword = async (
   const user = await User.findOne({
     where: { login },
   });
-  debug(user);
   if (!user || !user.salt || !user.hashedPassword) {
     return false;
   }
-  debug(user);
   const verified = await verifyingPassword(
     password,
     user.salt,
@@ -176,4 +156,59 @@ export const verifiedPassword = async (
     return returnUser;
   }
   return false;
+};
+
+export const update = async (
+  id: number,
+  profile: Partial<TUserUpdateRequest & { avatar: string }>
+) => {
+  let user = await User.findByPk(id);
+  if (!user) {
+    return new Error('Пользователь не найден');
+  }
+  user = await user.update(profile);
+  const {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    salt: unusedSalt,
+    hashedPassword: unusedHashedPassword,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+    ...returnUser
+  } = user.toJSON();
+  return { ...returnUser, id };
+};
+
+export const changePassword = async (
+  id: number,
+  oldPassword: string,
+  newPassword: string
+) => {
+  let user = await User.findByPk(id);
+  if (!user) {
+    return new Error('Пользователя не существует');
+  }
+  if (!user.salt || !user.hashedPassword) {
+    return new Error('Нельзя установить пароль для пользователя OAuth2');
+  }
+  const verified = await verifyingPassword(
+    oldPassword,
+    user.salt,
+    user.hashedPassword
+  );
+
+  if (!verified) {
+    return new Error('Старый пароль не верен');
+  }
+
+  const { hashedPassword, salt } = await hashingPassword(newPassword);
+  user.salt = salt;
+  user.hashedPassword = hashedPassword;
+  user = await user.save();
+  const {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    salt: unusedSalt,
+    hashedPassword: unusedHashedPassword,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+    ...returnUser
+  } = user.toJSON();
+  return returnUser;
 };
