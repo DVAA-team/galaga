@@ -33,6 +33,8 @@ export default class User extends Model<
 
   declare yandexId: CreationOptional<number>;
 
+  declare hashedPassword: Buffer | null;
+
   /* eslint-enable @typescript-eslint/naming-convention */
   static registration = (sequelize: Sequelize) => {
     User.init(
@@ -73,12 +75,22 @@ export default class User extends Model<
         yandexId: {
           type: DataTypes.INTEGER,
         },
+        hashedPassword: {
+          type: DataTypes.BLOB,
+          allowNull: true,
+        },
       },
       {
         sequelize,
         modelName,
         tableName,
         timestamps: false,
+        indexes: [
+          {
+            unique: true,
+            fields: ['login'],
+          },
+        ],
       }
       /* eslint-enable @typescript-eslint/naming-convention */
     );
