@@ -3,6 +3,7 @@ import { EmojiPicker } from '@/components/EmojiPicker';
 import { Input } from '@/components/Input';
 import forumService from '@/services/forumService';
 import { useAuth } from '@/hooks/useAuth';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import styles from './SendCommentForm.module.css';
 import { Button } from '../../../../components/Button';
 import { TProps } from './types';
@@ -10,6 +11,7 @@ import { TProps } from './types';
 const SendCommentForm: TProps = ({ postId, messageId, addNewComment }) => {
   const [isNeedClearInput, setIsNeedClearInput] = useState(false);
   const user = useAuth();
+  const token = useCSRFToken();
 
   const onSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,6 +25,8 @@ const SendCommentForm: TProps = ({ postId, messageId, addNewComment }) => {
       if (!text) {
         return;
       }
+
+      forumService.setCSRFToken(token);
 
       forumService
         .createCommentForMessage({

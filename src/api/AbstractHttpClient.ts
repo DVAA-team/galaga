@@ -53,4 +53,8 @@ export abstract class AbstractHttpClient {
     }
     return Promise.reject(error);
   }
+
+  public setCSRFToken = (token: string) => {
+    this.instance.defaults.headers.common['X-CSRF-Token'] = token;
+  };
 }

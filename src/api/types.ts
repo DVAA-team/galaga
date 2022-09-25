@@ -98,3 +98,22 @@ export type TForumComment = {
   updatedAt: string | null;
   user: TForumUserResponse;
 };
+
+export type TLeaderboardUser = {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  id: number;
+  login: string;
+  display_name: string;
+  avatar: string;
+  /* eslint-enable @typescript-eslint/naming-convention */
+};
+
+export type TLeaderboardRequest = {
+  score: number;
+};
+
+export type TLeaderboardData = {
+  id: number;
+  score: number;
+  user: TLeaderboardUser;
+};

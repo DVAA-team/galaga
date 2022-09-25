@@ -2,7 +2,7 @@ interface IUserData {
   displayName: string;
   username: string;
   score: number;
-  avatarURL?: string;
+  avatar?: string;
 }
 
 export { IUserData };

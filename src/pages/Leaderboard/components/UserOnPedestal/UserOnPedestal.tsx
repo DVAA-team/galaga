@@ -1,7 +1,29 @@
+import userService from '@/services/userService';
+import { useEffect, useState } from 'react';
 import { TProps } from './types';
 import { Avatar } from '../../../../components/Avatar';
 
 const UserOnPedestal: TProps = ({ userData, cls, position }) => {
+  const [avatar, setAvatar] = useState<Blob>();
+
+  useEffect(() => {
+    if (userData) {
+      const { avatar: userAvatar } = userData;
+
+      if (userAvatar) {
+        userService.getAvatar(userAvatar).then((res) => {
+          if (res) {
+            setAvatar(res);
+          }
+        });
+      }
+    }
+  }, [userData]);
+
+  const getAvatarUrl = () => {
+    return avatar ? URL.createObjectURL(avatar) : undefined;
+  };
+
   const getBorderType = () => {
     switch (position) {
       case 1:
@@ -15,18 +37,24 @@ const UserOnPedestal: TProps = ({ userData, cls, position }) => {
     }
   };
   return (
-    <div className={`text-white ${cls}`}>
-      <Avatar
-        src={userData.avatarURL}
-        className="pedestal-avatar"
-        alt={userData.username}
-        borderType={getBorderType()}
-        badge={`${position}`}
-        size="xxl"
-      />
-      <p>{userData.displayName}</p>
-      <p className="font-bold text-primary">{userData.score}</p>
-      <p className="text-muted">@{userData.username}</p>
+    <div className={`text-white text-center ${cls}`}>
+      {userData ? (
+        <>
+          <Avatar
+            src={getAvatarUrl()}
+            className="pedestal-avatar"
+            alt={userData.username}
+            borderType={getBorderType()}
+            badge={`${position}`}
+            size="xxl"
+          />
+          <p>{userData.displayName}</p>
+          <p className="font-bold text-primary">{userData.score}</p>
+          <p className="text-muted">@{userData.username}</p>
+        </>
+      ) : (
+        <p>это место вакантно</p>
+      )}
     </div>
   );
 };

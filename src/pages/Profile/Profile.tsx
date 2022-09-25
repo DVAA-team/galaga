@@ -15,6 +15,7 @@ import { useAppSelector, useAppDispatch } from '@/hooks/store';
 import { useTheme } from '@/hooks/useTheme';
 import themeService from '@/services/themeService';
 import { setThemeList } from '@/store/slices/themesSlice';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import { Button } from '../../components/Button';
 import { Form } from '../../components/Form';
 import { Input } from '../../components/Input';
@@ -32,6 +33,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const userData = useAuth();
   const dispatch = useAppDispatch();
+  const token = useCSRFToken();
   const [currentTheme, setCurrentTheme] = useTheme();
   const [isOAuth2User, setIsOAuth2User] = useState<boolean>(
     userData?.isOAuth2User ?? true
@@ -72,8 +74,11 @@ const Profile = () => {
     if (isValid) {
       const { theme: themeId, ...userProfile } = data;
 
+      userService.setCSRFToken(token);
+
       userService.editUser(userProfile).then((profile) => {
         if (profile) {
+          themeService.setCSRFToken(token);
           themeService.editUserTheme(themeId);
           dispatch(setUserProfile(profile));
         }
@@ -93,6 +98,8 @@ const Profile = () => {
   };
 
   const onLogout = () => {
+    userService.setCSRFToken(token);
+
     userService.logOut().finally(() => {
       dispatch(setUserProfile(null));
       redirectToHome();
@@ -100,6 +107,8 @@ const Profile = () => {
   };
 
   const saveCropAvatarHandler: TOnSaveHandler = (image) => {
+    userService.setCSRFToken(token);
+
     userService.editAvatar(image).then((res) => {
       if (res) {
         setAvatar(image);

@@ -4,3 +4,4 @@ export { PostsController } from './posts';
 export { MessagesController } from './messages';
 export { CommentsController } from './comments';
 export * as AuthController from './auth';
+export { LeaderboardController } from './leaderboard';

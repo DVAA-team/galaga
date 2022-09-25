@@ -11,6 +11,7 @@ const renderMiddleware: RequestHandler = async (req, res, next) => {
   }
 
   const { user } = req;
+  const csfrToken = req.csrfToken();
 
   let starsTheme;
   let darkMode = true;
@@ -52,6 +53,9 @@ const renderMiddleware: RequestHandler = async (req, res, next) => {
       darkMode,
       current,
       list: [],
+    },
+    csfr: {
+      token: csfrToken,
     },
     forum: {
       posts: null,

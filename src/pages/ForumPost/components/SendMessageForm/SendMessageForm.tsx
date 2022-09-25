@@ -5,6 +5,7 @@ import forumService from '@/services/forumService';
 import { useAppDispatch } from '@/hooks/store';
 import { addMessageToPost } from '@/store/slices/forumSlice';
 import { useAuth } from '@/hooks/useAuth';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import styles from './SendMessageForm.module.css';
 import { Button } from '../../../../components/Button';
 import { TProps } from './types';
@@ -13,6 +14,7 @@ const SendMessageForm: TProps = ({ postId }) => {
   const [isNeedClearInput, setIsNeedClearInput] = useState(false);
   const dispatch = useAppDispatch();
   const user = useAuth();
+  const token = useCSRFToken();
 
   const onSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,6 +28,8 @@ const SendMessageForm: TProps = ({ postId }) => {
       if (!text) {
         return;
       }
+
+      forumService.setCSRFToken(token);
 
       forumService
         .createMessageForPost({

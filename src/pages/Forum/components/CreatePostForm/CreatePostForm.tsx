@@ -5,6 +5,7 @@ import { Input } from '@/components/Input';
 import { useAppDispatch } from '@/hooks/store';
 import { addPosts } from '@/store/slices/forumSlice';
 import { useAuth } from '@/hooks/useAuth';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import styles from './CreatePostForm.module.css';
 import { Button } from '../../../../components/Button';
 
@@ -12,6 +13,7 @@ const CreatePostForm = () => {
   const [isNeedClearInput, setIsNeedClearInput] = useState(false);
   const dispatch = useAppDispatch();
   const user = useAuth();
+  const token = useCSRFToken();
 
   const onSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -23,6 +25,8 @@ const CreatePostForm = () => {
     if (!title) {
       return;
     }
+
+    forumService.setCSRFToken(token);
 
     forumService.createPost({ title }).then((post) => {
       dispatch(addPosts({ ...post, user }));

@@ -1,5 +1,6 @@
 import ToggleButton from '@/components/ToggleButton/ToggleButton';
 import { useAuth } from '@/hooks/useAuth';
+import { useCSRFToken } from '@/hooks/useCSRFToken';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import themeService from '@/services/themeService';
 import { ChangeEventHandler, FC } from 'react';
@@ -19,11 +20,13 @@ type TProps = FC<TOwnProps>;
 const Header: TProps = ({ title, withoutBackLink, cls = '' }) => {
   const [darkMode, setDarkMode] = useDarkMode();
   const user = useAuth();
+  const token = useCSRFToken();
 
   const onChangeDarkMode: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { checked } = event.currentTarget;
     setDarkMode(checked);
     if (user) {
+      themeService.setCSRFToken(token);
       themeService.editUserDarkMode({
         userId: user.id,
         darkMode: checked,

@@ -16,7 +16,7 @@ const Forum = () => {
   const user = useAuth();
 
   useEffect(() => {
-    if (posts === null) {
+    if (posts === null || posts.length === 0) {
       forumService.getAllPosts().then((r) => {
         if (r.length) {
           r.forEach((post: TPost) => {

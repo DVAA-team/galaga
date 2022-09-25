@@ -5,7 +5,9 @@ import { useAppSelector } from './store';
 
 export const useForumPost = (postId: number) => {
   const forum = useAppSelector((state) => state.forum);
-  const [post, setPost] = useState<TPost | null | undefined>(null);
+  const [post, setPost] = useState<TPost | undefined>(
+    forum?.posts?.find((p) => p.id === postId)
+  );
 
   useEffect(() => {
     if (forum) {
@@ -20,7 +22,7 @@ export const useForumPost = (postId: number) => {
         setPost(founddPost);
       }
     }
-  }, [forum, postId]);
+  }, [forum, post, postId]);
 
   return post;
 };
