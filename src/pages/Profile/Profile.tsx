@@ -24,7 +24,7 @@ import CropAvatar, { TOnSaveHandler } from './components/CropAvatar';
 
 import styles from './Profile.module.css';
 
-type TProfile = Omit<TUser, 'id' | 'avatar'> & {
+type TProfile = Omit<TUser, 'id' | 'avatar' | 'isOAuth2User'> & {
   theme: number;
 };
 
@@ -33,6 +33,9 @@ const Profile = () => {
   const userData = useAuth();
   const dispatch = useAppDispatch();
   const [currentTheme, setCurrentTheme] = useTheme();
+  const [isOAuth2User, setIsOAuth2User] = useState<boolean>(
+    userData?.isOAuth2User ?? true
+  );
 
   const themes = useAppSelector((state) => state.themes.list);
 
@@ -126,7 +129,9 @@ const Profile = () => {
   useEffect(() => {
     if (userData !== null) {
       reset(userData);
-      const { avatar: userAvatar } = userData;
+      const { avatar: userAvatar, isOAuth2User: isOAuth2UserSrv } = userData;
+
+      setIsOAuth2User(isOAuth2UserSrv);
 
       if (userAvatar) {
         userService.getAvatar(userAvatar).then((res) => {
@@ -213,12 +218,16 @@ const Profile = () => {
                 placeholder="Выберите тему"
                 error={errors.theme}
               />
-              <Button
-                text="Сменить пароль"
-                cls="mx-0 w-full"
-                view="secondary"
-                onClick={() => setShowChangePassword(true)}
-              />
+              <>
+                {!isOAuth2User && (
+                  <Button
+                    text="Сменить пароль"
+                    cls="mx-0 w-full"
+                    view="secondary"
+                    onClick={() => setShowChangePassword(true)}
+                  />
+                )}
+              </>
               <div className="flex justify-between items-center mt-4">
                 <Button
                   cls="mx-0"

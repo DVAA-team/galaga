@@ -61,7 +61,7 @@ class UserService {
         return false;
       });
 
-  public editUser = (d: Omit<TUser, 'id' | 'avatar'>) =>
+  public editUser = (d: Omit<TUser, 'id' | 'avatar' | 'isOAuth2User'>) =>
     userApi
       .editUser(clientToServerNaming(d))
       .then(({ data }) => serverToClientNaming(data))

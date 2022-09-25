@@ -35,3 +35,8 @@ export const setUserIdTo = async (id: number, userId: number) => {
   oauth2Data.userId = userId;
   await oauth2Data.save();
 };
+
+export const isOAuth2User = async (userId: number) => {
+  const res = await UserOAuth2Data.findOne({ where: { userId } });
+  return Boolean(res);
+};

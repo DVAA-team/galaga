@@ -1,4 +1,7 @@
-import { dbUserController } from '@/database/controllers';
+import {
+  dbUserController,
+  dbUserOAuth2DataController,
+} from '@/database/controllers';
 import { serverToClientNaming } from '@/utils/convertNaming';
 import session from 'express-session';
 import passport from 'passport';
@@ -22,9 +25,12 @@ passport.serializeUser<TSessionUser>(({ id }, done) => {
 passport.deserializeUser<TSessionUser>(({ id }, done) => {
   dbUserController
     .getUserById(id)
-    .then((dbUser) => {
+    .then(async (dbUser) => {
       if (dbUser) {
-        done(null, serverToClientNaming(dbUser));
+        const isOAuth2User = await dbUserOAuth2DataController.isOAuth2User(
+          dbUser.id
+        );
+        done(null, { ...serverToClientNaming(dbUser), isOAuth2User });
       } else {
         done(null);
       }

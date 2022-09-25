@@ -2,7 +2,10 @@ import multer from 'multer';
 import path from 'node:path';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
-import { dbUserController } from '@/database/controllers';
+import {
+  dbUserController,
+  dbUserOAuth2DataController,
+} from '@/database/controllers';
 import { TChangePasswordRequest, TUserUpdateRequest } from '@/api/types';
 import { ApiError } from '@/server/error';
 
@@ -60,7 +63,10 @@ export const editUser = async (
     next(updatedUserOrError);
     return;
   }
-  res.json(updatedUserOrError);
+  const isOAuth2User = await dbUserOAuth2DataController.isOAuth2User(
+    updatedUserOrError.id
+  );
+  res.json({ ...updatedUserOrError, isOAuth2User });
 };
 
 export const uploadAvatar: RequestHandler[] = [
