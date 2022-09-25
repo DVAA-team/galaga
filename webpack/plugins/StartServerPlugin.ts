@@ -1,12 +1,10 @@
 import dotenv from 'dotenv';
 import { promises as fs } from 'fs';
 import http from 'http';
+import Module from 'module';
 import { Socket } from 'node:net';
 import path from 'node:path';
-import requireFromString from 'require-from-string';
 import { Compiler, WebpackPluginInstance } from 'webpack';
-
-import { startServer } from '../../src/server/utils';
 
 const pluginName = 'StartServerPlugin';
 
@@ -14,6 +12,8 @@ export default class StartServerPlugin implements WebpackPluginInstance {
   private _server: http.Server | null = null;
 
   private _sockets = new Set<Socket>();
+
+  private _clearableModules: string[] = [];
 
   public apply(compiler: Compiler) {
     compiler.hooks.watchRun.tapPromise(pluginName, async () => {
@@ -77,26 +77,40 @@ export default class StartServerPlugin implements WebpackPluginInstance {
         .then((code) => code.toString());
 
       // eslint-disable-next-line no-console
-      console.info('Loading new server code ...\n');
+      console.info('\nLoading new server code ...\n');
       dotenv.config({ override: true });
-      const { createApp } = requireFromString(
+
+      const { createApp } = this._requireFromString(
         serverCode,
         path.join(outputPath, serverFileName)
       );
+
       if (!createApp || typeof createApp !== 'function') {
         throw new Error('Точка входа должна экспортировать функцию createApp');
       }
 
-      const app = await createApp();
+      let app = await createApp();
+      app.set('port', 3000);
 
-      this._server = startServer(app, 3000);
-      this._server.on('connection', (socket) => {
-        this._sockets.add(socket);
-        socket.on('close', () => {
-          this._sockets.delete(socket);
-        });
+      await this._startServer(app);
+      app = null;
+    });
+  }
+
+  private async _startServer(app: any) {
+    const res = await this._closeServer();
+    if (!res) throw new Error('Failed stop');
+
+    this._server = http.createServer(app);
+    // this._server.on('error', httpServerErrorHandler(port));
+    // this._server.on('listening', logStart);
+    this._server.on('connection', (socket) => {
+      this._sockets.add(socket);
+      socket.on('close', () => {
+        this._sockets.delete(socket);
       });
     });
+    this._server.listen(3000, '0.0.0.0');
   }
 
   private _closeServer(): Promise<boolean> {
@@ -116,7 +130,36 @@ export default class StartServerPlugin implements WebpackPluginInstance {
           this._server = null;
           resolve(true);
         });
+        this._server.unref();
       }
     });
+  }
+
+  private _requireFromString(code: string, filename: string) {
+    if (typeof code !== 'string') {
+      throw new Error(`code must be a string, not ${typeof code}`);
+    }
+
+    const clearableKey = Object.keys(require.cache).filter((str) =>
+      this._clearableModules.includes(str)
+    );
+    clearableKey.forEach((key) => {
+      delete require.cache[key];
+    });
+
+    const m = new Module(filename);
+    m.filename = filename;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line no-underscore-dangle
+    m.paths = Module._nodeModulePaths(path.dirname(filename));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    // eslint-disable-next-line no-underscore-dangle
+    m._compile(code, filename);
+    const { exports } = m;
+
+    this._clearableModules = m.children.map(({ id }) => id);
+    return exports;
   }
 }

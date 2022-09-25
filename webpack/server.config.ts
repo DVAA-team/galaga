@@ -13,9 +13,8 @@ import StartServerPlugin from './plugins/StartServerPlugin';
 
 dotenv.config();
 
-const migrations = fs
-  .readdirSync(MIGRATION_DIR)
-  .reduce<EntryObject>((acc, fileName) => {
+const migrations = () =>
+  fs.readdirSync(MIGRATION_DIR).reduce<EntryObject>((acc, fileName) => {
     acc[path.basename(fileName, '.ts')] = {
       import: path.join(MIGRATION_DIR, fileName),
       library: {
@@ -30,11 +29,13 @@ const config: Configuration = merge(commonConfig, {
   name: 'server',
   target: 'node',
   dependencies: ['ssr_client'],
-  entry: {
-    server: {
-      import: path.resolve(SRC_DIR, IS_DEV ? 'server/app.ts' : 'server'),
-    },
-    ...migrations,
+  entry: () => {
+    return {
+      server: {
+        import: path.resolve(SRC_DIR, IS_DEV ? 'server/app.ts' : 'server'),
+      },
+      ...migrations(),
+    };
   },
   output: {
     path: path.resolve(DIST_DIR, 'server'),
