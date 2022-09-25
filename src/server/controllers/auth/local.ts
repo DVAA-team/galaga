@@ -39,7 +39,6 @@ export const signup: RequestHandler<
   TSignUpResponse,
   TSingUpRequest
 > = async (req, res, next) => {
-  // TODO Логика регистрации
   const newUserOrError = await dbUserController.create({
     /* eslint-disable @typescript-eslint/naming-convention */
     display_name: null,

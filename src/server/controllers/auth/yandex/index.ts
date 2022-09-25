@@ -1,17 +1,20 @@
 import passport from 'passport';
+import axios from 'axios';
+import { promises as fs } from 'node:fs';
 
 import {
   dbUserController,
   dbUserOAuth2DataController,
 } from '@/database/controllers';
 import { appConstants } from '@/config';
-import { oauth2 } from '@/server/config';
+import { oauth2, projectPaths } from '@/server/config';
 import {
   YandexOAuth2Strategy,
   TVerifyFunction,
 } from '@/server/controllers/auth/yandex/YandexOAuth2Strategy';
 import { Request, RequestHandler, Response } from 'express';
 import { serverToClientNaming } from '@/utils/convertNaming';
+import path from 'node:path';
 
 const findOrCreateUser: TVerifyFunction = (
   accessToken,
@@ -39,11 +42,29 @@ const findOrCreateUser: TVerifyFunction = (
           display_name: yandexProfile.display_name,
           login: yandexProfile.login,
           phone: '',
-          // FIXME Добавить пут до аватарки пользователя яндекс
-          avatar: '///',
+          avatar: null,
         });
         if (userOrError instanceof Error) {
           throw userOrError;
+        }
+        if (!yandexProfile.is_avatar_empty) {
+          const { data: avatar } = await axios.get<Buffer>(
+            `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
+          await fs.writeFile(
+            path.resolve(
+              projectPaths.dist,
+              'files/avatars',
+              `${userOrError.id}.png`
+            ),
+            avatar
+          );
+          await dbUserController.update(userOrError.id, {
+            avatar: `avatars/${userOrError.id}.png`,
+          });
         }
         dbUserOAuth2DataController.setUserIdTo(oauth2Data.id, userOrError.id);
         return userOrError;

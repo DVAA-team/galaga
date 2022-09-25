@@ -95,8 +95,8 @@ export const create = async (
       email: profile.email,
       login: profile.login,
       phone: profile.phone,
-      avatar: null,
-      display_name: null,
+      avatar: profile.avatar,
+      display_name: profile.display_name,
       hashedPassword,
       salt,
       /* eslint-enable @typescript-eslint/naming-convention */
