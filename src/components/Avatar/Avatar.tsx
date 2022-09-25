@@ -1,3 +1,4 @@
+import { ReactEventHandler } from 'react';
 import defaultAvatar from '../../assets/images/ico/avatar.svg';
 import './Avatar.css';
 import { TProps } from './types';
@@ -39,9 +40,13 @@ const Avatar: TProps = ({ ...props }) => {
     </div>
   );
 
+  const onError: ReactEventHandler<HTMLImageElement> = (event) => {
+    event.currentTarget.src = defaultAvatar;
+  };
+
   return (
     <div className={getWrapperClasses()}>
-      <img src={src} alt={alt} style={style} {...rest} />
+      <img src={src} alt={alt} style={style} onError={onError} {...rest} />
       {badge && badgeTemplate}
     </div>
   );

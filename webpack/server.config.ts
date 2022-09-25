@@ -13,6 +13,11 @@ import StartServerPlugin from './plugins/StartServerPlugin';
 
 dotenv.config();
 
+const fileDir = path.resolve(DIST_DIR, 'files', 'avatars');
+if (!fs.existsSync(fileDir)) {
+  fs.mkdirSync(fileDir, { recursive: true });
+}
+
 const migrations = () =>
   fs.readdirSync(MIGRATION_DIR).reduce<EntryObject>((acc, fileName) => {
     acc[path.basename(fileName, '.ts')] = {
