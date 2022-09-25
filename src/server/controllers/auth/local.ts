@@ -58,13 +58,16 @@ export const signup: RequestHandler<
     next(newUserOrError);
     return;
   }
-  req.login(serverToClientNaming(newUserOrError), (err) => {
-    if (err) {
-      next(err);
-      return;
+  req.login(
+    { ...serverToClientNaming(newUserOrError), isOAuth2User: false },
+    (err) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      res.status(201).json(newUserOrError);
     }
-    res.status(201).json(newUserOrError);
-  });
+  );
 };
 export const logout: RequestHandler = (req, res, next) => {
   req.logout((error) => {

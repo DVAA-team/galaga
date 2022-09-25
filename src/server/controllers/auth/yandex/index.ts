@@ -73,7 +73,7 @@ const findOrCreateUser: TVerifyFunction = (
     })
     .then((user) => {
       if (user) {
-        verified(null, serverToClientNaming(user));
+        verified(null, { ...serverToClientNaming(user), isOAuth2User: true });
       } else {
         verified(null);
       }
