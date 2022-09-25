@@ -3,7 +3,7 @@ import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 import { SiteTheme, User, UserTheme } from '@/database/models';
 import { TUserResponse } from '@/api/types';
 import { debug as dbDebug } from '@/database/config';
-import { hashingPassword, verifyingPassword } from '@/server/utils';
+import { hashingPassword, verifyingPassword } from '@/database/utils';
 
 const debug = dbDebug.extend('userController');
 
