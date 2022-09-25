@@ -4,9 +4,9 @@ import { AuthController } from '@/server/controllers';
 
 const router: Router = Router();
 
-router.route('/auth/yandex').get(AuthController.yandex.authenticate);
+router.route('/auth/yandex').get(AuthController.yandexOAuth2.authenticate);
 router
   .route('/auth/yandex/callback')
-  .get(AuthController.yandex.authenticateAndRedirectTo('/'));
+  .get(AuthController.yandexOAuth2.authenticateAndRedirectTo('/'));
 
 export default router;

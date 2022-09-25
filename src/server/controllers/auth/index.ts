@@ -1,1 +1,1 @@
-export * as yandex from './yandex';
+export * as yandexOAuth2 from './yandex';
