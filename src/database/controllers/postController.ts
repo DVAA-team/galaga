@@ -3,7 +3,11 @@ import { Post, User } from '@/database/models';
 const getPostById = (id: number): Promise<Post | null> => {
   return Post.findOne({
     where: { id },
-    include: { model: User, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 
@@ -34,7 +38,11 @@ const deletePost = async ({ postId }: { postId: number }): Promise<number> => {
 
 const getPosts = (): Promise<Post[]> => {
   return Post.findAll({
-    include: { model: User, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 

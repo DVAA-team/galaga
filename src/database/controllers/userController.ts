@@ -35,7 +35,13 @@ export const getUserById = async (id: number) => {
 };
 
 export const getThemeById = async (id: User['id']) => {
-  return UserTheme.findOne({ include: { model: User, where: { id } } });
+  return UserTheme.findOne({
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id },
+    },
+  });
 };
 
 export const setThemeById = async (
@@ -43,7 +49,11 @@ export const setThemeById = async (
   themeId: UserTheme['id']
 ) => {
   let userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id },
+    },
   });
   if (!userTheme) {
     userTheme = new UserTheme({

@@ -10,7 +10,11 @@ export const getThemeByName = (name: string) => {
 
 export const getThemeByUser = async (userId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return null;
@@ -26,7 +30,11 @@ export const getThemeByUser = async (userId: number) => {
 
 export const setThemeByUser = async (userId: number, themeId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return false;
@@ -88,7 +96,11 @@ export const setDarkModeById = async (ownerId: number, darkMode: boolean) => {
 
 export const getDarkModeByUser = async (userId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return null;
@@ -98,7 +110,11 @@ export const getDarkModeByUser = async (userId: number) => {
 
 export const setDarkModeByUser = async (userId: number, darkMode: boolean) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return false;

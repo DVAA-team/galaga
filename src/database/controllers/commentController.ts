@@ -6,7 +6,11 @@ const getCommentByMessageIdAndId = (
 ): Promise<Comment | null> => {
   return Comment.findOne({
     where: { id, messageId },
-    include: { model: User, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 
@@ -52,7 +56,11 @@ const getComments = ({
 }): Promise<Comment[]> => {
   return Comment.findAll({
     where: { messageId },
-    include: { model: User, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 

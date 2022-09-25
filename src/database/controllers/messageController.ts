@@ -6,7 +6,11 @@ const getMessageByPostIdAndId = (
 ): Promise<Message | null> => {
   return Message.findOne({
     where: { id, postId },
-    include: { model: User, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 
@@ -53,7 +57,11 @@ const deleteMessage = async ({
 const getMessages = (postId: number): Promise<Message[]> => {
   return Message.findAll({
     where: { postId },
-    include: { model: User, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 
