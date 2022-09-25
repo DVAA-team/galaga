@@ -10,9 +10,9 @@ declare namespace Express {
     /* eslint-disable @typescript-eslint/naming-convention */
     id: number;
     login: string;
-    first_name: string;
-    second_name: string;
-    display_name: string | null;
+    firstName: string;
+    secondName: string;
+    displayName: string | null;
     email: string;
     avatar: string | null;
     phone: string;

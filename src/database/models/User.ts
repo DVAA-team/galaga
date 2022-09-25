@@ -88,6 +88,7 @@ export default class User extends Model<
         timestamps: false,
         indexes: [
           {
+            name: 'login_index',
             unique: true,
             fields: ['login'],
           },

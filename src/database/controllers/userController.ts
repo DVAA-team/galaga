@@ -1,4 +1,8 @@
-import type { InferAttributes, InferCreationAttributes } from 'sequelize';
+import {
+  InferAttributes,
+  InferCreationAttributes,
+  UniqueConstraintError,
+} from 'sequelize';
 
 import { SiteTheme, User, UserTheme } from '@/database/models';
 import { TUserResponse } from '@/api/types';
@@ -9,9 +13,19 @@ const debug = dbDebug.extend('userController');
 
 export const getUserById = async (id: number) => {
   try {
-    const user = await User.findOne({ where: { id } });
+    const user = await User.findOne({
+      where: { id },
+      attributes: { exclude: ['id'] },
+    });
     if (user) {
-      return user.toJSON();
+      const {
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        salt: unusedSalt,
+        hashedPassword: unusedHashedPassword,
+        /* eslint-enable @typescript-eslint/no-unused-vars */
+        ...returnUser
+      } = user.toJSON();
+      return { ...returnUser, id };
     }
     return null;
   } catch (error) {
@@ -63,8 +77,8 @@ export const setThemeById = async (
 
 type TUserWithoutHashes = InferAttributes<
   User,
-  { omit: 'salt' | 'hashedPassword' }
->;
+  { omit: 'salt' | 'hashedPassword' | 'id' }
+> & { id: number };
 
 type TUserCreate = InferCreationAttributes<
   User,
@@ -106,6 +120,7 @@ export const create = async (
       });
     }
     const {
+      id,
       /* eslint-disable @typescript-eslint/no-unused-vars */
       salt: unusedSalt,
       hashedPassword: unusedHashedPassword,
@@ -113,16 +128,19 @@ export const create = async (
       ...returnUser
     } = user.toJSON();
 
-    return returnUser;
+    return { ...returnUser, id };
   } catch (error) {
-    debug(error);
+    if (error instanceof UniqueConstraintError) {
+      return new Error('Пользователь с таким логином уже существует');
+    }
+    debug('%O', error);
     return new Error('Невозможно создать пользователя');
   }
 };
 
 export const getByLogin = async (
   login: string
-): Promise<InferAttributes<User> | null> => {
+): Promise<TUserWithoutHashes | null> => {
   const user = await User.findOne({
     where: { login },
     attributes: { exclude: ['salt', 'hashedPassword'] },
@@ -133,18 +151,29 @@ export const getByLogin = async (
 export const verifiedPassword = async (
   login: string,
   password: string
-): Promise<InferAttributes<User> | boolean> => {
-  const user = await getByLogin(login);
+): Promise<TUserWithoutHashes | boolean> => {
+  const user = await User.findOne({
+    where: { login },
+  });
+  debug(user);
   if (!user || !user.salt || !user.hashedPassword) {
     return false;
   }
+  debug(user);
   const verified = await verifyingPassword(
     password,
     user.salt,
     user.hashedPassword
   );
   if (verified) {
-    return user;
+    const {
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      salt: unusedSalt,
+      hashedPassword: unusedHashedPassword,
+      /* eslint-enable @typescript-eslint/no-unused-vars */
+      ...returnUser
+    } = user.toJSON();
+    return returnUser;
   }
   return false;
 };

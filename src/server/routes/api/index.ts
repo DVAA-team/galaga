@@ -5,10 +5,12 @@ import messages from './messages';
 import comments from './comments';
 import themes from './themes';
 import yandexOAuth2 from './auth/yandex';
+import localLoginPasswordAuth from './auth/local';
 
 const router: Router = Router();
 
 router
+  .use(localLoginPasswordAuth)
   .use(yandexOAuth2)
   .use(users)
   .use(posts)

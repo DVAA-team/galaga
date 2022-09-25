@@ -17,7 +17,7 @@ const findOrCreateUser: TVerifyFunction = (
   refreshToken,
   // eslint-disable-next-line camelcase
   { expires_in },
-  profile,
+  yandexProfile,
   verified
 ) => {
   dbUserOAuth2DataController
@@ -25,24 +25,27 @@ const findOrCreateUser: TVerifyFunction = (
       accessToken,
       refreshToken,
       provider: 'yandex',
-      providerUserId: profile.id,
+      providerUserId: yandexProfile.id,
       expiresIn: new Date(expires_in),
     })
     .then(async (oauth2Data) => {
       if (!oauth2Data.userId) {
-        const user = await dbUserController.create({
+        const userOrError = await dbUserController.create({
           /* eslint-disable @typescript-eslint/naming-convention */
-          email: profile.default_email,
-          first_name: profile.first_name,
-          second_name: profile.last_name,
-          display_name: profile.display_name,
-          login: profile.login,
+          email: yandexProfile.default_email,
+          first_name: yandexProfile.first_name,
+          second_name: yandexProfile.last_name,
+          display_name: yandexProfile.display_name,
+          login: yandexProfile.login,
           phone: '',
           // FIXME Добавить пут до аватарки пользователя яндекс
           avatar: '///',
         });
-        dbUserOAuth2DataController.setUserIdTo(oauth2Data.id, user.id);
-        return user;
+        if (userOrError instanceof Error) {
+          throw userOrError;
+        }
+        dbUserOAuth2DataController.setUserIdTo(oauth2Data.id, userOrError.id);
+        return userOrError;
       }
       return dbUserController.getUserById(oauth2Data.userId);
     })

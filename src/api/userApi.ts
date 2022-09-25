@@ -11,7 +11,7 @@ import {
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
-    super(appConstants.yandexApiBaseURL);
+    super(appConstants.localApiBaseURL);
   }
 
   public logOut = () => this.instance.post('/auth/logout', {});

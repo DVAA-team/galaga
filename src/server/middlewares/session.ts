@@ -1,4 +1,5 @@
 import { dbUserController } from '@/database/controllers';
+import { serverToClientNaming } from '@/utils/convertNaming';
 import session from 'express-session';
 import passport from 'passport';
 
@@ -23,7 +24,7 @@ passport.deserializeUser<TSessionUser>(({ id }, done) => {
     .getUserById(id)
     .then((dbUser) => {
       if (dbUser) {
-        done(null, dbUser);
+        done(null, serverToClientNaming(dbUser));
       } else {
         done(null);
       }
