@@ -6,22 +6,17 @@ export const up: TUmzugMigrationFn = async ({
 }) => {
   await queryInterface.addColumn(
     'Users',
-    'hashedPassword',
+    'salt',
     {
       type: DataTypes.BLOB,
       allowNull: true,
     },
     { transaction }
   );
-  await queryInterface.addIndex('Users', {
-    unique: true,
-    fields: ['login'],
-    transaction,
-  });
 };
 
 export const down: TUmzugMigrationFn = async ({
   context: { transaction, queryInterface },
 }) => {
-  queryInterface.removeColumn('Users', 'hashedPassword', { transaction });
+  await queryInterface.removeColumn('Users', 'salt', { transaction });
 };

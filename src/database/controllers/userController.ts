@@ -1,18 +1,24 @@
-import type { CreationAttributes } from 'sequelize';
+import type { InferAttributes, InferCreationAttributes } from 'sequelize';
 
 import { SiteTheme, User, UserTheme } from '@/database/models';
 import { TUserResponse } from '@/api/types';
+import { debug as dbDebug } from '@/database/config';
+import { hashingPassword, verifyingPassword } from '@/server/utils';
+
+const debug = dbDebug.extend('userController');
 
 export const getUserById = async (id: number) => {
-  const user = await User.findOne({ where: { id } });
-  if (user) {
-    return user.toJSON();
+  try {
+    const user = await User.findOne({ where: { id } });
+    if (user) {
+      return user.toJSON();
+    }
+    return null;
+  } catch (error) {
+    debug('%O', error);
+    return null;
   }
-  return null;
 };
-
-export const getByYandexId = (yandexId: number): Promise<User | null> =>
-  User.findOne({ where: { yandexId } });
 
 export const createUserFromYandexData = async (
   data: TUserResponse
@@ -55,39 +61,90 @@ export const setThemeById = async (
   userTheme.save();
 };
 
-export const create = async (profile: CreationAttributes<User>) => {
-  const user = await User.create(profile);
-  const starsTheme = await SiteTheme.findOne({
-    where: { name: 'Stars' },
-  });
-  if (starsTheme) {
-    await UserTheme.create({
-      darkMode: true,
-      ownerId: user.id,
-      themeId: starsTheme.id,
+type TUserWithoutHashes = InferAttributes<
+  User,
+  { omit: 'salt' | 'hashedPassword' }
+>;
+
+type TUserCreate = InferCreationAttributes<
+  User,
+  { omit: 'salt' | 'hashedPassword' | 'id' }
+> & { password?: string };
+
+export const create = async (
+  profile: TUserCreate
+): Promise<TUserWithoutHashes | Error> => {
+  try {
+    let hashedPassword: Buffer | null = null;
+    let salt: Buffer | null = null;
+    if (profile.password) {
+      const hashingResult = await hashingPassword(profile.password);
+      hashedPassword = hashingResult.hashedPassword;
+      salt = hashingResult.salt;
+    }
+    const user = await User.create({
+      /* eslint-disable @typescript-eslint/naming-convention */
+      first_name: profile.first_name,
+      second_name: profile.second_name,
+      email: profile.email,
+      login: profile.login,
+      phone: profile.phone,
+      avatar: null,
+      display_name: null,
+      hashedPassword,
+      salt,
+      /* eslint-enable @typescript-eslint/naming-convention */
     });
+    const starsTheme = await SiteTheme.findOne({
+      where: { name: 'Stars' },
+    });
+    if (starsTheme) {
+      await UserTheme.create({
+        darkMode: true,
+        ownerId: user.id,
+        themeId: starsTheme.id,
+      });
+    }
+    const {
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+      salt: unusedSalt,
+      hashedPassword: unusedHashedPassword,
+      /* eslint-enable @typescript-eslint/no-unused-vars */
+      ...returnUser
+    } = user.toJSON();
+
+    return returnUser;
+  } catch (error) {
+    debug(error);
+    return new Error('Невозможно создать пользователя');
   }
-  return user.toJSON();
 };
 
-export const findOrCreate = async (profile: CreationAttributes<User>) => {
-  const user = await User.findOne({ where: { yandexId: profile.yandexId } });
-  if (!user) {
-    return create(profile);
-  }
-  return user.toJSON();
+export const getByLogin = async (
+  login: string
+): Promise<InferAttributes<User> | null> => {
+  const user = await User.findOne({
+    where: { login },
+    attributes: { exclude: ['salt', 'hashedPassword'] },
+  });
+  return user?.toJSON() ?? null;
 };
 
-// export const findByOAuthProvider = async (
-//   providerName: string,
-//   providerId: string
-// ) => {
-//   const user = await User.findOne({
-//     include: {
-//       model: UserOAuthData,
-//       where: { provider: providerName, providerId },
-//       as: 'oauthData',
-//     },
-//   });
-//   user.oauthData;
-// };
+export const verifiedPassword = async (
+  login: string,
+  password: string
+): Promise<InferAttributes<User> | boolean> => {
+  const user = await getByLogin(login);
+  if (!user || !user.salt || !user.hashedPassword) {
+    return false;
+  }
+  const verified = await verifyingPassword(
+    password,
+    user.salt,
+    user.hashedPassword
+  );
+  if (verified) {
+    return user;
+  }
+  return false;
+};
