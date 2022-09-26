@@ -103,6 +103,7 @@ const Profile = () => {
     userService.logOut().finally(() => {
       dispatch(setUserProfile(null));
       redirectToHome();
+      window.location.reload();
     });
   };
 
