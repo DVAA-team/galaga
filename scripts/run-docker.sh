@@ -6,5 +6,5 @@ source .env &&
     -e YANDEX_CLIENT_ID=$YANDEX_CLIENT_ID \
     -e YANDEX_CLIENT_SECRET=$YANDEX_CLIENT_SECRET \
     -e BASE_URL=$BASE_URL \
-    -v ./avatars:/app/dist/files/avatars \
+    -v /avatars:/app/dist/files/avatars \
     cr.yandex/$1/$2:$3
