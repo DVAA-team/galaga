@@ -27,11 +27,13 @@ export default class User extends Model<
 
   declare email: string;
 
-  declare avatar: CreationOptional<string | null>;
+  declare avatar: string | null;
 
   declare phone: string;
 
-  declare yandexId: CreationOptional<number>;
+  declare hashedPassword: Buffer | null;
+
+  declare salt: Buffer | null;
 
   /* eslint-enable @typescript-eslint/naming-convention */
   static registration = (sequelize: Sequelize) => {
@@ -70,8 +72,13 @@ export default class User extends Model<
           type: DataTypes.STRING,
           defaultValue: '',
         },
-        yandexId: {
-          type: DataTypes.INTEGER,
+        hashedPassword: {
+          type: DataTypes.BLOB,
+          allowNull: true,
+        },
+        salt: {
+          type: DataTypes.BLOB,
+          allowNull: true,
         },
       },
       {
@@ -79,9 +86,20 @@ export default class User extends Model<
         modelName,
         tableName,
         timestamps: false,
+        indexes: [
+          {
+            name: 'login_index',
+            unique: true,
+            fields: ['login'],
+          },
+        ],
       }
       /* eslint-enable @typescript-eslint/naming-convention */
     );
+  };
+
+  static applyAssociations = () => {
+    // Добавить связи при необходимости
   };
 }
 

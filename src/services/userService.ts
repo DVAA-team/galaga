@@ -43,13 +43,15 @@ class UserService {
       .catch(() => null);
 
   public signIn = (d: TSignIn) =>
-    userApi.signIn(d).then(this.getUser).catch(this._errorHandler);
+    userApi
+      .signIn(d)
+      .then(({ data }) => serverToClientNaming(data))
+      .catch(this._errorHandler);
 
   public signUp = (d: TSignUp) =>
     userApi
       .signUp(clientToServerNaming(d))
       .then(({ data }) => serverToClientNaming(data))
-      .then(this.getUser)
       .catch(this._errorHandler);
 
   public logOut = () =>
@@ -61,7 +63,7 @@ class UserService {
         return false;
       });
 
-  public editUser = (d: Omit<TUser, 'id' | 'avatar'>) =>
+  public editUser = (d: Omit<TUser, 'id' | 'avatar' | 'isOAuth2User'>) =>
     userApi
       .editUser(clientToServerNaming(d))
       .then(({ data }) => serverToClientNaming(data))

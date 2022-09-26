@@ -1,7 +1,7 @@
 import { env } from '@/server/config';
 import { createDebug } from '@/server/utils';
 
-const debug = createDebug('database');
+export const debug = createDebug('database');
 
 // eslint-disable-next-line no-console
 export const logger = env.isProd() ? console.log : debug;

@@ -1,23 +1,18 @@
 import type { QueryInterface, Sequelize, Transaction } from 'sequelize';
 import type { Debugger } from 'debug';
 import type { MigrationFn } from 'umzug';
+import type { Store } from 'express-session';
 
 export function isDebugger(val: unknown): val is Debugger {
   return Object.prototype.hasOwnProperty.call(val, 'extend');
 }
-abstract class AbstractModel {
-  declare static registration: (sequelize: Sequelize) => void;
-}
 
-export type TModels = typeof AbstractModel[];
-
-type TInitializeDBOptions = {
-  models: TModels;
+export type TInitializationResult = {
+  sequelizeInstance: Sequelize;
+  sequelizeSessionStore: Store;
 };
 
-export type TInitializationFn = ({
-  models,
-}: TInitializeDBOptions) => Promise<Sequelize | Error>;
+export type TInitializationFn = () => Promise<TInitializationResult | Error>;
 
 export type TUmzugContext = {
   queryInterface: QueryInterface;

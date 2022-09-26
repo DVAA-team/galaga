@@ -2,7 +2,6 @@ import { appConstants } from '@/config';
 import { AbstractHttpClient } from './AbstractHttpClient';
 import {
   TChangePasswordRequest,
-  TSignUpResponse,
   TSingInRequest,
   TSingUpRequest,
   TUserResponse,
@@ -11,7 +10,7 @@ import {
 
 class UserApi extends AbstractHttpClient {
   public constructor() {
-    super(appConstants.yandexApiBaseURL);
+    super(appConstants.localApiBaseURL);
   }
 
   public logOut = () => this.instance.post('/auth/logout', {});
@@ -20,24 +19,28 @@ class UserApi extends AbstractHttpClient {
     this.instance.post('/auth/signin', data);
 
   public signUp = (data: TSingUpRequest) =>
-    this.instance.post<TSignUpResponse>('/auth/signup', data);
+    this.instance.post<TUserResponse>('/auth/signup', data);
 
   public getUser = () => this.instance.get<TUserResponse>('/auth/user');
 
   public editUser = (data: TUserUpdateRequest) =>
-    this.instance.put<TUserResponse>('/user/profile', data);
+    this.instance.put<TUserResponse>('/users/profile', data);
 
   public editPassword = (data: TChangePasswordRequest) =>
-    this.instance.put('/user/password', data);
+    this.instance.put('/users/password', data);
 
   public getAvatar = (url: string) =>
-    this.instance.get<Blob>(`/resources/${url}`, { responseType: 'blob' });
+    this.instance.get<Blob>(`${url}`, {
+      baseURL: '',
+      headers: { accept: 'image/*' },
+      responseType: 'blob',
+    });
 
   public editAvatar = (avatar: Blob) => {
     const data = new FormData();
-    data.append('avatar', avatar);
+    data.append('avatar', avatar, 'Avatar');
 
-    return this.instance.put<TUserResponse>('/user/profile/avatar', data, {
+    return this.instance.put<TUserResponse>('/users/avatar', data, {
       headers: {
         /* eslint-disable @typescript-eslint/naming-convention */
         'Content-Type': 'multipart/form-data',

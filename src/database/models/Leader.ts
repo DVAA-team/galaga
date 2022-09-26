@@ -42,7 +42,9 @@ export default class Leader extends Model<
         timestamps: true,
       }
     );
+  };
 
+  static applyAssociations = () => {
     Leader.belongsTo(User, { foreignKey: 'userId', as: 'user' });
   };
 }

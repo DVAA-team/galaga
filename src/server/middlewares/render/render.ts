@@ -4,8 +4,13 @@ import { RequestHandler } from 'express';
 
 import renderBundle from './renderBundle';
 
-const renderMiddleware: RequestHandler = async (req, res) => {
-  const { user } = res.locals;
+const renderMiddleware: RequestHandler = async (req, res, next) => {
+  if (!req.header('Accept')?.includes('application')) {
+    next();
+    return;
+  }
+
+  const { user } = req;
   const csfrToken = req.csrfToken();
 
   let starsTheme;
@@ -39,9 +44,7 @@ const renderMiddleware: RequestHandler = async (req, res) => {
     const userTheme = await dbThemeController.getThemeByUser(user.id);
     darkMode = userTheme?.darkMode ?? true;
     current = userTheme?.current ?? starsTheme;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { yandexId, ...userProfile } = user;
-    profile = userProfile;
+    profile = user;
   }
 
   const initialState: TRootState = {
@@ -55,7 +58,7 @@ const renderMiddleware: RequestHandler = async (req, res) => {
       token: csfrToken,
     },
     forum: {
-      posts: [],
+      posts: null,
       currentPost: null,
     },
   };

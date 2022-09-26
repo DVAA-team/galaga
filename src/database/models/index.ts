@@ -5,5 +5,15 @@ import Comment from './Comment';
 import UserTheme from './UserTheme';
 import SiteTheme from './SiteTheme';
 import Leader from './Leader';
+import UserOAuth2Data from './UserOAuth2Data';
 
-export { User, Post, Message, UserTheme, SiteTheme, Comment, Leader };
+export {
+  User,
+  Post,
+  Message,
+  UserTheme,
+  SiteTheme,
+  Comment,
+  Leader,
+  UserOAuth2Data,
+};

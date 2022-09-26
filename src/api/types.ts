@@ -28,6 +28,7 @@ export type TUserResponse = {
   email: string;
   avatar: string | null;
   phone: string;
+  isOAuth2User: boolean;
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 

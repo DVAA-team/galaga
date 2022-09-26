@@ -2,12 +2,15 @@ import { Comment, User } from '@/database/models';
 
 const getCommentByMessageIdAndId = (
   messageId: number,
-  id: number,
-  yandexId: number
+  id: number
 ): Promise<Comment | null> => {
   return Comment.findOne({
     where: { id, messageId },
-    include: { model: User, where: { yandexId }, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 
@@ -27,15 +30,13 @@ const updateComment = async ({
   text,
   commentId,
   messageId,
-  yandexId,
 }: {
   text: string;
   messageId: number;
   commentId: number;
-  yandexId: number;
 }): Promise<Comment | null> => {
   await Comment.update({ text }, { where: { id: commentId, messageId } });
-  return getCommentByMessageIdAndId(messageId, messageId, yandexId);
+  return getCommentByMessageIdAndId(messageId, messageId);
 };
 
 const deleteComment = async ({
@@ -50,14 +51,16 @@ const deleteComment = async ({
 
 const getComments = ({
   messageId,
-  yandexId,
 }: {
   messageId: number;
-  yandexId: number;
 }): Promise<Comment[]> => {
   return Comment.findAll({
     where: { messageId },
-    include: { model: User, where: { yandexId }, as: 'user' },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      as: 'user',
+    },
   });
 };
 

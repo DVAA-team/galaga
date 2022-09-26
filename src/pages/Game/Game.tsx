@@ -86,7 +86,7 @@ const Game = () => {
       }
       document.removeEventListener('keyup', keyUpHandler);
     };
-  }, [canvasRef, gameRef]);
+  }, [canvasRef, gameRef, token]);
 
   const className = (...args: string[]) => {
     return args.join(' ');

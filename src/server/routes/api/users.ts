@@ -9,4 +9,8 @@ router
     /* TODO validators, request prepare fn, etc */ userController.userDetail,
   ]);
 
+router.route('/users/profile').put(userController.editUser);
+router.route('/users/avatar').put(userController.uploadAvatar);
+router.route('/users/password').put(userController.changePassword);
+
 export default router;

@@ -1,16 +1,20 @@
 import { SiteTheme, User, UserTheme } from '@/database/models';
 
-const getAllThemes = (): Promise<SiteTheme[]> => {
+export const getAllThemes = (): Promise<SiteTheme[]> => {
   return SiteTheme.findAll();
 };
 
-const getThemeByName = (name: string) => {
+export const getThemeByName = (name: string) => {
   return SiteTheme.findOne({ where: { name: `%${name}%` } });
 };
 
-const getThemeByUser = async (userId: number) => {
+export const getThemeByUser = async (userId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return null;
@@ -24,9 +28,13 @@ const getThemeByUser = async (userId: number) => {
   return { darkMode, current: { id, name, ...theme } };
 };
 
-const setThemeByUser = async (userId: number, themeId: number) => {
+export const setThemeByUser = async (userId: number, themeId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return false;
@@ -36,9 +44,9 @@ const setThemeByUser = async (userId: number, themeId: number) => {
   return true;
 };
 
-const getThemeByYandexUser = async (yandexId: number) => {
+export const getThemeById = async (ownerId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { yandexId } },
+    where: { ownerId },
   });
   if (!userTheme) {
     return null;
@@ -52,9 +60,9 @@ const getThemeByYandexUser = async (yandexId: number) => {
   return { darkMode, current: { id, name, ...theme } };
 };
 
-const setThemeByYandexUser = async (yandexId: number, themeId: number) => {
+export const setThemeById = async (ownerId: number, themeId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { yandexId } },
+    where: { ownerId },
   });
   if (!userTheme) {
     return false;
@@ -64,9 +72,9 @@ const setThemeByYandexUser = async (yandexId: number, themeId: number) => {
   return true;
 };
 
-const getDarkModeByYandexUser = async (yandexId: number) => {
+export const getDarkModeById = async (ownerId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { yandexId } },
+    where: { ownerId },
   });
   if (!userTheme) {
     return null;
@@ -74,9 +82,9 @@ const getDarkModeByYandexUser = async (yandexId: number) => {
   return userTheme.darkMode;
 };
 
-const setDarkModeByYandexUser = async (yandexId: number, darkMode: boolean) => {
+export const setDarkModeById = async (ownerId: number, darkMode: boolean) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { yandexId } },
+    where: { ownerId },
   });
   if (!userTheme) {
     return false;
@@ -86,9 +94,13 @@ const setDarkModeByYandexUser = async (yandexId: number, darkMode: boolean) => {
   return true;
 };
 
-const getDarkModeByUser = async (userId: number) => {
+export const getDarkModeByUser = async (userId: number) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return null;
@@ -96,9 +108,13 @@ const getDarkModeByUser = async (userId: number) => {
   return userTheme.darkMode;
 };
 
-const setDarkModeByUser = async (userId: number, darkMode: boolean) => {
+export const setDarkModeByUser = async (userId: number, darkMode: boolean) => {
   const userTheme = await UserTheme.findOne({
-    include: { model: User, where: { id: userId } },
+    include: {
+      model: User,
+      attributes: { exclude: ['salt', 'hashedPassword'] },
+      where: { id: userId },
+    },
   });
   if (!userTheme) {
     return false;
@@ -106,17 +122,4 @@ const setDarkModeByUser = async (userId: number, darkMode: boolean) => {
   userTheme.darkMode = darkMode;
   await userTheme.save();
   return true;
-};
-
-export default {
-  getAllThemes,
-  getThemeByName,
-  getThemeByYandexUser,
-  setThemeByYandexUser,
-  getDarkModeByYandexUser,
-  setDarkModeByYandexUser,
-  getThemeByUser,
-  setThemeByUser,
-  getDarkModeByUser,
-  setDarkModeByUser,
 };

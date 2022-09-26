@@ -1,32 +1,38 @@
 import cookieParser from 'cookie-parser';
-import express, { Express } from 'express';
+import express from 'express';
 
 import {
   csurfMiddleware,
   errorHandlerMiddleware,
-  getYandexUserMiddleware,
   helmetMiddleware,
   loggerMiddleware,
   renderMiddleware,
   staticMiddleware,
+  createSessionMiddlewares,
 } from '@/server/middlewares';
-import { apiRoute, healthChecksRoute, yandexApiRoute } from '@/server/routes';
+import { apiRoute, healthChecksRoute } from '@/server/routes';
+import { initializeDB } from '@/database';
 
-const app: Express = express()
-  .disable('x-powered-by')
-  .enable('trust proxy')
-  .use(staticMiddleware)
-  .use(helmetMiddleware)
-  .use(cookieParser())
-  .use(csurfMiddleware)
-  .use(express.json())
-  .use(express.urlencoded({ extended: false }))
-  .use('/yandex-api', yandexApiRoute)
-  .use(loggerMiddleware)
-  .use('/hc', healthChecksRoute)
-  .use(getYandexUserMiddleware)
-  .use('/api', apiRoute)
-  .get('*', renderMiddleware)
-  .use(errorHandlerMiddleware);
+export const createApp = async () => {
+  const dbInitializeResult = await initializeDB();
+  if (dbInitializeResult instanceof Error) {
+    return null;
+  }
+  const { sequelizeSessionStore } = dbInitializeResult;
 
-export { app };
+  return express()
+    .disable('x-powered-by')
+    .enable('trust proxy')
+    .use(staticMiddleware)
+    .use(helmetMiddleware)
+    .use(createSessionMiddlewares({ store: sequelizeSessionStore }))
+    .use(cookieParser())
+    .use(csurfMiddleware)
+    .use(express.json())
+    .use(express.urlencoded({ extended: false }))
+    .use(loggerMiddleware)
+    .use('/hc', healthChecksRoute)
+    .use('/api', apiRoute)
+    .get('*', renderMiddleware)
+    .use(errorHandlerMiddleware);
+};

@@ -3,46 +3,49 @@ import { dbMessageController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class MessagesController {
-  // eslint-disable-next-line consistent-return
   async getMessage(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { messageId, postId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     try {
       const message = await dbMessageController.getMessageByPostIdAndId(
         Number(postId),
-        Number(messageId),
-        Number(yandexId)
+        Number(messageId)
       );
       if (message) {
         res.status(200).json(message.toJSON());
       } else {
-        return next(
-          ApiError.badRequest(`Сообщение с id ${messageId} не найдено`)
-        );
+        next(ApiError.badRequest(`Сообщение с id ${messageId} не найдено`));
       }
     } catch (err) {
-      return next(
-        ApiError.badRequest(`Сообщение с id ${messageId} не найдено`)
-      );
+      next(ApiError.badRequest(`Сообщение с id ${messageId} не найдено`));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async createMessage(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { text } = req.body;
     const { postId } = req.params;
 
-    const { user } = res.locals;
+    const { user } = req;
     const userId = user.id;
 
     if (!text) {
-      return next(ApiError.badRequest('Не задан text'));
+      next(ApiError.badRequest('Не задан text'));
+      return;
     }
 
     if (!postId) {
-      return next(ApiError.badRequest('Не задан post id'));
+      next(ApiError.badRequest('Не задан post id'));
+      return;
     }
 
     try {
@@ -54,30 +57,35 @@ class MessagesController {
       if (message) {
         res.status(201).json(message.toJSON());
       } else {
-        return next(ApiError.badRequest('Не получилось создать сообщение'));
+        next(ApiError.badRequest('Не получилось создать сообщение'));
       }
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось создать сообщение'));
+      next(ApiError.badRequest('Не получилось создать сообщение'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async updateMessage(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { text } = req.body;
     const { messageId, postId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
 
     if (!text) {
-      return next(ApiError.badRequest('Не задан text'));
+      next(ApiError.badRequest('Не задан text'));
+      return;
     }
 
     if (!messageId) {
-      return next(ApiError.badRequest('Не задан message id'));
+      next(ApiError.badRequest('Не задан message id'));
+      return;
     }
 
     if (!postId) {
-      return next(ApiError.badRequest('Не задан post id'));
+      next(ApiError.badRequest('Не задан post id'));
+      return;
     }
 
     try {
@@ -85,24 +93,28 @@ class MessagesController {
         text,
         postId: Number(postId),
         messageId: Number(messageId),
-        yandexId: Number(yandexId),
       });
       if (message) {
         res.status(200).json(message.toJSON());
       } else {
-        return next(ApiError.badRequest('Не получилось обновить пост'));
+        next(ApiError.badRequest('Не получилось обновить пост'));
       }
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось обновить пост'));
+      next(ApiError.badRequest('Не получилось обновить пост'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async deleteMessage(req: Request, res: Response, next: NextFunction) {
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
+    }
+
     const { messageId, postId } = req.params;
 
     if (!postId) {
-      return next(ApiError.badRequest('Не задан post id'));
+      next(ApiError.badRequest('Не задан post id'));
+      return;
     }
 
     try {
@@ -112,24 +124,24 @@ class MessagesController {
       });
       res.status(204).end();
     } catch (err) {
-      return next(ApiError.badRequest('Не получилось удалить пост'));
+      next(ApiError.badRequest('Не получилось удалить пост'));
     }
   }
 
-  // eslint-disable-next-line consistent-return
   async getMessages(req: Request, res: Response, next: NextFunction) {
-    const { postId } = req.params;
-    const { user } = res.locals;
-    const { yandexId } = user;
-
-    if (!postId) {
-      return next(ApiError.badRequest('Не задан post id'));
+    if (!req.user) {
+      next(ApiError.forbidden('Необходимо авторизация'));
+      return;
     }
 
-    const messages = await dbMessageController.getMessages({
-      postId: Number(postId),
-      yandexId: Number(yandexId),
-    });
+    const { postId } = req.params;
+
+    if (!postId) {
+      next(ApiError.badRequest('Не задан post id'));
+      return;
+    }
+
+    const messages = await dbMessageController.getMessages(Number(postId));
     res.status(200).json(messages.map((message) => message.toJSON()));
   }
 }

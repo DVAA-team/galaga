@@ -46,7 +46,9 @@ export default class UserTheme extends Model<
         timestamps: false,
       }
     );
+  };
 
+  static applyAssociations = () => {
     UserTheme.belongsTo(User, { foreignKey: 'ownerId' });
     UserTheme.belongsTo(SiteTheme, { foreignKey: 'themeId' });
   };

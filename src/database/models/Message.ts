@@ -55,7 +55,9 @@ export default class Message extends Model<
         timestamps: true,
       }
     );
+  };
 
+  static applyAssociations = () => {
     Message.belongsTo(User, { foreignKey: 'userId', as: 'user' });
     Message.belongsTo(Post, { foreignKey: 'postId' });
   };

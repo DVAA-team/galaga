@@ -1,7 +1,14 @@
 import 'dotenv/config';
 
-import { app } from '@/server/app';
+import { createApp } from '@/server/app';
 import { port } from '@/server/config';
 import { startServer } from '@/server/utils';
 
-export default startServer(app, port);
+createApp().then((app) => {
+  if (!app) {
+    // eslint-disable-next-line no-console
+    console.log('Ошибка инициализации базы данных');
+    process.exit(2);
+  }
+  startServer(app, port);
+});
