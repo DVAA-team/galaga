@@ -63,7 +63,7 @@ const findOrCreateUser: TVerifyFunction = (
             avatar
           );
           await dbUserController.update(userOrError.id, {
-            avatar: `avatars/${userOrError.id}.png`,
+            avatar: `/avatars/${userOrError.id}.png`,
           });
         }
         dbUserOAuth2DataController.setUserIdTo(oauth2Data.id, userOrError.id);
