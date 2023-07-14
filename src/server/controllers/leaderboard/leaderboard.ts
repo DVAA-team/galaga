@@ -3,18 +3,13 @@ import { dbLeaderboardController } from '@/database/controllers';
 import { ApiError } from '@/server/error';
 
 class LeaderboardController {
+  // eslint-disable-next-line consistent-return
   async addToLeaderboard(req: Request, res: Response, next: NextFunction) {
-    if (!req.user) {
-      next(ApiError.forbidden('Необходимо авторизация'));
-      return;
-    }
-
     const { score } = req.body;
-    const { user } = req;
+    const { user } = res.locals;
     const userId = user.id;
     if (!user) {
-      next(ApiError.badRequest('Не задан user'));
-      return;
+      return next(ApiError.badRequest('Не задан user'));
     }
 
     try {
@@ -29,10 +24,10 @@ class LeaderboardController {
         const position = leaders.findIndex((item) => item.userId === userId);
         res.status(201).json({ prePosition, position, ...leader.toJSON() });
       } else {
-        next(ApiError.badRequest('Не получилось добавить лидера'));
+        return next(ApiError.badRequest('Не получилось добавить лидера'));
       }
     } catch (err) {
-      next(ApiError.badRequest('Не получилось добавить лидера'));
+      return next(ApiError.badRequest('Не получилось добавить лидера'));
     }
   }
 

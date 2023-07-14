@@ -1,10 +1,10 @@
 import { Header } from '@/components/Header';
 import { MainLayout } from '@/components/MainLayout';
-import { useCSRFToken } from '@/hooks/useCSRFToken';
-import leaderboardService from '@/services/leaderboardService';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+
 import { Button } from '../../components/Button';
-import { GameEngine, Player, Star, Swarm } from './Engine';
+import { GameEngine, Player, Swarm, Star } from './Engine';
+
 import styles from './GamePage.module.css';
 
 const GAME_AREA_STYLE = {
@@ -24,7 +24,6 @@ const enum Status {
 const Game = () => {
   const [gameStatus, setGameStatus] = useState(Status.start);
   const [score, setScore] = useState(0);
-  const token = useCSRFToken();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<HTMLDivElement>(null);
@@ -57,8 +56,6 @@ const Game = () => {
       onGameOver(newScore) {
         setGameStatus(Status.gameOver);
         setScore(newScore);
-        leaderboardService.setCSRFToken(token);
-        leaderboardService.addToLeaderboard({ score: newScore });
       },
     });
     gameEngine.registerObject([Player, Swarm, Star]);
@@ -86,7 +83,7 @@ const Game = () => {
       }
       document.removeEventListener('keyup', keyUpHandler);
     };
-  }, [canvasRef, gameRef, token]);
+  }, [canvasRef, gameRef]);
 
   const className = (...args: string[]) => {
     return args.join(' ');
